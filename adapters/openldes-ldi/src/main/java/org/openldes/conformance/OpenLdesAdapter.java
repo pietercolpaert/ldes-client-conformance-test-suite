@@ -12,7 +12,12 @@ import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.OrderedMemberSupplier;
 import org.openldes.ldi.HibernateUtil;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.openldes.ldi.requestexecutor.services.RequestExecutorFactory;
@@ -31,9 +36,16 @@ import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public final class OpenLdesAdapter {
     private static final ObjectMapper JSON = new ObjectMapper();
+    private static final String LDES = "https://w3id.org/ldes#";
+    private static final Property LDES_TIMESTAMP_PATH = ResourceFactory.createProperty(LDES, "timestampPath");
+    private static final Property LDES_SEQUENCE_PATH = ResourceFactory.createProperty(LDES, "sequencePath");
+    private static final Property LDES_TRANSACTION_PATH = ResourceFactory.createProperty(LDES, "transactionPath");
+    private static final Property LDES_TRANSACTION_FINALIZED_PATH = ResourceFactory.createProperty(LDES, "transactionFinalizedPath");
+    private static final Property LDES_TRANSACTION_FINALIZED_OBJECT = ResourceFactory.createProperty(LDES, "transactionFinalizedObject");
 
     private OpenLdesAdapter() {}
 
@@ -76,8 +88,17 @@ public final class OpenLdesAdapter {
                             Thread.currentThread().interrupt();
                         }
                     });
-            emitContext(protocol, runId, input, requestExecutor);
+            EventStreamProperties properties = emitContext(protocol, runId, input, requestExecutor);
             MemberSupplier supplier = new MemberSupplierImpl(processor, true);
+            if ("ordered".equals(input.path("mode").asText())) {
+                supplier = new OrderedMemberSupplier(
+                        supplier,
+                        path(properties, LDES_TIMESTAMP_PATH),
+                        path(properties, LDES_SEQUENCE_PATH),
+                        path(properties, LDES_TRANSACTION_PATH),
+                        path(properties, LDES_TRANSACTION_FINALIZED_PATH),
+                        path(properties, LDES_TRANSACTION_FINALIZED_OBJECT));
+            }
             supplier.init();
             requestExecutor.beginTraversal();
             int emitted = 0;
@@ -110,7 +131,7 @@ public final class OpenLdesAdapter {
         }
     }
 
-    private static void emitContext(
+    private static EventStreamProperties emitContext(
             PrintStream protocol,
             String runId,
             JsonNode input,
@@ -129,16 +150,27 @@ public final class OpenLdesAdapter {
                 "mediaType", "application/n-quads");
         putIfPresent(context, "timestampPath", properties.getTimestampPath());
         putIfPresent(context, "versionOfPath", properties.getVersionOfPath());
+        if (!properties.getSequencePath().isEmpty()) {
+            context.put("sequencePath", properties.getSequencePath());
+        }
+        putIfPresent(context, "transactionFinalizedPath", properties.getTransactionFinalizedPath());
         putIfPresent(context, "versionTimestampPath", properties.getVersionTimestampPath());
         putIfPresent(context, "versionSequencePath", properties.getVersionSequencePath());
         putIfPresent(context, "pollingInterval", properties.getPollingInterval());
         emit(protocol, context);
+        return properties;
     }
 
     private static void putIfPresent(Map<String, Object> event, String key, Object value) {
         if (value != null) {
             event.put(key, value);
         }
+    }
+
+    private static Optional<RDFNode> path(EventStreamProperties properties, Property property) {
+        final Model model = properties.getContextDataset().getDefaultModel();
+        return Optional.ofNullable(model.createResource(properties.getUri()).getProperty(property))
+                .map(statement -> statement.getObject());
     }
 
     private static Map<String, Object> event(
