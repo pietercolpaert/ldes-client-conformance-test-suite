@@ -136,7 +136,7 @@ class ProcessAdapter implements Adapter {
           ...process.env,
           ...this.declaration.environment,
         },
-        stdio: ["pipe", "pipe", "pipe"],
+        stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
       });
       let stdout = "";
       let stderr = "";
@@ -149,12 +149,12 @@ class ProcessAdapter implements Adapter {
           ),
         );
       }, timeoutMs);
-      child.stdout.setEncoding("utf8");
-      child.stderr.setEncoding("utf8");
-      child.stdout.on("data", (chunk: string) => {
+      child.stdout!.setEncoding("utf8");
+      child.stderr!.setEncoding("utf8");
+      child.stdout!.on("data", (chunk: string) => {
         stdout += chunk;
       });
-      child.stderr.on("data", (chunk: string) => {
+      child.stderr!.on("data", (chunk: string) => {
         stderr += chunk;
       });
       child.on("error", rejectOnce);
@@ -172,7 +172,9 @@ class ProcessAdapter implements Adapter {
         }
         resolve({ stdout, stderr });
       });
-      child.stdin.end(input === undefined ? "" : `${JSON.stringify(input)}\n`);
+      if (input !== undefined) {
+        child.stdin!.end(`${JSON.stringify(input)}\n`);
+      }
 
       function rejectOnce(error: Error): void {
         if (settled) return;

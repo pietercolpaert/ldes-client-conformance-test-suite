@@ -20,12 +20,13 @@ async function main(): Promise<void> {
     const selected = readOption(args, "--adapter") ?? "reference";
     const adapterIds =
       selected === "all" ? CANDIDATE_ADAPTERS : [selected];
+    const adaptersRoot = readOption(args, "--adapters") ?? "adapters";
     const testsRoot = readOption(args, "--tests") ?? "tests";
     const requestedOut = readOption(args, "--out");
     let hasNonPass = false;
 
     for (const adapterId of adapterIds) {
-      const adapter = await resolveAdapter(adapterId);
+      const adapter = await resolveAdapter(adapterId, adaptersRoot);
       const outDir =
         requestedOut && adapterIds.length === 1
           ? requestedOut
@@ -62,16 +63,16 @@ async function main(): Promise<void> {
   }
 
   console.log("Usage:");
-  console.log("  node dist/cli.js run --adapter reference|all|<id> [--no-fail]");
+  console.log("  node dist/cli.js run --adapter reference|all|<id> [--adapters adapters] [--no-fail]");
   console.log("  node dist/cli.js site --reports reports --out site");
   console.log("  node dist/cli.js validate --tests tests");
 }
 
-async function resolveAdapter(adapterId: string): Promise<Adapter> {
+async function resolveAdapter(adapterId: string, adaptersRoot: string): Promise<Adapter> {
   if (adapterId === "reference") {
     return referenceAdapter(runReferenceClient);
   }
-  return await loadProcessAdapter(adapterId);
+  return await loadProcessAdapter(adapterId, adaptersRoot);
 }
 
 function readOption(args: string[], name: string): string | undefined {

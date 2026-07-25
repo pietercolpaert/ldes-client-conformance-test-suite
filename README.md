@@ -121,7 +121,7 @@ availability, and dereferenceable test case IRI under
 
 See [the architecture](docs/architecture.md), [requirement inventory](docs/requirements.md),
 [adapter contract](docs/adapter-contract.md), [client landscape](docs/client-landscape.md),
-and [test authoring guide](tests/README.md).
+[CI reuse guide](docs/reusing-in-client-ci.md), and [test authoring guide](tests/README.md).
 
 ## Candidate client adapters
 
