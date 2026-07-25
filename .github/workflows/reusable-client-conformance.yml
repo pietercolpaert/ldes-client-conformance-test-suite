@@ -1,0 +1,131 @@
+name: Reusable LDES client conformance
+
+on:
+  workflow_call:
+    inputs:
+      adapter:
+        description: Adapter ID to run.
+        required: true
+        type: string
+      suite-repository:
+        description: Repository containing the conformance suite.
+        required: false
+        type: string
+        default: pietercolpaert/ldes-client-conformance-test-suite
+      suite-ref:
+        description: Ref of the conformance suite to use.
+        required: false
+        type: string
+        default: main
+      client-path:
+        description: Checkout path for the client repository.
+        required: false
+        type: string
+        default: client
+      suite-path:
+        description: Checkout path for the conformance suite.
+        required: false
+        type: string
+        default: suite
+      node-version:
+        description: Node.js version used for the suite and client build.
+        required: false
+        type: string
+        default: "22"
+      client-build-command:
+        description: Shell commands that install and build the client under test.
+        required: false
+        type: string
+        default: |
+          npm ci
+          npm run build
+      adapter-build-command:
+        description: Optional shell commands to build a suite-provided adapter host.
+        required: false
+        type: string
+        default: ""
+      adapters-path:
+        description: Adapter declaration root relative to the suite checkout.
+        required: false
+        type: string
+        default: adapters
+      tests-path:
+        description: Test root relative to the suite checkout.
+        required: false
+        type: string
+        default: tests
+      report-path:
+        description: Report output path relative to the GitHub workspace.
+        required: false
+        type: string
+        default: ldes-conformance-report
+      fail-on-non-pass:
+        description: Fail the workflow when any conformance assertion is not passed.
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  conformance:
+    name: LDES conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out client repository
+        uses: actions/checkout@v4
+        with:
+          path: ${{ inputs.client-path }}
+
+      - name: Check out conformance suite
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.suite-repository }}
+          ref: ${{ inputs.suite-ref }}
+          path: ${{ inputs.suite-path }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Build client
+        working-directory: ${{ inputs.client-path }}
+        run: ${{ inputs.client-build-command }}
+
+      - name: Install and build conformance suite
+        working-directory: ${{ inputs.suite-path }}
+        run: |
+          npm ci
+          npm run build
+          node dist/cli.js validate --tests "${{ inputs.tests-path }}"
+
+      - name: Build adapter host
+        if: inputs.adapter-build-command != ''
+        working-directory: ${{ inputs.suite-path }}
+        run: ${{ inputs.adapter-build-command }}
+
+      - name: Run LDES conformance tests
+        working-directory: ${{ inputs.suite-path }}
+        env:
+          LDES_CT_RDF_CONNECT_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
+          LDES_CT_OPENLDES_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
+          LDES_CT_EUROPEANA_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
+        run: |
+          extra_args=""
+          if [ "${{ inputs.fail-on-non-pass }}" != "true" ]; then
+            extra_args="--no-fail"
+          fi
+          node dist/cli.js run \
+            --adapter "${{ inputs.adapter }}" \
+            --adapters "${{ inputs.adapters-path }}" \
+            --tests "${{ inputs.tests-path }}" \
+            --out "${{ github.workspace }}/${{ inputs.report-path }}" \
+            ${extra_args}
+
+      - name: Upload conformance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ldes-conformance-report
+          path: ${{ inputs.report-path }}
+          if-no-files-found: error

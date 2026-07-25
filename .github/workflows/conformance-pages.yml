@@ -55,9 +55,13 @@ jobs:
 
       - name: Build rdf-connect/ldes-client
         if: matrix.adapter == 'rdf-connect'
+        continue-on-error: true
         working-directory: .clients/rdf-connect
         run: |
-          npm ci
+          # The pinned upstream revision currently has a package-lock mismatch.
+          # Keep the conformance job running so the adapter can report cantTell
+          # if the client cannot be built or loaded.
+          npm install
           npm run build
 
       - name: Set up Java and Maven
