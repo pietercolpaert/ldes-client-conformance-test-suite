@@ -1,0 +1,13 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<https://example.test/stream> a ldes:EventStream;
+    tree:view <>;
+    tree:member <https://example.test/member/1> .
+
+<https://example.test/member/1> a ex:Event;
+    ex:value "one" .
+
+<https://example.test/unrelated>
+    ex:value "must not be emitted as member data" .

@@ -1,0 +1,52 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://w3id.org/ldes/conformance/vocab> a owl:Ontology;
+    dct:title "LDES client conformance test metadata vocabulary";
+    dct:description
+        "Provisional terms used to connect LDES requirements, tests, scenarios, and evidence." .
+
+ct:specificationRelease a rdf:Property;
+    rdfs:label "specification release" .
+
+ct:requirementLevel a rdf:Property;
+    rdfs:label "requirement level" .
+
+ct:group a rdf:Property;
+    rdfs:label "compliance group" .
+
+ct:dependsOn a rdf:Property;
+    rdfs:label "depends on" .
+
+ct:scenario a rdf:Property;
+    rdfs:label "scenario" .
+
+ct:expected a rdf:Property;
+    rdfs:label "expected evidence" .
+
+ct:evidence a rdf:Property;
+    rdfs:label "evidence" .
+
+ct:Must a ct:RequirementLevel; rdfs:label "MUST" .
+ct:Should a ct:RequirementLevel; rdfs:label "SHOULD" .
+ct:May a ct:RequirementLevel; rdfs:label "MAY" .
+
+ct:UnorderedTraversal a ct:ComplianceGroup;
+    rdfs:label "Unordered traversal" .
+
+ct:OrderedTraversal a ct:ComplianceGroup;
+    rdfs:label "Ordered traversal";
+    ct:dependsOn ct:UnorderedTraversal .
+
+ct:MemberExtraction a ct:ComplianceGroup;
+    rdfs:label "Member extraction" .
+
+ct:ContextInformation a ct:ComplianceGroup;
+    rdfs:label "Context information" .
+
+ct:RetentionInterpretation a ct:ComplianceGroup;
+    rdfs:label "Retention-policy interpretation";
+    ct:dependsOn ct:ContextInformation .

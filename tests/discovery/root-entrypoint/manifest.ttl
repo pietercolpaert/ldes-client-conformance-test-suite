@@ -1,0 +1,15 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<#test> a earl:TestCase;
+    dct:title "A root-node IRI is accepted as the entry point";
+    dct:description
+        "The supplied IRI is both the fetched document and the sole tree:view target; the root member must be emitted.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-INIT-001>;
+    dct:source
+        <https://semiceu.github.io/LinkedDataEventStreams/releases/1.0.0/#initialization-run>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal;
+    ct:scenario <scenario.yaml>;
+    ct:expected <expected/events.ndjson> .

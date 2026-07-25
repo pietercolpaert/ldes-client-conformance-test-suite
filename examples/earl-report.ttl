@@ -1,0 +1,28 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<#runner> a earl:Software, earl:Assertor;
+    doap:name "LDES 1.0 Client Conformance Test Suite";
+    doap:revision "unreleased" .
+
+<#client> a earl:Software, earl:TestSubject;
+    dct:title "Example client build";
+    doap:revision "0123456789abcdef";
+    doap:location <https://example.test/client-source> .
+
+<#assertion-root-entrypoint> a earl:Assertion;
+    earl:assertedBy <#runner>;
+    earl:subject <#client>;
+    earl:test
+        <../tests/discovery/root-entrypoint/manifest.ttl#test>;
+    earl:result [
+        a earl:TestResult;
+        dct:date "2026-07-25T10:00:00Z"^^xsd:dateTime;
+        dct:description "The expected member was emitted and the run completed.";
+        earl:mode earl:automatic;
+        earl:outcome earl:passed;
+        ct:evidence <evidence/root-entrypoint.json>
+    ] .

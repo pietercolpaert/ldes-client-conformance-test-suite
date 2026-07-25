@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/ldes/conformance/schema/scenario.json",
+  "title": "LDES conformance HTTP scenario",
+  "type": "object",
+  "required": ["version", "entrypoint", "routes"],
+  "properties": {
+    "version": { "const": 0 },
+    "entrypoint": { "type": "string", "pattern": "^/" },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "requests"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/" },
+          "requests": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["response"],
+              "properties": {
+                "response": {
+                  "type": "object",
+                  "required": ["status"],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "minimum": 100,
+                      "maximum": 599
+                    },
+                    "headers": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string" }
+                    },
+                    "body": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

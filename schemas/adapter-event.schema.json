@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/ldes/conformance/schema/adapter-event.json",
+  "title": "LDES conformance adapter event",
+  "type": "object",
+  "required": ["protocolVersion", "type", "runId"],
+  "properties": {
+    "protocolVersion": { "const": 0 },
+    "type": {
+      "enum": ["member", "context", "statistics", "run-end", "error"]
+    },
+    "runId": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "format": "uri" },
+    "dataset": { "type": "string" },
+    "mediaType": { "type": "string" },
+    "status": { "type": "string" },
+    "kind": { "type": "string" },
+    "message": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "member" } } },
+      "then": { "required": ["id", "dataset", "mediaType"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "run-end" } } },
+      "then": {
+        "required": ["status"],
+        "properties": { "status": { "const": "completed" } }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "error" } } },
+      "then": { "required": ["kind", "message"] }
+    }
+  ],
+  "additionalProperties": true
+}
