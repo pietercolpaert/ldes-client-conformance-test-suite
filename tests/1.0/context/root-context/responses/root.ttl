@@ -1,0 +1,15 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/context-stream> tree:view <>;
+    tree:shape ex:ShapeA, ex:ShapeB;
+    ldes:timestampPath ex:created;
+    ldes:versionTimestampPath ex:modified;
+    ldes:versionSequencePath ex:version;
+    ldes:pollingInterval 30 .
+<> tree:viewDescription ex:service;
+   ldes:retentionPolicy ex:direct-policy .
+ex:service ldes:retentionPolicy ex:service-policy;
+   ex:implementation "fixture publishing service" .
+ex:direct-policy a ex:RetentionPolicy .
+ex:service-policy a ex:RetentionPolicy .

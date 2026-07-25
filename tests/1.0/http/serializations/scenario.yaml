@@ -1,0 +1,49 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: n-quads, phase: n-quads }
+  - { id: n-triples, phase: n-triples }
+  - { id: trig, phase: trig }
+  - { id: turtle, phase: turtle }
+  - { id: json-ld, phase: json-ld }
+phases:
+  - id: n-quads
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: application/n-quads }
+              body: responses/root.nq
+  - id: n-triples
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: application/n-triples }
+              body: responses/root.nt
+  - id: trig
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: application/trig }
+              body: responses/root.trig
+  - id: turtle
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/root.ttl
+  - id: json-ld
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: application/ld+json }
+              body: responses/root.jsonld

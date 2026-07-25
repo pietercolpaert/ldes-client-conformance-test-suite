@@ -1,0 +1,2 @@
+<https://example.test/member/two> <https://example.test/vocab/sequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://example.test/member/two> <https://example.test/vocab/value> "two" .

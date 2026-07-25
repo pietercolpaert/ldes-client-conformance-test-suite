@@ -1,0 +1,26 @@
+{
+  "protocolVersion": 0,
+  "id": "fake",
+  "name": "Adapter contract fixture",
+  "revision": "1",
+  "client": {
+    "id": "fake-client",
+    "name": "Fake client",
+    "homepage": "https://example.test/fake-client",
+    "version": "1",
+    "revision": "fixture"
+  },
+  "command": [
+    "node",
+    "adapters/fake/adapter.mjs"
+  ],
+  "timeoutMs": 5000,
+  "capabilities": {
+    "modes": [
+      "unordered"
+    ],
+    "memberExtraction": true,
+    "context": false,
+    "persistentState": true
+  }
+}

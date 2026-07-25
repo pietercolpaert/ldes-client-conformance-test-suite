@@ -1,0 +1,5 @@
+{"type":"member","runId":"ordered","id":"https://example.test/member/one","datasetFile":"one.nq"}
+{"type":"member","runId":"ordered","id":"https://example.test/member/two","datasetFile":"two.nq"}
+{"type":"member","runId":"ordered","id":"https://example.test/member/two-final","datasetFile":"two-final.nq"}
+{"type":"member","runId":"ordered","id":"https://example.test/member/three","datasetFile":"three.nq"}
+{"type":"run-end","runId":"ordered","status":"completed"}

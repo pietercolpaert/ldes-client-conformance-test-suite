@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#discovery-missing-view> a earl:TestCase;
+    dct:title "An entry point without exactly one discoverable view is rejected";
+    dct:description "The entry representation has no usable current-page tree:view relation, so the client should stop with an entry-point error instead of traversing arbitrary data.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-015>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:UnorderedTraversal .

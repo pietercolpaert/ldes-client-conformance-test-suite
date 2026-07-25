@@ -1,0 +1,26 @@
+{
+  "name": "ldes-client-conformance-test-suite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm run typecheck && npm run build && npm run test:adapter && node dist/cli.js run --adapter reference --tests tests --out reports/reference",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test:adapter": "node --test tests/harness/adapter.test.mjs",
+    "conformance:reference": "npm run build && node dist/cli.js run --adapter reference --tests tests --out reports/reference",
+    "conformance:all": "npm run build && node dist/cli.js run --adapter all --tests tests --out reports --no-fail",
+    "report": "npm run build && node dist/cli.js site --reports reports --out site",
+    "validate:fixtures": "npm run build && node dist/cli.js validate --tests tests"
+  },
+  "dependencies": {
+    "@rdfjs/types": "^2.0.1",
+    "rdf-parse": "^5.0.0",
+    "rdf-parser-ts": "^0.3.1",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,47 @@
+version: 0
+name: ldes-mutable-sync
+entrypoint: /root
+runs:
+  - id: run-1
+    phase: initial
+  - id: run-2
+    phase: updated
+phases:
+  - id: initial
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                etag: '"root-initial"'
+              body: responses/initial-root.ttl
+      - path: /frontier
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                cache-control: no-cache
+                etag: '"frontier-initial"'
+              body: responses/initial-frontier.ttl
+  - id: updated
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                etag: '"root-updated"'
+              body: responses/updated-root.ttl
+      - path: /frontier
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                cache-control: no-cache
+                etag: '"frontier-updated"'
+              body: responses/updated-frontier.ttl

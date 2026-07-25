@@ -1,0 +1,14 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<https://example.test/mutable-stream> a ldes:EventStream;
+    tree:view <>;
+    tree:member <https://example.test/member/1> .
+
+<https://example.test/member/1> a ex:Event;
+    ex:value "one" .
+
+<> tree:relation [
+    tree:node <frontier>
+] .

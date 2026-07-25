@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#http-gone-node> a earl:TestCase;
+    dct:title "A 410 Gone relation target is treated as an empty node";
+    dct:description "A relation target returns HTTP 410 Gone during traversal; the client must treat that node as empty and complete without turning the response into a fatal error.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-046>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .

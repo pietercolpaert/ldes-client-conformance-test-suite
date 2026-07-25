@@ -1,0 +1,4 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/cache-stream> tree:member <https://example.test/member/header-immutable> .
+<https://example.test/member/header-immutable> ex:value "header immutable" .

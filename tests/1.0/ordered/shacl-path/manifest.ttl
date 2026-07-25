@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-shacl-path> a earl:TestCase;
+    dct:title "Ordered traversal evaluates a SHACL sequence path";
+    dct:description "Members carry ordering values through a SHACL property path rather than a direct predicate; ordered traversal must evaluate the path and emit members by ascending sequence value.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-007>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

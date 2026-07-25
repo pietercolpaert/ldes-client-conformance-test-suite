@@ -1,0 +1,24 @@
+version: 0
+entrypoint: /overview
+routes:
+  - path: /overview
+    requests:
+      - response:
+          status: 200
+          headers:
+            content-type: text/turtle
+          body: responses/overview.ttl
+  - path: /root
+    requests:
+      - response:
+          status: 200
+          headers:
+            content-type: text/turtle
+          body: responses/root.ttl
+  - path: /child
+    requests:
+      - response:
+          status: 200
+          headers:
+            content-type: text/turtle
+          body: responses/child.ttl

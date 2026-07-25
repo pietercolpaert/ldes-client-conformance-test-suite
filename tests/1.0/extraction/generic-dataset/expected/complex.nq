@@ -1,0 +1,7 @@
+<https://example.test/member/complex> <https://example.test/vocab/value> "default" .
+<https://example.test/member/complex> <https://example.test/vocab/detail> _:first .
+_:first <https://example.test/vocab/next> _:second .
+_:second <https://example.test/vocab/next> _:first .
+_:second <https://example.test/vocab/value> "nested" .
+<https://example.test/member/complex> <https://example.test/vocab/value> "named graph" <https://example.test/member/complex> .
+<https://example.test/payload-part> <https://example.test/vocab/value> "all quads in the member graph" <https://example.test/member/complex> .

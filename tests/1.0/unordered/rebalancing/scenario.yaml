@@ -1,0 +1,63 @@
+version: 0
+name: ldes-rebalancing
+entrypoint: /root
+runs:
+  - id: run-1
+    phase: initial
+  - id: run-2
+    phase: rebalanced
+  - id: run-3
+    phase: gone
+phases:
+  - id: initial
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+              body: responses/root.ttl
+      - path: /2022
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+              body: responses/2022.ttl
+  - id: rebalanced
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+              body: responses/root.ttl
+      - path: /2022
+        requests:
+          - response:
+              status: 302
+              headers:
+                location: /2022-rebalanced
+      - path: /2022-rebalanced
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                cache-control: immutable
+              body: responses/2022-rebalanced.ttl
+  - id: gone
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+              body: responses/root.ttl
+      - path: /2022
+        requests:
+          - response:
+              status: 410

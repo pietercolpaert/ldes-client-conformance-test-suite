@@ -1,0 +1,26 @@
+{
+  "protocolVersion": 0,
+  "id": "europeana",
+  "name": "LDES conformance adapter for Europeana",
+  "revision": "1",
+  "client": {
+    "id": "europeana-rd-ldes-client",
+    "name": "europeana/rd-ldes-client",
+    "homepage": "https://github.com/europeana/rd-ldes-client",
+    "version": "0.1-SNAPSHOT",
+    "revision": "878578e732f5c289facc74f90339ca09ad8f3f9e"
+  },
+  "command": [
+    "node",
+    "adapters/europeana/adapter.mjs"
+  ],
+  "timeoutMs": 45000,
+  "capabilities": {
+    "modes": [
+      "ordered"
+    ],
+    "memberExtraction": true,
+    "context": false,
+    "persistentState": true
+  }
+}

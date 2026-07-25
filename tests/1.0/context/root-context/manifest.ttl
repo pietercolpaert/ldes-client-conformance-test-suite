@@ -1,0 +1,23 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#context-root-context> a earl:TestCase;
+    dct:title "Root, event-stream, view-description, version, and retention context is communicated";
+    dct:description "The root document includes the event stream identity, root view, view description, version paths, and retention policy links; the adapter must expose this context dataset for downstream consumers.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-001>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-002>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-003>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-005>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-007>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-008>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-009>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-RET-003>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-RET-004>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:ContextInformation .

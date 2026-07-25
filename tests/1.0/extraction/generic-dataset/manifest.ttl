@@ -1,0 +1,18 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#extraction-generic-dataset> a earl:TestCase;
+    dct:title "Generic extraction isolates member datasets across default and named graphs";
+    dct:description "The fixture includes a named-graph payload, recursive cyclic blank nodes, unrelated page data, and another event stream.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-002>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-003>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-005>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-007>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-008>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:MemberExtraction .

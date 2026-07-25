@@ -1,0 +1,3 @@
+@prefix tree: <https://w3id.org/tree#> .
+<{{origin}}/overview> tree:view <> .
+<> tree:relation [ tree:node <../child> ], [ tree:node <../child> ] .

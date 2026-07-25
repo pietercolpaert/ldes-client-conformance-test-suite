@@ -6,8 +6,11 @@ consumer requirements in the specification into reproducible HTTP scenarios,
 observable client outcomes, and machine-readable
 [EARL 1.0][earl] reports.
 
-The project is currently in its design and scaffolding phase. It does **not**
-yet make conformance claims about any client.
+The project has an executable baseline suite of 18 deterministic scenarios.
+They map 77 of the 100 reviewed LDES 1.0 requirements to executable evidence;
+the other 23 have explicit boundary, optionality, manual, or deferred
+rationales. CI rejects an applicable client `MUST` or `SHOULD` that has neither
+a test mapping nor a rationale.
 
 ## Goals
 
@@ -88,24 +91,96 @@ The server, runner, and oracle must use virtual or bounded time for polling and
 back-off tests. Tests must not depend on public LDES instances or wall-clock
 delays.
 
+The suite is implemented as a Node/npm runner:
+
+```sh
+npm install
+npm test
+```
+
+`npm run conformance:reference` compiles the TypeScript runner and runs the
+scenario set against a small reference adapter. It writes JSON evidence, a
+normative coverage report, and an EARL report under
+`reports/reference/`. This adapter exists to validate the harness and fixtures;
+it is not a conformance claim for any production client.
+
+`npm run conformance:all` invokes all candidate adapter declarations. An
+adapter whose native build or service runtime is absent produces explicit
+`earl:cantTell` assertions with its setup diagnostic. To generate the
+human-readable report after one or more runs:
+
+```sh
+npm run report
+```
+
+Open `site/1.0/index.html` to inspect the LDES-styled report. The root
+`site/index.html` redirects to the latest 1.0 report. It links each assertion
+to its JSON evidence, EARL Turtle, pinned client revision, adapter
+availability, and dereferenceable test case IRI under
+`https://www.pieter.pm/ldes-client-conformance-test-suite/1.0#`.
+
 See [the architecture](docs/architecture.md), [requirement inventory](docs/requirements.md),
 [adapter contract](docs/adapter-contract.md), [client landscape](docs/client-landscape.md),
 and [test authoring guide](tests/README.md).
 
-## Planned client adapters
+## Candidate client adapters
 
-The clients below informed the neutral contract. This is an integration plan,
-not a current capability or conformance matrix.
+Each adapter is an independent process implementing `probe`, `run`, and
+`reset`. Tests never contain client-specific branches.
 
-| Client | Native integration surface | Initial adapter approach |
+| Client | Adapter | Runtime status |
 | --- | --- | --- |
-| [OpenLDES Linked Data Interactions][openldes-client] | Java modules used in a larger LDI pipeline | Small Java harness around its member supplier and state repositories |
-| [rdf-connect/ldes-client][rdf-connect-client] | TypeScript library and `ldes-client` CLI | Direct process wrapper; capture member output and saved state |
-| [lblod/ldes-client][lblod-client] | TypeScript service that writes through a SPARQL/Virtuoso workflow | Container adapter with disposable stores; translate target/status graphs and stream-end hook |
-| [europeana/rd-ldes-client][europeana-client] | Experimental Java library with traversal callbacks | Java harness around `TreeTraversal`/`ActivityHandler` |
+| [rdf-connect/ldes-client][rdf-connect-client] | Direct Node adapter around `replicateLDES`, RDF/JS member quads, and the native saved-state directory | Pinned build runs locally |
+| [OpenLDES Linked Data Interactions][openldes-client] | Java host around `MemberSupplier`, SQLite-backed native state, and a bounded synchronization-run bridge | Shaded JAR builds and runs locally with Maven/JDK 21 |
+| [europeana/rd-ldes-client][europeana-client] | Java host around `TraversalOrderedByTimestamp` and `ActivityHandler`, including native timestamp state | Shaded JAR builds and runs locally without the unavailable upstream demo dependency |
 
 Adapters live outside the normative test definitions. A defect in an adapter
 must result in `earl:cantTell`, not `earl:failed`.
+
+For example, to run the pinned rdf-connect checkout:
+
+```sh
+git clone https://github.com/rdf-connect/ldes-client .clients/rdf-connect
+git -C .clients/rdf-connect checkout 00b062d3c4e4c31d99ff38ce985df44c389e2952
+npm --prefix .clients/rdf-connect ci
+npm --prefix .clients/rdf-connect run build
+npm run build
+LDES_CT_RDF_CONNECT_ROOT="$PWD/.clients/rdf-connect" \
+  node dist/cli.js run --adapter rdf-connect --tests tests \
+  --out reports/rdf-connect --no-fail
+npm run report
+```
+
+The Java host build entry points are
+`adapters/openldes-ldi/build.sh` and `adapters/europeana/build.sh`.
+
+### Current local execution
+
+The report is the source of truth; the following checkpoint records why no
+production client is described as fully conformant:
+
+| Client | Passed | Failed | Inapplicable | Group result |
+| --- | ---: | ---: | ---: | --- |
+| rdf-connect | 6 | 12 | 0 | All four groups failed |
+| OpenLDES LDI | 4 | 9 | 5 | Unordered and extraction failed; ordered and context inapplicable |
+| Europeana | 4 | 12 | 2 | Unordered, extraction, and ordered failed; context inapplicable |
+
+In particular, rdf-connect fails the RDF-only `ldes:immutable` test by
+refetching the node, does not communicate `ldes:pollingInterval`, and rejects
+ordered traversal configured only with `ldes:sequencePath`.
+
+## Continuous publication
+
+[The conformance workflow](.github/workflows/conformance-pages.yml) checks out
+the three pinned client revisions, builds the available native hosts, runs the
+same black-box suite in isolated matrix jobs, combines their EARL/JSON
+artifacts, and deploys the HTML report with GitHub Pages.
+
+The repository must have **Settings → Pages → Build and deployment → Source**
+set to **GitHub Actions**. Test failures are published as results and therefore
+do not fail the workflow; runner/build problems remain `cantTell` with a
+diagnostic. The workflow also runs weekly so the hosted report records fresh
+execution dates while continuing to test pinned, reproducible revisions.
 
 ## Repository layout
 
@@ -120,9 +195,13 @@ must result in `earl:cantTell`, not `earl:failed`.
 ├── examples/
 │   └── earl-report.ttl        illustrative report
 ├── schemas/                   machine-readable scenario and event contracts
+├── src/                       runner, process adapter host, oracle, and reports
+├── .github/workflows/         client matrix and GitHub Pages publication
 ├── tests/
 │   ├── manifest.ttl           suite manifest
-│   └── discovery/             first illustrative atomic test
+│   └── 1.0/                   versioned LDES 1.0 atomic tests
+├── site/
+│   └── 1.0/                   published 1.0 report and test-case anchors
 └── vocab/
     └── ldes-ct.ttl            suite metadata terms
 ```
@@ -147,15 +226,14 @@ must result in `earl:cantTell`, not `earl:failed`.
 
 ## Status and next steps
 
-The immediate work is to review and freeze the normative requirement inventory,
-validate the adapter contract with one CLI client and one embedded-library
-client, then implement the first vertical slice:
-
-1. entry-point discovery;
-2. RDF media types and basic HTTP handling;
-3. unordered traversal, including retry/error behavior;
-4. member extraction;
-5. stateful second-run behavior and EARL generation.
+The runner, request/event/RDF-isomorphism oracles, EARL/JSON/HTML reports,
+deterministic phase server, coverage gate, four group claims, process contract,
+candidate declarations, and baseline scenario catalog are implemented.
+Remaining extensions are explicitly tracked in `PLAN.md`: autonomous polling
+with virtual time, external JSON-LD context caching, streaming immediacy,
+optional TREE-profile extraction, and deeper retention-aware consumer
+interpretation. The Java and container adapters still need their first hosted
+matrix execution after the repository is pushed and GitHub Pages is enabled.
 
 See [PLAN.md](PLAN.md) for milestones, open decisions, and acceptance criteria.
 
@@ -163,5 +241,4 @@ See [PLAN.md](PLAN.md) for milestones, open decisions, and acceptance criteria.
 [earl]: https://www.w3.org/TR/EARL10-Schema/
 [openldes-client]: https://github.com/OpenLDES/Linked-Data-Interactions/tree/main/ldi-core/ldes-client
 [rdf-connect-client]: https://github.com/rdf-connect/ldes-client
-[lblod-client]: https://github.com/lblod/ldes-client
 [europeana-client]: https://github.com/europeana/rd-ldes-client

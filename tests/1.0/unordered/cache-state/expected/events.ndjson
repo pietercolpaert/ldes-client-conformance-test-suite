@@ -1,0 +1,5 @@
+{"type":"member","runId":"initial","id":"https://example.test/member/rdf-immutable","datasetFile":"rdf.nq"}
+{"type":"member","runId":"initial","id":"https://example.test/member/header-immutable","datasetFile":"header.nq"}
+{"type":"member","runId":"initial","id":"https://example.test/member/mutable","datasetFile":"mutable.nq"}
+{"type":"run-end","runId":"initial","status":"completed"}
+{"type":"run-end","runId":"repeat","status":"completed"}

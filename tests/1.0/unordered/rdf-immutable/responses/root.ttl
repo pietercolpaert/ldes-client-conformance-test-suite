@@ -1,0 +1,3 @@
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/rdf-immutable-stream> tree:view <> .
+<> tree:relation [ tree:node <immutable> ] .

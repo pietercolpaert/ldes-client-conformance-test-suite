@@ -1,0 +1,3 @@
+<https://example.test/serialization-stream> <https://w3id.org/tree#view> <{{origin}}/root> .
+<https://example.test/serialization-stream> <https://w3id.org/tree#member> <https://example.test/member/nt> .
+<https://example.test/member/nt> <https://example.test/vocab/value> "n-triples" .

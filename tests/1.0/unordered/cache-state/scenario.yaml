@@ -1,0 +1,55 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: initial, phase: initial }
+  - { id: repeat, phase: repeat }
+phases:
+  - id: initial
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/root.ttl
+      - path: /rdf-immutable
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/rdf-immutable.ttl
+      - path: /header-immutable
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                cache-control: public, max-age=31536000, immutable
+              body: responses/header-immutable.ttl
+      - path: /mutable
+        requests:
+          - response:
+              status: 200
+              headers:
+                content-type: text/turtle
+                etag: '"mutable-v1"'
+              body: responses/mutable.ttl
+  - id: repeat
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/root.ttl
+      - path: /rdf-immutable
+        requests:
+          - response: { status: 500 }
+      - path: /header-immutable
+        requests:
+          - response: { status: 500 }
+      - path: /mutable
+        requests:
+          - response:
+              status: 304
+              headers: { etag: '"mutable-v1"' }

@@ -1,0 +1,205 @@
+import type { Quad } from "@rdfjs/types";
+
+export interface ScenarioResponse {
+  status: number;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+export interface ScenarioRequest {
+  response: ScenarioResponse;
+}
+
+export interface ScenarioRoute {
+  path: string;
+  requests: ScenarioRequest[];
+}
+
+export interface ScenarioPhase {
+  id: string;
+  routes: ScenarioRoute[];
+}
+
+export interface ScenarioRun {
+  id: string;
+  phase: string;
+  mode?: "unordered" | "ordered";
+}
+
+export interface Scenario {
+  version: 0;
+  name?: string;
+  entrypoint: string;
+  routes?: ScenarioRoute[];
+  phases?: ScenarioPhase[];
+  runs?: ScenarioRun[];
+}
+
+export interface RequestLogEntry {
+  sequence: number;
+  method: string;
+  path: string;
+  headers: Record<string, string | string[] | undefined>;
+  phase: string;
+  status: number;
+  timestamp: string;
+}
+
+export interface AdapterInput {
+  protocolVersion: 0;
+  runId: string;
+  entrypoint: string;
+  mode: "unordered" | "ordered";
+  stateDirectory: string;
+  phase: string;
+  deadline?: string;
+}
+
+export interface AdapterEvent {
+  protocolVersion: 0;
+  type: "member" | "context" | "statistics" | "run-end" | "error";
+  runId: string;
+  id?: string;
+  dataset?: string;
+  mediaType?: string;
+  status?: string;
+  kind?: string;
+  message?: string;
+  [key: string]: unknown;
+}
+
+export interface ParsedPage {
+  url: string;
+  quads: Quad[];
+  status: number;
+  headers: Headers;
+}
+
+export interface ExpectedEvent {
+  type: "member" | "run-end" | "error" | "context" | "statistics";
+  id?: string;
+  runId?: string;
+  status?: string;
+  kind?: string;
+  datasetFile?: string;
+  [key: string]: unknown;
+}
+
+export interface ExpectedRequest {
+  phase?: string;
+  path: string;
+  status?: number;
+  count?: number;
+  minCount?: number;
+  maxCount?: number;
+  headers?: Record<string, string>;
+  headerIncludes?: Record<string, string>;
+  absentHeaders?: string[];
+}
+
+export interface TestCase {
+  id: string;
+  iri: string;
+  directory: string;
+  manifestPath: string;
+  scenarioPath: string;
+  expectedPath: string;
+  title: string;
+  description?: string;
+  requirement?: string;
+  requirements: string[];
+  requirementLevel?: "Must" | "Should" | "May";
+  group?: string;
+}
+
+export interface TestResult {
+  test: TestCase;
+  outcome: EarlOutcome;
+  events: AdapterEvent[];
+  requests: RequestLogEntry[];
+  diagnostics: string[];
+}
+
+export type EarlOutcome =
+  | "passed"
+  | "failed"
+  | "cantTell"
+  | "inapplicable"
+  | "untested";
+
+export interface ClientIdentity {
+  id: string;
+  name: string;
+  homepage: string;
+  version?: string;
+  revision: string;
+}
+
+export interface AdapterDeclaration {
+  protocolVersion: 0;
+  id: string;
+  name: string;
+  revision: string;
+  client: ClientIdentity;
+  command: string[];
+  timeoutMs?: number;
+  capabilities: {
+    modes: Array<"unordered" | "ordered">;
+    memberExtraction: boolean;
+    context: boolean;
+    persistentState: boolean;
+    serviceRuntime?: boolean;
+  };
+  environment?: Record<string, string>;
+}
+
+export interface AdapterProbe {
+  protocolVersion: 0;
+  available: boolean;
+  adapterId: string;
+  clientVersion?: string;
+  clientRevision?: string;
+  capabilities?: AdapterDeclaration["capabilities"];
+  reason?: string;
+}
+
+export interface ReportMetadata {
+  generatedAt: string;
+  suiteVersion: string;
+  adapter: AdapterDeclaration;
+  probe: AdapterProbe;
+}
+
+export interface SuiteSummary {
+  metadata: ReportMetadata;
+  total: number;
+  counts: Record<string, number>;
+  groupClaims: Array<{
+    group: string;
+    outcome: EarlOutcome;
+    mandatoryTests: number;
+    passedMandatoryTests: number;
+    dependsOn?: string;
+    diagnostics: string[];
+  }>;
+  coverage: {
+    totalRequirements: number;
+    requirementsWithTests: number;
+    requirementsWithRationales: number;
+    blockingGaps: number;
+    artifact: string;
+  };
+  tests: Array<{
+    id: string;
+    iri: string;
+    title: string;
+    description?: string;
+    group?: string;
+    requirement?: string;
+    requirements: string[];
+    requirementLevel?: string;
+    outcome: EarlOutcome;
+    diagnostics: string[];
+    evidence: string;
+  }>;
+}

@@ -2,14 +2,49 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/> .
 
 <> a mf:Manifest;
     dct:title "LDES 1.0 client conformance tests";
     dct:conformsTo <https://w3id.org/ldes/specification>;
     mf:entries (
-        <discovery/root-entrypoint/manifest.ttl#test>
+        <1.0#context-empty-retention>
+        <1.0#context-root-context>
+        <1.0#discovery-ambiguous-view>
+        <1.0#discovery-missing-view>
+        <1.0#discovery-overview-entrypoint>
+        <1.0#discovery-root-entrypoint>
+        <1.0#extraction-generic-dataset>
+        <1.0#http-gone-node>
+        <1.0#http-retryable-statuses>
+        <1.0#http-serializations>
+        <1.0#http-terminal-error>
+        <1.0#ordered-global-order>
+        <1.0#ordered-missing-path>
+        <1.0#ordered-shacl-path>
+        <1.0#unordered-cache-state>
+        <1.0#unordered-mutable-sync>
+        <1.0#unordered-rdf-immutable>
+        <1.0#unordered-rebalancing>
     );
     ct:specificationRelease
         <https://semiceu.github.io/LinkedDataEventStreams/releases/1.0.0/> .
 
-<discovery/root-entrypoint/manifest.ttl#test> a earl:TestCase .
+<1.0#context-empty-retention> a earl:TestCase .
+<1.0#context-root-context> a earl:TestCase .
+<1.0#discovery-ambiguous-view> a earl:TestCase .
+<1.0#discovery-missing-view> a earl:TestCase .
+<1.0#discovery-overview-entrypoint> a earl:TestCase .
+<1.0#discovery-root-entrypoint> a earl:TestCase .
+<1.0#extraction-generic-dataset> a earl:TestCase .
+<1.0#http-gone-node> a earl:TestCase .
+<1.0#http-retryable-statuses> a earl:TestCase .
+<1.0#http-serializations> a earl:TestCase .
+<1.0#http-terminal-error> a earl:TestCase .
+<1.0#ordered-global-order> a earl:TestCase .
+<1.0#ordered-missing-path> a earl:TestCase .
+<1.0#ordered-shacl-path> a earl:TestCase .
+<1.0#unordered-cache-state> a earl:TestCase .
+<1.0#unordered-mutable-sync> a earl:TestCase .
+<1.0#unordered-rdf-immutable> a earl:TestCase .
+<1.0#unordered-rebalancing> a earl:TestCase .

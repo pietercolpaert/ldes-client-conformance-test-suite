@@ -1,0 +1,2 @@
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/retry-stream> tree:view <> .

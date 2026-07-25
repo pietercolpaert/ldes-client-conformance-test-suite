@@ -1,0 +1,3 @@
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/stream/a> tree:view <> .
+<https://example.test/stream/b> tree:view <> .

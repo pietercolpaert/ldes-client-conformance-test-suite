@@ -1,0 +1,18 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#unordered-cache-state> a earl:TestCase;
+    dct:title "Immutable nodes are skipped and mutable ETags are revalidated";
+    dct:description "Across repeated synchronization runs, RDF-immutable and Cache-Control immutable nodes must not be refetched, while the mutable node must be revalidated with its ETag.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-020>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-021>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-022>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-023>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-027>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-035>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-037>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:UnorderedTraversal .

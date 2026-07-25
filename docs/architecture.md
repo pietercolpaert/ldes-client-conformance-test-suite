@@ -13,6 +13,25 @@ use a public library API when the client has no CLI.
 
 ## Components
 
+### Implemented execution path
+
+The implemented path deliberately keeps one execution model:
+
+1. recursively discover versioned atomic tests;
+2. start one loopback fixture server per test;
+3. call either the in-process reference adapter or one NDJSON process adapter;
+4. compare member/context/statistics/error/completion events, request evidence,
+   and blank-node-isomorphic RDF datasets;
+5. calculate the four capability-aware group claims and normative coverage;
+6. write one evidence JSON file per test plus coverage, summary, and EARL;
+7. derive the static HTML site from those summaries.
+
+The process boundary is the only client integration mechanism exposed to the
+runner. Java/library/container details stay inside adapters. Request-header
+oracles, blank-node-aware dataset isomorphism, capability selection, and the
+ordered-to-unordered group dependency are implemented. Autonomous virtual
+time, JSON Schema execution, and report SHACL validation remain extensions.
+
 ### Requirement catalog
 
 The catalog maps normative clauses to stable requirement IRIs and compliance

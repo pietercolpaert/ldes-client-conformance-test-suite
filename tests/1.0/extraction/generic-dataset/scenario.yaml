@@ -1,0 +1,10 @@
+version: 0
+entrypoint: /root
+routes:
+  - path: /root
+    requests:
+      - response:
+          status: 200
+          headers:
+            content-type: application/trig
+          body: responses/root.trig

@@ -1,0 +1,94 @@
+{
+  "LDES10-UNORD-001": {
+    "classification": "optional",
+    "rationale": "Multiple modes are optional extension capability metadata and do not affect a baseline conformance claim."
+  },
+  "LDES10-UNORD-003": {
+    "classification": "optional",
+    "rationale": "Modes beyond unordered and ordered ascending are explicitly extension space."
+  },
+  "LDES10-UNORD-005": {
+    "classification": "deferred",
+    "rationale": "The finite-run adapter contract can observe pollingInterval extraction but cannot yet observe autonomous scheduling; this needs the planned virtual-clock follow-mode extension."
+  },
+  "LDES10-UNORD-016": {
+    "classification": "optional",
+    "rationale": "Source selection is an optional dereferencing extension outside the common adapter contract."
+  },
+  "LDES10-UNORD-033": {
+    "classification": "deferred",
+    "rationale": "External JSON-LD context cache observation needs a controlled document-loader hook in addition to the existing origin request log."
+  },
+  "LDES10-UNORD-045": {
+    "classification": "optional",
+    "rationale": "Authorization handling is optional and requires credential provisioning that is intentionally outside the public baseline suite."
+  },
+  "LDES10-UNORD-048": {
+    "classification": "deferred",
+    "rationale": "The current process protocol collects events after adapter completion and therefore cannot reliably measure immediate streaming latency."
+  },
+  "LDES10-ORD-002": {
+    "classification": "optional",
+    "rationale": "Inferring immutability from relation bounds is an optional optimization."
+  },
+  "LDES10-ORD-003": {
+    "classification": "optional",
+    "rationale": "Timestamp or sequence bookmarks are an optional state strategy; restart behavior is tested without requiring an implementation technique."
+  },
+  "LDES10-EXTRACT-001": {
+    "classification": "optional",
+    "rationale": "TREE-profile extraction is an optional named capability and needs a profile capability flag before it can be selected fairly."
+  },
+  "LDES10-EXTRACT-009": {
+    "classification": "optional",
+    "rationale": "Named-graph upsert interpretation is optional consumer behavior; named-graph dataset extraction itself is tested."
+  },
+  "LDES10-PIPE-001": {
+    "classification": "boundary",
+    "rationale": "This constrains a downstream consumer pipeline, not the traversal client; run-finalization signaling is tested separately."
+  },
+  "LDES10-CTX-010": {
+    "classification": "boundary",
+    "rationale": "Chronological interpretation is scored in ordered traversal; this row also applies to broader consumers."
+  },
+  "LDES10-CTX-011": {
+    "classification": "boundary",
+    "rationale": "Executing SHACL validation is processor behavior; the client suite verifies shape context communication."
+  },
+  "LDES10-CTX-012": {
+    "classification": "boundary",
+    "rationale": "Logical-AND shape validation is processor behavior; the context fixture discriminates communication of multiple shapes."
+  },
+  "LDES10-CTX-013": {
+    "classification": "boundary",
+    "rationale": "Selecting latest versions is consumer behavior; versionTimestampPath extraction is tested."
+  },
+  "LDES10-CTX-014": {
+    "classification": "boundary",
+    "rationale": "Selecting latest versions is consumer behavior; versionSequencePath extraction is tested."
+  },
+  "LDES10-CTX-015": {
+    "classification": "boundary",
+    "rationale": "Recovering prior update or deletion payloads requires a materializing consumer, beyond traversal and context extraction."
+  },
+  "LDES10-RET-001": {
+    "classification": "boundary",
+    "rationale": "Completeness assumptions are consumer interpretation; absence and presence are exposed by the context event."
+  },
+  "LDES10-RET-002": {
+    "classification": "boundary",
+    "rationale": "Availability assumptions outside a policy are consumer interpretation; policy discovery is tested."
+  },
+  "LDES10-RET-006": {
+    "classification": "boundary",
+    "rationale": "Clock-skew calculation is retention-aware consumer behavior and needs a separate virtual-clock interpretation profile."
+  },
+  "LDES10-RET-007": {
+    "classification": "boundary",
+    "rationale": "Duration evaluation against version timestamps is consumer behavior; path extraction is tested."
+  },
+  "LDES10-RET-008": {
+    "classification": "boundary",
+    "rationale": "Historical policy interpretation is a separate retention-aware consumer profile, not baseline traversal."
+  }
+}

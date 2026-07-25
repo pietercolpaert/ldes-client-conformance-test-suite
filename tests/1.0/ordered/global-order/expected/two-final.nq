@@ -1,0 +1,3 @@
+<https://example.test/member/two-final> <https://example.test/vocab/sequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://example.test/member/two-final> <https://example.test/vocab/done> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://example.test/member/two-final> <https://example.test/vocab/value> "two final" .

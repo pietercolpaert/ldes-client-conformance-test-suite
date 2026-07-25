@@ -1,0 +1,3 @@
+<https://example.test/member/path-one> <https://example.test/vocab/metadata> _:a .
+<https://example.test/member/path-one> <https://example.test/vocab/value> "one" .
+_:a <https://example.test/vocab/sequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .

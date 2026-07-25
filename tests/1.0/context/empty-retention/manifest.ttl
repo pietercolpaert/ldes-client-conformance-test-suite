@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#context-empty-retention> a earl:TestCase;
+    dct:title "An empty retention-policy resource is still communicated";
+    dct:description "The event stream links to a retention policy resource without extra policy details; a context-capable client must still expose that policy IRI rather than dropping it as empty metadata.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-RET-005>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:ContextInformation .

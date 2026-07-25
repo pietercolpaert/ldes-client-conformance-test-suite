@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#http-terminal-error> a earl:TestCase;
+    dct:title "A non-special 4xx response aborts the run";
+    dct:description "The entry point returns a terminal client error that is not one of the retryable or empty-node cases; the client must surface an error and stop the run.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-047>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .

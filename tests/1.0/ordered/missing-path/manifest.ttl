@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-missing-path> a earl:TestCase;
+    dct:title "Ordered traversal rejects an event stream without ordering metadata";
+    dct:description "The fixture requests ordered traversal but omits timestamp and sequence path metadata; the client must not claim ordered output without a usable ordering path.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-008>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-009>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

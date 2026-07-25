@@ -1,0 +1,4 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+<{{origin}}/overview> tree:member <https://example.test/member/overview> .
+<https://example.test/member/overview> a ex:Event; ex:value "overview" .

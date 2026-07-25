@@ -1,0 +1,18 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#discovery-overview-entrypoint> a earl:TestCase;
+    dct:title "An overview document identifies exactly one root node";
+    dct:description "The supplied IRI is an overview document with one tree:view target; the client must dereference that target as the root node and emit the member found there.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-008>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-013>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-014>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-034>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-049>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-050>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-051>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .

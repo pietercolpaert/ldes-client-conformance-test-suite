@@ -1,0 +1,10 @@
+version: 0
+entrypoint: /not-an-ldes
+routes:
+  - path: /not-an-ldes
+    requests:
+      - response:
+          status: 200
+          headers:
+            content-type: text/turtle
+          body: responses/empty.ttl

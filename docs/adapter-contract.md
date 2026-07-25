@@ -13,7 +13,8 @@ Every adapter must provide:
 - `run`: perform one synchronization run against the supplied entry-point IRI;
 - `reset`: remove only the adapter-owned state for the current test.
 
-The runner invokes commands directly with an argument array. The working
+The runner invokes the declared command directly with an argument array and
+appends the operation name (`probe`, `run`, or `reset`). The working
 directory, environment allow-list, timeout, and container configuration belong
 to the adapter declaration.
 
@@ -28,7 +29,7 @@ to the adapter declaration.
   "entrypoint": "http://127.0.0.1:49152/entry",
   "mode": "unordered",
   "stateDirectory": "/tmp/ldes-ct/case/state",
-  "phase": 2,
+  "phase": "updated",
   "deadline": "2026-07-25T10:05:00Z"
 }
 ```

@@ -1,0 +1,22 @@
+@prefix ex: <https://example.test/vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<https://example.test/extraction-stream> tree:view <>;
+    tree:member <https://example.test/member/complex> .
+
+<https://example.test/other-stream>
+    tree:member <https://example.test/member/not-ours> .
+
+<https://example.test/member/complex>
+    ex:value "default";
+    ex:detail _:a .
+_:a ex:next _:b .
+_:b ex:next _:a; ex:value "nested" .
+
+<https://example.test/unrelated> ex:value "must not be emitted" .
+<https://example.test/member/not-ours> ex:value "wrong stream" .
+
+<https://example.test/member/complex> {
+  <https://example.test/member/complex> ex:value "named graph" .
+  <https://example.test/payload-part> ex:value "all quads in the member graph" .
+}

@@ -1,0 +1,2 @@
+<https://example.test/member/old> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.test/vocab/Event> .
+<https://example.test/member/old> <https://example.test/vocab/value> "old" .

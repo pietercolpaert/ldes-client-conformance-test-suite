@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "tree": "https://w3id.org/tree#",
+    "ex": "https://example.test/vocab/"
+  },
+  "@id": "https://example.test/serialization-stream",
+  "tree:view": { "@id": "{{origin}}/root" },
+  "tree:member": {
+    "@id": "https://example.test/member/jsonld",
+    "ex:value": "json-ld"
+  }
+}

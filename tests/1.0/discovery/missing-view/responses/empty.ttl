@@ -1,0 +1,2 @@
+@prefix ex: <https://example.test/vocab/> .
+<> ex:note "No tree:view is present." .

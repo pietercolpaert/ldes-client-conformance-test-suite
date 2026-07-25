@@ -1,0 +1,4 @@
+[
+  { "phase": "initial", "path": "/immutable", "count": 1 },
+  { "phase": "repeat", "path": "/immutable", "count": 0 }
+]

@@ -1,0 +1,7 @@
+[
+  { "phase": "initial", "path": "/rdf-immutable", "count": 1 },
+  { "phase": "repeat", "path": "/rdf-immutable", "count": 0 },
+  { "phase": "initial", "path": "/header-immutable", "count": 1 },
+  { "phase": "repeat", "path": "/header-immutable", "count": 0 },
+  { "phase": "repeat", "path": "/mutable", "status": 304, "count": 1, "headers": { "if-none-match": "\"mutable-v1\"" } }
+]

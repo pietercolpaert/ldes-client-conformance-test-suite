@@ -1,0 +1,2 @@
+{"type":"context","eventStream":"https://example.test/context-stream","shapes":["https://example.test/vocab/ShapeA","https://example.test/vocab/ShapeB"],"viewDescriptions":["https://example.test/vocab/service"],"retentionPolicies":["https://example.test/vocab/direct-policy","https://example.test/vocab/service-policy"],"timestampPath":"https://example.test/vocab/created","versionTimestampPath":"https://example.test/vocab/modified","versionSequencePath":"https://example.test/vocab/version","pollingInterval":30,"datasetFile":"context.nq"}
+{"type":"run-end","status":"completed"}

@@ -1,0 +1,13 @@
+<https://example.test/context-stream> <https://w3id.org/tree#view> <{{origin}}/root> .
+<https://example.test/context-stream> <https://w3id.org/tree#shape> <https://example.test/vocab/ShapeA> .
+<https://example.test/context-stream> <https://w3id.org/tree#shape> <https://example.test/vocab/ShapeB> .
+<https://example.test/context-stream> <https://w3id.org/ldes#timestampPath> <https://example.test/vocab/created> .
+<https://example.test/context-stream> <https://w3id.org/ldes#versionTimestampPath> <https://example.test/vocab/modified> .
+<https://example.test/context-stream> <https://w3id.org/ldes#versionSequencePath> <https://example.test/vocab/version> .
+<https://example.test/context-stream> <https://w3id.org/ldes#pollingInterval> "30"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{origin}}/root> <https://w3id.org/tree#viewDescription> <https://example.test/vocab/service> .
+<{{origin}}/root> <https://w3id.org/ldes#retentionPolicy> <https://example.test/vocab/direct-policy> .
+<https://example.test/vocab/service> <https://w3id.org/ldes#retentionPolicy> <https://example.test/vocab/service-policy> .
+<https://example.test/vocab/service> <https://example.test/vocab/implementation> "fixture publishing service" .
+<https://example.test/vocab/direct-policy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.test/vocab/RetentionPolicy> .
+<https://example.test/vocab/service-policy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.test/vocab/RetentionPolicy> .

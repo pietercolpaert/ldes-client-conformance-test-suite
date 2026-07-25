@@ -1,0 +1,159 @@
+name: LDES client conformance reports
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  conformance:
+    name: Test ${{ matrix.adapter }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter:
+          - rdf-connect
+          - openldes-ldi
+          - europeana
+    steps:
+      - name: Check out the conformance suite
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and build the suite
+        run: |
+          npm ci
+          npm run build
+          node dist/cli.js validate --tests tests
+
+      - name: Check out rdf-connect/ldes-client
+        if: matrix.adapter == 'rdf-connect'
+        uses: actions/checkout@v4
+        with:
+          repository: rdf-connect/ldes-client
+          ref: 00b062d3c4e4c31d99ff38ce985df44c389e2952
+          path: .clients/rdf-connect
+
+      - name: Build rdf-connect/ldes-client
+        if: matrix.adapter == 'rdf-connect'
+        working-directory: .clients/rdf-connect
+        run: |
+          npm ci
+          npm run build
+
+      - name: Set up Java and Maven
+        if: matrix.adapter == 'openldes-ldi' || matrix.adapter == 'europeana'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Check out OpenLDES Linked Data Interactions
+        if: matrix.adapter == 'openldes-ldi'
+        uses: actions/checkout@v4
+        with:
+          repository: OpenLDES/Linked-Data-Interactions
+          ref: 52b1feb8ac8f0da77e9e353d4b1dac664857d612
+          path: .clients/openldes
+
+      - name: Build the OpenLDES adapter host
+        if: matrix.adapter == 'openldes-ldi'
+        continue-on-error: true
+        run: adapters/openldes-ldi/build.sh
+
+      - name: Check out europeana/rd-ldes-client
+        if: matrix.adapter == 'europeana'
+        uses: actions/checkout@v4
+        with:
+          repository: europeana/rd-ldes-client
+          ref: 878578e732f5c289facc74f90339ca09ad8f3f9e
+          path: .clients/europeana
+
+      - name: Build the Europeana adapter host
+        if: matrix.adapter == 'europeana'
+        continue-on-error: true
+        run: adapters/europeana/build.sh
+
+      - name: Run conformance tests
+        env:
+          LDES_CT_RDF_CONNECT_ROOT: ${{ github.workspace }}/.clients/rdf-connect
+          LDES_CT_OPENLDES_ROOT: ${{ github.workspace }}/.clients/openldes
+          LDES_CT_EUROPEANA_ROOT: ${{ github.workspace }}/.clients/europeana
+        run: >-
+          node dist/cli.js run
+          --adapter "${{ matrix.adapter }}"
+          --tests tests
+          --out "reports/${{ matrix.adapter }}"
+          --no-fail
+
+      - name: Upload machine-readable report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-${{ matrix.adapter }}
+          path: reports/${{ matrix.adapter }}
+          if-no-files-found: error
+
+  pages:
+    name: Publish conformance report
+    needs: conformance
+    if: always()
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the conformance suite
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and build the report generator
+        run: |
+          npm ci
+          npm run build
+
+      - name: Download client reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: conformance-*
+          path: reports
+
+      - name: Generate the LDES report site
+        run: node dist/cli.js site --reports reports --out site
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
