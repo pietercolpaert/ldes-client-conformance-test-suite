@@ -1,1 +1,1 @@
-<https://example.test/member/trig> <https://example.test/vocab/value> "trig" .
+<{{raw}}responses/root.ttl#member/trig> <{{raw}}responses/root.ttl#vocab/value> "trig" .

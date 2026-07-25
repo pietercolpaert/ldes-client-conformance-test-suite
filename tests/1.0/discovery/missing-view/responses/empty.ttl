@@ -1,2 +1,2 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 <> ex:note "No tree:view is present." .

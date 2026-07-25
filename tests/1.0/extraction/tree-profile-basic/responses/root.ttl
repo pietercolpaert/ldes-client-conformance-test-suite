@@ -1,0 +1,8 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#tree/member/basic> .
+
+<{{raw}}responses/root.ttl#tree/member/basic> a ex:ProfileMember;
+    ex:value "tree profile basic" .

@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-multiple-relations-and> a earl:TestCase;
+    dct:title "Ordered traversal handles multiple relation constraints";
+    dct:description "Multiple relations from one node are traversed without losing members covered by any reachable target.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-013>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

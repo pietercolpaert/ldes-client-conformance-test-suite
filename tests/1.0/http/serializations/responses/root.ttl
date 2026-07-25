@@ -1,5 +1,5 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/serialization-stream> tree:view <{{origin}}/root>;
-    tree:member <https://example.test/member/turtle> .
-<https://example.test/member/turtle> ex:value "turtle" .
+<{{raw}}responses/root.ttl#serialization-stream> tree:view <{{origin}}/root>;
+    tree:member <{{raw}}responses/root.ttl#member/turtle> .
+<{{raw}}responses/root.ttl#member/turtle> ex:value "turtle" .

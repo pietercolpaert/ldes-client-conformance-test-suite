@@ -1,2 +1,2 @@
-<https://example.test/member/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.test/vocab/Event> .
-<https://example.test/member/2> <https://example.test/vocab/value> "two" .
+<{{raw}}responses/root.ttl#member/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{{raw}}responses/root.ttl#vocab/Event> .
+<{{raw}}responses/root.ttl#member/2> <{{raw}}responses/root.ttl#vocab/value> "two" .

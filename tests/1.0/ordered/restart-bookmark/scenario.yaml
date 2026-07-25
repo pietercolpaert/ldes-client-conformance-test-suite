@@ -1,0 +1,22 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: run-1, phase: initial, mode: ordered }
+  - { id: run-2, phase: updated, mode: ordered }
+phases:
+  - id: initial
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle, etag: '"initial"' }
+              body: responses/initial.ttl
+  - id: updated
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle, etag: '"updated"' }
+              body: responses/updated.ttl

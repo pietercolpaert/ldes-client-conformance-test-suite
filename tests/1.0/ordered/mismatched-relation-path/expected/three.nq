@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#member/3> <{{raw}}responses/root.ttl#vocab/sequence> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/3> <{{raw}}responses/root.ttl#vocab/value> "three" .

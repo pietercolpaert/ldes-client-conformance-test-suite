@@ -1,0 +1,13 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:shape ex:TreeProfileShape;
+    tree:member <{{raw}}responses/root.ttl#tree/member/shaped> .
+
+ex:TreeProfileShape a sh:NodeShape;
+    sh:targetClass ex:ProfileMember .
+
+<{{raw}}responses/root.ttl#tree/member/shaped> a ex:ProfileMember;
+    ex:value "tree profile shaped" .

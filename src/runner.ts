@@ -16,6 +16,7 @@ import { FixtureServer } from "./server.js";
 import { writeCoverageReport } from "./coverage.js";
 import { parseNQuads, parseRdf } from "./rdf.js";
 import type { ExpectedEvent } from "./types.js";
+import { expandFixturePlaceholders } from "./fixture-iri.js";
 
 const SUITE_VERSION = "0.1.0";
 
@@ -64,7 +65,10 @@ export async function runSuite(options: RunOptions): Promise<TestResult[]> {
     }
   } else {
     for (const test of tests) {
-      const reason = inapplicableReason(test.group, probe.capabilities ?? options.adapter.declaration.capabilities);
+      const reason = inapplicableReason(
+        test,
+        probe.capabilities ?? options.adapter.declaration.capabilities,
+      );
       results.push(reason ? inapplicable(test, reason) : await runTest(options, test));
       await writeEvidence(options.outDir, results.at(-1)!);
     }
@@ -118,7 +122,7 @@ async function runTest(
       };
       events.push(...await options.adapter.run(input));
     }
-    return await evaluate(test, events, server.requests);
+    return await evaluate(test, events, server.requests, scenario);
   } catch (error) {
     return {
       test,
@@ -188,6 +192,7 @@ function summarize(
       group: result.test.group,
       requirement: result.test.requirement,
       requirements: result.test.requirements,
+      requiredCapabilities: result.test.requiredCapabilities,
       requirementLevel: result.test.requirementLevel,
       outcome: result.outcome,
       diagnostics: result.diagnostics,
@@ -197,9 +202,16 @@ function summarize(
 }
 
 function inapplicableReason(
-  group: string | undefined,
+  test: Awaited<ReturnType<typeof discoverTests>>[number],
   capabilities: Adapter["declaration"]["capabilities"],
 ): string | undefined {
+  const group = test.group;
+  if (
+    test.requiredCapabilities.includes("TreeProfileExtraction") &&
+    !capabilities.treeProfileExtraction
+  ) {
+    return "adapter does not declare TREE Profile extraction";
+  }
   if (group === "OrderedTraversal" && !capabilities.modes.includes("ordered")) {
     return "adapter does not declare ordered traversal";
   }
@@ -286,7 +298,11 @@ export async function validateFixtures(testsRoot: string): Promise<string[]> {
           if (!contentType || !isRdfMediaType(contentType)) continue;
           const body = (await readFile(resolveBodyPath(test.scenarioPath, response.body), "utf8"))
             .replaceAll("{{origin}}", "http://127.0.0.1:49152");
-          await parseRdf(body, contentType, `http://127.0.0.1:49152${route.path}`);
+          await parseRdf(
+            expandFixturePlaceholders(body, test.scenarioPath, "http://127.0.0.1:49152"),
+            contentType,
+            `http://127.0.0.1:49152${route.path}`,
+          );
         }
       }
     }
@@ -301,8 +317,7 @@ export async function validateFixtures(testsRoot: string): Promise<string[]> {
         "utf8",
       );
       parseNQuads(
-        dataset
-          .replaceAll("{{origin}}", "http://127.0.0.1:49152"),
+        expandFixturePlaceholders(dataset, test.scenarioPath, "http://127.0.0.1:49152"),
       );
     }
     messages.push(`${test.id}: ok`);

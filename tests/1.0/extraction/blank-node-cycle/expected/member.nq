@@ -1,0 +1,5 @@
+<{{raw}}responses/root.ttl#member/blank-cycle> <{{raw}}responses/root.ttl#vocab/detail> _:a .
+_:a <{{raw}}responses/root.ttl#vocab/level> "one" .
+_:a <{{raw}}responses/root.ttl#vocab/next> _:b .
+_:b <{{raw}}responses/root.ttl#vocab/level> "two" .
+_:b <{{raw}}responses/root.ttl#vocab/next> _:a .

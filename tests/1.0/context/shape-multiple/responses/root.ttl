@@ -1,0 +1,5 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#context-stream> tree:view <>;
+    tree:shape ex:ShapeA, ex:ShapeB, ex:ShapeC .

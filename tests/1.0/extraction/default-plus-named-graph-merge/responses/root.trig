@@ -1,0 +1,12 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/merged> .
+
+<{{raw}}responses/root.ttl#member/merged> a ex:Event;
+    ex:defaultValue "default" .
+
+<{{raw}}responses/root.ttl#member/merged> {
+  <{{raw}}responses/root.ttl#member/merged> ex:namedValue "named" .
+}

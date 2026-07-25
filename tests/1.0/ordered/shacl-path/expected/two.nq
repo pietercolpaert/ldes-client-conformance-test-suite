@@ -1,3 +1,3 @@
-<https://example.test/member/path-two> <https://example.test/vocab/metadata> _:a .
-<https://example.test/member/path-two> <https://example.test/vocab/value> "two" .
-_:a <https://example.test/vocab/sequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/path-two> <{{raw}}responses/root.ttl#vocab/metadata> _:a .
+<{{raw}}responses/root.ttl#member/path-two> <{{raw}}responses/root.ttl#vocab/value> "two" .
+_:a <{{raw}}responses/root.ttl#vocab/sequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .

@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-restart-bookmark> a earl:TestCase;
+    dct:title "Ordered traversal restart does not duplicate emitted members";
+    dct:description "A second ordered run with persistent state emits only newly discovered members.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-003>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:OrderedTraversal .

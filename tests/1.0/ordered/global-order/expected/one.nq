@@ -1,2 +1,2 @@
-<https://example.test/member/one> <https://example.test/vocab/sequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<https://example.test/member/one> <https://example.test/vocab/value> "one" .
+<{{raw}}responses/root.ttl#member/one> <{{raw}}responses/root.ttl#vocab/sequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/one> <{{raw}}responses/root.ttl#vocab/value> "one" .

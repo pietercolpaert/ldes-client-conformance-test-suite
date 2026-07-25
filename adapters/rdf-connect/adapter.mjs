@@ -59,9 +59,17 @@ if (operation === "probe") {
         type: "context",
         runId: input.runId,
         eventStream: client.streamId?.value,
+        rootNode: description.rootNode?.value,
+        shapes: description.shapes?.map((shape) => shape.value),
+        viewDescriptions: description.viewDescriptions?.map((viewDescription) => viewDescription.value),
+        retentionPolicies: description.retentionPolicies?.map((retentionPolicy) => retentionPolicy.value),
         timestampPath: description.timestampPath?.value,
+        sequencePath: description.sequencePath?.value,
         versionOfPath: description.versionOfPath?.value,
-        dataset: quadsToNQuads(description.shapeQuads ?? []),
+        versionTimestampPath: description.versionTimestampPath?.value,
+        versionSequencePath: description.versionSequencePath?.value,
+        pollingInterval: description.pollingInterval,
+        dataset: quadsToNQuads(description.contextQuads ?? description.shapeQuads ?? []),
         mediaType: "application/n-quads",
       });
     });

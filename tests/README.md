@@ -20,6 +20,12 @@ so those IRIs are dereferenceable once the site is published.
 
 ## Review checklist
 
+- Fixture RDF should use `{{raw}}responses/root.ttl#...` for stable synthetic
+  stream, member, and vocabulary IRIs. During validation and execution,
+  `{{raw}}` expands to the GitHub raw URL for that test directory, so failed
+  report IRIs resolve to the fixture source instead of to opaque example
+  domains. Forks can override the raw repository root with
+  `LDES_CT_RAW_REPOSITORY_ROOT`.
 - The test links to every stable requirement ID it materially discriminates
   and to the exact specification section.
 - The scenario isolates one reason to fail.

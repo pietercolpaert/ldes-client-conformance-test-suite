@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#context-publishing-service-direct> a earl:TestCase;
+    dct:title "Direct publishing-service context is preserved";
+    dct:description "Publishing-service triples present on the root representation remain available in the context dataset.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-008>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:ContextInformation .

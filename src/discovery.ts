@@ -48,6 +48,7 @@ async function walk(directory: string, tests: TestCase[]): Promise<void> {
 async function readManifest(manifestPath: string): Promise<Pick<
   TestCase,
   "iri" | "title" | "description" | "requirement" | "requirements" | "requirementLevel" | "group"
+  | "requiredCapabilities"
 >> {
   const source = await readFile(manifestPath, "utf8");
   const baseIRI = new URL(`file://${path.resolve(manifestPath)}`).toString();
@@ -69,6 +70,9 @@ async function readManifest(manifestPath: string): Promise<Pick<
   const requirements = objects(quads, test, `${DCT}isPartOf`)
     .map((term) => localName(term.value))
     .filter((value): value is string => Boolean(value));
+  const requiredCapabilities = objects(quads, test, `${CT}requiresCapability`)
+    .map((term) => localName(term.value) ?? term.value)
+    .filter((value): value is string => Boolean(value));
 
   return {
     iri: test.value,
@@ -78,6 +82,7 @@ async function readManifest(manifestPath: string): Promise<Pick<
     requirements,
     requirementLevel: localName(value(`${CT}requirementLevel`)) as TestCase["requirementLevel"],
     group: localName(value(`${CT}group`)),
+    requiredCapabilities,
   };
 }
 

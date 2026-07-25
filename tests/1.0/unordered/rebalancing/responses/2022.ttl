@@ -1,10 +1,10 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix ldes: <https://w3id.org/ldes#> .
 @prefix tree: <https://w3id.org/tree#> .
 
-<https://example.test/rebalanced-stream> a ldes:EventStream;
+<{{raw}}responses/root.ttl#rebalanced-stream> a ldes:EventStream;
     tree:view <../root>;
-    tree:member <https://example.test/member/old> .
+    tree:member <{{raw}}responses/root.ttl#member/old> .
 
-<https://example.test/member/old> a ex:Event;
+<{{raw}}responses/root.ttl#member/old> a ex:Event;
     ex:value "old" .

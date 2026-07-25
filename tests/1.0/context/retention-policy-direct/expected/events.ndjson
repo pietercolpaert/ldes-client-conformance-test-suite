@@ -1,0 +1,2 @@
+{"type":"context","retentionPolicies":["{{raw}}responses/root.ttl#vocab/direct-policy"]}
+{"type":"run-end","status":"completed"}

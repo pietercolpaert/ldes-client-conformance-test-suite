@@ -1,1 +1,1 @@
-<https://example.test/member/nq> <https://example.test/vocab/value> "n-quads" .
+<{{raw}}responses/root.ttl#member/nq> <{{raw}}responses/root.ttl#vocab/value> "n-quads" .

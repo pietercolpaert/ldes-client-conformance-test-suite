@@ -1,0 +1,4 @@
+{"type":"member","runId":"run-1","id":"{{raw}}responses/root.ttl#member/1","datasetFile":"one.nq"}
+{"type":"run-end","runId":"run-1","status":"completed"}
+{"type":"member","runId":"run-2","id":"{{raw}}responses/root.ttl#member/2","datasetFile":"two.nq"}
+{"type":"run-end","runId":"run-2","status":"completed"}

@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#context-shape-multiple> a earl:TestCase;
+    dct:title "Multiple advertised shapes are communicated";
+    dct:description "The client reports all shapes attached to the event stream.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-002>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:ContextInformation .

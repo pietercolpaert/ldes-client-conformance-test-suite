@@ -1,0 +1,9 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/blank-cycle> .
+
+<{{raw}}responses/root.ttl#member/blank-cycle> ex:detail _:a .
+_:a ex:level "one"; ex:next _:b .
+_:b ex:level "two"; ex:next _:a .

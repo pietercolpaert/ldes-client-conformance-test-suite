@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#tree/member/basic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{{raw}}responses/root.ttl#vocab/ProfileMember> .
+<{{raw}}responses/root.ttl#tree/member/basic> <{{raw}}responses/root.ttl#vocab/value> "tree profile basic" .

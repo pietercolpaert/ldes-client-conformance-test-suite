@@ -1,0 +1,4 @@
+<{{raw}}responses/root.ttl#member/blank-chain> <{{raw}}responses/root.ttl#vocab/detail> _:b1 .
+_:b1 <{{raw}}responses/root.ttl#vocab/level> "one" .
+_:b1 <{{raw}}responses/root.ttl#vocab/next> _:b2 .
+_:b2 <{{raw}}responses/root.ttl#vocab/level> "two" .

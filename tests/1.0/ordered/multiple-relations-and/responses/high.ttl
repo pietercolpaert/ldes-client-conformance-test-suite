@@ -1,0 +1,5 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:member <{{raw}}responses/root.ttl#member/3> .
+<{{raw}}responses/root.ttl#member/3> ex:sequence 3; ex:value "three" .

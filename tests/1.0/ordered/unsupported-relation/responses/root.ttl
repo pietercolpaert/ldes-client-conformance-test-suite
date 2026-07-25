@@ -1,0 +1,14 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:sequencePath ex:sequence;
+    tree:member <{{raw}}responses/root.ttl#member/1> .
+<> tree:relation [
+    a ex:UnknownRelation;
+    tree:path ex:sequence;
+    tree:value 2;
+    tree:node <unknown>
+] .
+<{{raw}}responses/root.ttl#member/1> ex:sequence 1; ex:value "one" .

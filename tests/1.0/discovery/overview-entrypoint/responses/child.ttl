@@ -1,4 +1,4 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix tree: <https://w3id.org/tree#> .
-<{{origin}}/overview> tree:member <https://example.test/member/overview> .
-<https://example.test/member/overview> a ex:Event; ex:value "overview" .
+<{{origin}}/overview> tree:member <{{raw}}responses/root.ttl#member/overview> .
+<{{raw}}responses/root.ttl#member/overview> a ex:Event; ex:value "overview" .

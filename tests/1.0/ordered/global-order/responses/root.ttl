@@ -1,15 +1,15 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix ldes: <https://w3id.org/ldes#> .
 @prefix tree: <https://w3id.org/tree#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://example.test/ordered-stream> tree:view <>;
+<{{raw}}responses/root.ttl#ordered-stream> tree:view <>;
     ldes:sequencePath ex:sequence;
     ldes:transactionFinalizedPath ex:done;
     tree:member
-        <https://example.test/member/three>,
-        <https://example.test/member/two-final>,
-        <https://example.test/member/two> .
+        <{{raw}}responses/root.ttl#member/three>,
+        <{{raw}}responses/root.ttl#member/two-final>,
+        <{{raw}}responses/root.ttl#member/two> .
 
 <> tree:relation [
     a tree:LessThanOrEqualToRelation;
@@ -18,6 +18,6 @@
     tree:node <earlier>
 ] .
 
-<https://example.test/member/three> ex:sequence 3; ex:value "three" .
-<https://example.test/member/two-final> ex:sequence 2; ex:done true; ex:value "two final" .
-<https://example.test/member/two> ex:sequence 2; ex:value "two" .
+<{{raw}}responses/root.ttl#member/three> ex:sequence 3; ex:value "three" .
+<{{raw}}responses/root.ttl#member/two-final> ex:sequence 2; ex:done true; ex:value "two final" .
+<{{raw}}responses/root.ttl#member/two> ex:sequence 2; ex:value "two" .

@@ -1,5 +1,5 @@
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/cache-stream> tree:view <> .
+<{{raw}}responses/root.ttl#cache-stream> tree:view <> .
 <> tree:relation
     [ tree:node <rdf-immutable> ],
     [ tree:node <header-immutable> ],

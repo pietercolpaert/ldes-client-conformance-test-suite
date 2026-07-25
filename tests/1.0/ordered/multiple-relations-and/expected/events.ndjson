@@ -1,0 +1,4 @@
+{"type":"member","id":"{{raw}}responses/root.ttl#member/1","datasetFile":"one.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/2","datasetFile":"two.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/3","datasetFile":"three.nq"}
+{"type":"run-end","status":"completed"}

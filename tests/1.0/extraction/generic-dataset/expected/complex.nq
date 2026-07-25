@@ -1,7 +1,7 @@
-<https://example.test/member/complex> <https://example.test/vocab/value> "default" .
-<https://example.test/member/complex> <https://example.test/vocab/detail> _:first .
-_:first <https://example.test/vocab/next> _:second .
-_:second <https://example.test/vocab/next> _:first .
-_:second <https://example.test/vocab/value> "nested" .
-<https://example.test/member/complex> <https://example.test/vocab/value> "named graph" <https://example.test/member/complex> .
-<https://example.test/payload-part> <https://example.test/vocab/value> "all quads in the member graph" <https://example.test/member/complex> .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/value> "default" .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/detail> _:first .
+_:first <{{raw}}responses/root.ttl#vocab/next> _:second .
+_:second <{{raw}}responses/root.ttl#vocab/next> _:first .
+_:second <{{raw}}responses/root.ttl#vocab/value> "nested" .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/value> "named graph" <{{raw}}responses/root.ttl#member/complex> .
+<{{raw}}responses/root.ttl#payload-part> <{{raw}}responses/root.ttl#vocab/value> "all quads in the member graph" <{{raw}}responses/root.ttl#member/complex> .

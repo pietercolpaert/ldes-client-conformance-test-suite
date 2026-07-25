@@ -1,0 +1,2 @@
+{"type":"context","timestampPath":"{{raw}}responses/root.ttl#vocab/created","versionTimestampPath":"{{raw}}responses/root.ttl#vocab/modified","versionSequencePath":"{{raw}}responses/root.ttl#vocab/version"}
+{"type":"run-end","status":"completed"}

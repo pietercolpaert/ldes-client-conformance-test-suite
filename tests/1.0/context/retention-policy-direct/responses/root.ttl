@@ -1,0 +1,7 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#context-stream> tree:view <> .
+<> ldes:retentionPolicy ex:direct-policy .
+ex:direct-policy a ex:RetentionPolicy .

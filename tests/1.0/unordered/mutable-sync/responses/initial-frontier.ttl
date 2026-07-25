@@ -1,5 +1,5 @@
 @prefix ldes: <https://w3id.org/ldes#> .
 @prefix tree: <https://w3id.org/tree#> .
 
-<https://example.test/mutable-stream> a ldes:EventStream;
+<{{raw}}responses/root.ttl#mutable-stream> a ldes:EventStream;
     tree:view <> .

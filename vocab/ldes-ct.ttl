@@ -30,9 +30,15 @@ ct:expected a rdf:Property;
 ct:evidence a rdf:Property;
     rdfs:label "evidence" .
 
+ct:requiresCapability a rdf:Property;
+    rdfs:label "requires adapter capability" .
+
 ct:Must a ct:RequirementLevel; rdfs:label "MUST" .
 ct:Should a ct:RequirementLevel; rdfs:label "SHOULD" .
 ct:May a ct:RequirementLevel; rdfs:label "MAY" .
+
+ct:TreeProfileExtraction a ct:AdapterCapability;
+    rdfs:label "TREE Profile extraction" .
 
 ct:UnorderedTraversal a ct:ComplianceGroup;
     rdfs:label "Unordered traversal" .

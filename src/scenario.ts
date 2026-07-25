@@ -43,6 +43,12 @@ function validateScenario(scenario: Scenario, filePath: string): void {
   if (!scenario.entrypoint?.startsWith("/")) {
     throw new Error(`${filePath}: entrypoint must be an absolute path`);
   }
+  if (
+    scenario.requestBudget !== undefined &&
+    (!Number.isInteger(scenario.requestBudget) || scenario.requestBudget < 1)
+  ) {
+    throw new Error(`${filePath}: requestBudget must be a positive integer`);
+  }
   for (const phase of getScenarioPhases(scenario)) {
     if (!phase.id) {
       throw new Error(`${filePath}: every phase needs an id`);

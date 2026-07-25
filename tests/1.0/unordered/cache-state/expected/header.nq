@@ -1,1 +1,1 @@
-<https://example.test/member/header-immutable> <https://example.test/vocab/value> "header immutable" .
+<{{raw}}responses/root.ttl#member/header-immutable> <{{raw}}responses/root.ttl#vocab/value> "header immutable" .

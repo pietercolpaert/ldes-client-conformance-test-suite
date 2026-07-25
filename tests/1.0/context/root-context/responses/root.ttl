@@ -1,7 +1,7 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix ldes: <https://w3id.org/ldes#> .
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/context-stream> tree:view <>;
+<{{raw}}responses/root.ttl#context-stream> tree:view <>;
     tree:shape ex:ShapeA, ex:ShapeB;
     ldes:timestampPath ex:created;
     ldes:versionTimestampPath ex:modified;

@@ -48,6 +48,7 @@ export function referenceAdapter(
       memberExtraction: true,
       context: true,
       persistentState: true,
+      treeProfileExtraction: true,
     },
   };
   return {

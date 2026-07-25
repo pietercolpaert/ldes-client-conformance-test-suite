@@ -8,6 +8,7 @@
     "version": { "const": 0 },
     "name": { "type": "string" },
     "entrypoint": { "type": "string", "pattern": "^/" },
+    "requestBudget": { "type": "integer", "minimum": 1 },
     "runs": {
       "type": "array",
       "items": {

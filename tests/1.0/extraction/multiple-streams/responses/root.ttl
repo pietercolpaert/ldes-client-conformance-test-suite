@@ -1,0 +1,10 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#selected-stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/selected> .
+<{{raw}}responses/root.ttl#other-stream> tree:view <other-root>;
+    tree:member <{{raw}}responses/root.ttl#member/other> .
+
+<{{raw}}responses/root.ttl#member/selected> ex:value "selected" .
+<{{raw}}responses/root.ttl#member/other> ex:value "other" .

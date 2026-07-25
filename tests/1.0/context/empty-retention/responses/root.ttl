@@ -1,5 +1,5 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix ldes: <https://w3id.org/ldes#> .
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/empty-retention-stream> tree:view <> .
+<{{raw}}responses/root.ttl#empty-retention-stream> tree:view <> .
 <> ldes:retentionPolicy ex:empty-policy .

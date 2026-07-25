@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#extraction-blank-node-chain> a earl:TestCase;
+    dct:title "Recursive blank-node member extraction";
+    dct:description "Blank nodes reachable from the member payload are included recursively.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-005>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:MemberExtraction .

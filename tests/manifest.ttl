@@ -9,19 +9,45 @@
     dct:conformsTo <https://w3id.org/ldes/specification>;
     mf:entries (
         <1.0#context-empty-retention>
+        <1.0#context-polling-interval>
+        <1.0#context-publishing-service-direct>
+        <1.0#context-publishing-service-view-description>
+        <1.0#context-retention-policy-direct>
+        <1.0#context-retention-policy-view-description>
+        <1.0#context-root-and-eventstream-iri>
         <1.0#context-root-context>
+        <1.0#context-shape-multiple>
+        <1.0#context-timestamp-version-paths>
         <1.0#discovery-ambiguous-view>
         <1.0#discovery-missing-view>
         <1.0#discovery-overview-entrypoint>
         <1.0#discovery-root-entrypoint>
+        <1.0#extraction-blank-node-chain>
+        <1.0#extraction-blank-node-cycle>
+        <1.0#extraction-default-graph-star-minimal>
+        <1.0#extraction-default-plus-named-graph-merge>
         <1.0#extraction-generic-dataset>
+        <1.0#extraction-multiple-streams>
+        <1.0#extraction-named-graph-only>
+        <1.0#extraction-tree-profile-basic>
+        <1.0#extraction-tree-profile-mixed-page>
+        <1.0#extraction-tree-profile-shape-targets>
         <1.0#http-gone-node>
         <1.0#http-retryable-statuses>
         <1.0#http-serializations>
         <1.0#http-terminal-error>
+        <1.0#ordered-equal-values-finalizer>
         <1.0#ordered-global-order>
+        <1.0#ordered-mismatched-relation-path>
         <1.0#ordered-missing-path>
+        <1.0#ordered-multiple-relations-and>
+        <1.0#ordered-relation-greater-than-or-equal>
+        <1.0#ordered-relation-greater-than>
+        <1.0#ordered-relation-less-than-or-equal>
+        <1.0#ordered-relation-less-than>
+        <1.0#ordered-restart-bookmark>
         <1.0#ordered-shacl-path>
+        <1.0#ordered-unsupported-relation>
         <1.0#unordered-cache-state>
         <1.0#unordered-mutable-sync>
         <1.0#unordered-rdf-immutable>
@@ -31,19 +57,45 @@
         <https://semiceu.github.io/LinkedDataEventStreams/releases/1.0.0/> .
 
 <1.0#context-empty-retention> a earl:TestCase .
+<1.0#context-polling-interval> a earl:TestCase .
+<1.0#context-publishing-service-direct> a earl:TestCase .
+<1.0#context-publishing-service-view-description> a earl:TestCase .
+<1.0#context-retention-policy-direct> a earl:TestCase .
+<1.0#context-retention-policy-view-description> a earl:TestCase .
+<1.0#context-root-and-eventstream-iri> a earl:TestCase .
 <1.0#context-root-context> a earl:TestCase .
+<1.0#context-shape-multiple> a earl:TestCase .
+<1.0#context-timestamp-version-paths> a earl:TestCase .
 <1.0#discovery-ambiguous-view> a earl:TestCase .
 <1.0#discovery-missing-view> a earl:TestCase .
 <1.0#discovery-overview-entrypoint> a earl:TestCase .
 <1.0#discovery-root-entrypoint> a earl:TestCase .
+<1.0#extraction-blank-node-chain> a earl:TestCase .
+<1.0#extraction-blank-node-cycle> a earl:TestCase .
+<1.0#extraction-default-graph-star-minimal> a earl:TestCase .
+<1.0#extraction-default-plus-named-graph-merge> a earl:TestCase .
 <1.0#extraction-generic-dataset> a earl:TestCase .
+<1.0#extraction-multiple-streams> a earl:TestCase .
+<1.0#extraction-named-graph-only> a earl:TestCase .
+<1.0#extraction-tree-profile-basic> a earl:TestCase .
+<1.0#extraction-tree-profile-mixed-page> a earl:TestCase .
+<1.0#extraction-tree-profile-shape-targets> a earl:TestCase .
 <1.0#http-gone-node> a earl:TestCase .
 <1.0#http-retryable-statuses> a earl:TestCase .
 <1.0#http-serializations> a earl:TestCase .
 <1.0#http-terminal-error> a earl:TestCase .
+<1.0#ordered-equal-values-finalizer> a earl:TestCase .
 <1.0#ordered-global-order> a earl:TestCase .
+<1.0#ordered-mismatched-relation-path> a earl:TestCase .
 <1.0#ordered-missing-path> a earl:TestCase .
+<1.0#ordered-multiple-relations-and> a earl:TestCase .
+<1.0#ordered-relation-greater-than-or-equal> a earl:TestCase .
+<1.0#ordered-relation-greater-than> a earl:TestCase .
+<1.0#ordered-relation-less-than-or-equal> a earl:TestCase .
+<1.0#ordered-relation-less-than> a earl:TestCase .
+<1.0#ordered-restart-bookmark> a earl:TestCase .
 <1.0#ordered-shacl-path> a earl:TestCase .
+<1.0#ordered-unsupported-relation> a earl:TestCase .
 <1.0#unordered-cache-state> a earl:TestCase .
 <1.0#unordered-mutable-sync> a earl:TestCase .
 <1.0#unordered-rdf-immutable> a earl:TestCase .

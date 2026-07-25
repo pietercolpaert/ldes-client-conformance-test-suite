@@ -1,0 +1,3 @@
+{"oneOf":[{"type":"member","id":"{{raw}}responses/root.ttl#member/1","datasetFile":"one.nq"},{"type":"error","kind":"client"}]}
+{"oneOf":[{"type":"member","id":"{{raw}}responses/root.ttl#member/2","datasetFile":"two.nq"},{"type":"run-end","status":"completed"}]}
+{"oneOf":[{"type":"run-end","status":"completed"},{"type":"error","kind":"client"}]}

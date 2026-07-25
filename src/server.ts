@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import type { Scenario, RequestLogEntry, ScenarioRoute } from "./types.js";
 import { getScenarioPhases, resolveBodyPath } from "./scenario.js";
+import { expandFixturePlaceholders } from "./fixture-iri.js";
 
 export class FixtureServer {
   private readonly server: Server;
@@ -96,7 +97,7 @@ export class FixtureServer {
     let body = "";
     if (selected.body) {
       body = await readFile(resolveBodyPath(this.scenarioPath, selected.body), "utf8");
-      body = body.replaceAll("{{origin}}", this.origin);
+      body = expandFixturePlaceholders(body, this.scenarioPath, this.origin);
     }
     response.writeHead(selected.status, headers);
     response.end(body);

@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-mismatched-relation-path> a earl:TestCase;
+    dct:title "Ordered traversal treats mismatched relation paths conservatively";
+    dct:description "A relation uses a path that differs from ldes:sequencePath; the client must not use it to skip reachable members.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-014>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

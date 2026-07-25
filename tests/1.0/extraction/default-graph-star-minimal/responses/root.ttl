@@ -1,0 +1,10 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/default> .
+
+<{{raw}}responses/root.ttl#member/default> a ex:Event;
+    ex:value "default graph" .
+
+<{{raw}}responses/root.ttl#unrelated> ex:value "must not be emitted" .

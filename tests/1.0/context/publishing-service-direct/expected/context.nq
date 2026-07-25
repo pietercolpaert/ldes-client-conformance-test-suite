@@ -1,0 +1,3 @@
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/tree#view> <{{origin}}/root> .
+<{{origin}}/root> <{{raw}}responses/root.ttl#vocab/publishingService> <{{raw}}responses/root.ttl#vocab/service> .
+<{{raw}}responses/root.ttl#vocab/service> <{{raw}}responses/root.ttl#vocab/implementation> "direct service" .

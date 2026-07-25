@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-relation-greater-than-or-equal> a earl:TestCase;
+    dct:title "Ordered traversal handles tree:GreaterThanOrEqualToRelation";
+    dct:description "An inclusive lower-bound relation points to a fragment with an equal ordering value.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-011>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

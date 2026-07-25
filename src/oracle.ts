@@ -7,13 +7,16 @@ import type {
   TestCase,
   TestResult,
   RequestLogEntry,
+  Scenario,
 } from "./types.js";
 import { datasetEquals } from "./rdf.js";
+import { expandFixturePlaceholders } from "./fixture-iri.js";
 
 export async function evaluate(
   test: TestCase,
   events: AdapterEvent[],
   requests: RequestLogEntry[],
+  scenario?: Scenario,
 ): Promise<TestResult> {
   const expected = await loadExpectedEvents(test.expectedPath);
   const diagnostics: string[] = [];
@@ -37,6 +40,7 @@ export async function evaluate(
   }
 
   await evaluateRequests(test, requests, diagnostics);
+  evaluateRequestBudget(scenario, requests, diagnostics);
 
   return {
     test,
@@ -45,6 +49,19 @@ export async function evaluate(
     requests,
     diagnostics,
   };
+}
+
+function evaluateRequestBudget(
+  scenario: Scenario | undefined,
+  requests: RequestLogEntry[],
+  diagnostics: string[],
+): void {
+  if (scenario?.requestBudget === undefined) return;
+  if (requests.length > scenario.requestBudget) {
+    diagnostics.push(
+      `request budget exceeded: expected at most ${scenario.requestBudget}, got ${requests.length}`,
+    );
+  }
 }
 
 async function compareExpectedEvent(
@@ -78,23 +95,26 @@ async function compareSingleExpectedEvent(
     diagnostics.push(`expected type ${wanted.type}, got ${actual.type}`);
     return diagnostics.map((message) => `event ${index}: ${message}`);
   }
-  if (wanted.runId && actual.runId !== wanted.runId) {
+  if (wanted.runId && actual.runId !== expandFixturePlaceholders(wanted.runId, test.scenarioPath)) {
     diagnostics.push(`expected runId ${wanted.runId}, got ${actual.runId}`);
   }
-  if (wanted.id && actual.id !== wanted.id) {
+  if (wanted.id && actual.id !== expandFixturePlaceholders(wanted.id, test.scenarioPath)) {
     diagnostics.push(`expected member ${wanted.id}, got ${actual.id ?? "<none>"}`);
   }
-  if (wanted.status && actual.status !== wanted.status) {
+  if (wanted.status && actual.status !== expandFixturePlaceholders(wanted.status, test.scenarioPath)) {
     diagnostics.push(`expected status ${wanted.status}, got ${actual.status ?? "<none>"}`);
   }
-  if (wanted.kind && actual.kind !== wanted.kind) {
+  if (wanted.kind && actual.kind !== expandFixturePlaceholders(wanted.kind, test.scenarioPath)) {
     diagnostics.push(`expected error kind ${wanted.kind}, got ${actual.kind ?? "<none>"}`);
   }
   for (const [key, value] of Object.entries(wanted)) {
     if (["type", "id", "runId", "status", "kind", "datasetFile", "oneOf"].includes(key)) {
       continue;
     }
-    if (!deepEqual(actual[key], value)) {
+    if (!deepEqual(
+      normalizeExpectedValue(actual[key], test),
+      normalizeExpectedValue(value, test),
+    )) {
       diagnostics.push(
         `expected ${key}=${JSON.stringify(value)}, got ${JSON.stringify(actual[key])}`,
       );
@@ -106,7 +126,7 @@ async function compareSingleExpectedEvent(
       diagnostics.push(`expected dataset, got none`);
     } else if (!datasetEquals(
       normalizeFixtureOrigin(actual.dataset),
-      normalizeFixtureOrigin(expectedDataset),
+      normalizeFixtureOrigin(expandFixturePlaceholders(expectedDataset, test.scenarioPath)),
     )) {
       diagnostics.push(`member dataset did not match ${wanted.datasetFile}`);
     }
@@ -198,6 +218,19 @@ function lowerCaseHeaders(
 
 function deepEqual(left: unknown, right: unknown): boolean {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function normalizeExpectedValue(value: unknown, test: TestCase): unknown {
+  if (typeof value === "string") {
+    return normalizeFixtureOrigin(expandFixturePlaceholders(value, test.scenarioPath));
+  }
+  if (Array.isArray(value)) return value.map((child) => normalizeExpectedValue(child, test));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [key, normalizeExpectedValue(child, test)]),
+    );
+  }
+  return value;
 }
 
 function range(minimum: number, maximum: number): string {

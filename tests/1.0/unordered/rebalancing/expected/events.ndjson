@@ -1,5 +1,5 @@
-{"type":"member","runId":"run-1","id":"https://example.test/member/old","datasetFile":"member-old.nq"}
+{"type":"member","runId":"run-1","id":"{{raw}}responses/root.ttl#member/old","datasetFile":"member-old.nq"}
 {"type":"run-end","runId":"run-1","status":"completed"}
-{"type":"member","runId":"run-2","id":"https://example.test/member/new","datasetFile":"member-new.nq"}
+{"type":"member","runId":"run-2","id":"{{raw}}responses/root.ttl#member/new","datasetFile":"member-new.nq"}
 {"type":"run-end","runId":"run-2","status":"completed"}
 {"type":"run-end","runId":"run-3","status":"completed"}

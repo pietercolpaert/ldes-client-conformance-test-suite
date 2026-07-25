@@ -1,2 +1,2 @@
-<https://example.test/member/old> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.test/vocab/Event> .
-<https://example.test/member/old> <https://example.test/vocab/value> "old" .
+<{{raw}}responses/root.ttl#member/old> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{{raw}}responses/root.ttl#vocab/Event> .
+<{{raw}}responses/root.ttl#member/old> <{{raw}}responses/root.ttl#vocab/value> "old" .

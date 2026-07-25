@@ -46,13 +46,13 @@ Every event contains `protocolVersion`, `type`, and `runId`.
 Member:
 
 ```json
-{"protocolVersion":0,"type":"member","runId":"run-2","id":"https://example.test/member/1","dataset":"<https://example.test/member/1> <https://example.test/value> \"one\" .\n","mediaType":"application/n-quads"}
+{"protocolVersion":0,"type":"member","runId":"run-2","id":"https://raw.githubusercontent.com/pietercolpaert/ldes-client-conformance-test-suite/main/tests/1.0/discovery/root-entrypoint/responses/root.ttl#member/1","dataset":"<https://raw.githubusercontent.com/pietercolpaert/ldes-client-conformance-test-suite/main/tests/1.0/discovery/root-entrypoint/responses/root.ttl#member/1> <https://raw.githubusercontent.com/pietercolpaert/ldes-client-conformance-test-suite/main/tests/1.0/discovery/root-entrypoint/responses/root.ttl#vocab/value> \"one\" .\n","mediaType":"application/n-quads"}
 ```
 
 Context:
 
 ```json
-{"protocolVersion":0,"type":"context","runId":"run-2","eventStream":"https://example.test/stream","rootNode":"http://127.0.0.1:49152/root","dataset":"...","mediaType":"application/n-quads"}
+{"protocolVersion":0,"type":"context","runId":"run-2","eventStream":"https://raw.githubusercontent.com/pietercolpaert/ldes-client-conformance-test-suite/main/tests/1.0/discovery/root-entrypoint/responses/root.ttl#stream","rootNode":"http://127.0.0.1:49152/root","dataset":"...","mediaType":"application/n-quads"}
 ```
 
 Statistics:

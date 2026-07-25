@@ -1,1 +1,1 @@
-<https://example.test/member/jsonld> <https://example.test/vocab/value> "json-ld" .
+<{{raw}}responses/root.ttl#member/jsonld> <{{raw}}responses/root.ttl#vocab/value> "json-ld" .

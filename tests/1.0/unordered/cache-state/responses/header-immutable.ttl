@@ -1,4 +1,4 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/cache-stream> tree:member <https://example.test/member/header-immutable> .
-<https://example.test/member/header-immutable> ex:value "header immutable" .
+<{{raw}}responses/root.ttl#cache-stream> tree:member <{{raw}}responses/root.ttl#member/header-immutable> .
+<{{raw}}responses/root.ttl#member/header-immutable> ex:value "header immutable" .

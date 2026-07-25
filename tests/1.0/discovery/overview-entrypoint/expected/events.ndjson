@@ -1,2 +1,2 @@
-{"type":"member","id":"https://example.test/member/overview","datasetFile":"member.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/overview","datasetFile":"member.nq"}
 {"type":"run-end","status":"completed"}

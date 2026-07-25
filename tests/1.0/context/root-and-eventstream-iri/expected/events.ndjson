@@ -1,0 +1,2 @@
+{"type":"context","eventStream":"{{raw}}responses/root.ttl#context-stream","rootNode":"{{origin}}/root"}
+{"type":"run-end","status":"completed"}

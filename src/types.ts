@@ -30,6 +30,7 @@ export interface Scenario {
   version: 0;
   name?: string;
   entrypoint: string;
+  requestBudget?: number;
   routes?: ScenarioRoute[];
   phases?: ScenarioPhase[];
   runs?: ScenarioRun[];
@@ -111,6 +112,7 @@ export interface TestCase {
   requirements: string[];
   requirementLevel?: "Must" | "Should" | "May";
   group?: string;
+  requiredCapabilities: string[];
 }
 
 export interface TestResult {
@@ -150,6 +152,7 @@ export interface AdapterDeclaration {
     context: boolean;
     persistentState: boolean;
     serviceRuntime?: boolean;
+    treeProfileExtraction?: boolean;
   };
   environment?: Record<string, string>;
 }
@@ -198,6 +201,7 @@ export interface SuiteSummary {
     group?: string;
     requirement?: string;
     requirements: string[];
+    requiredCapabilities: string[];
     requirementLevel?: string;
     outcome: EarlOutcome;
     diagnostics: string[];

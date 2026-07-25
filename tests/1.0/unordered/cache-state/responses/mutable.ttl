@@ -1,4 +1,4 @@
-@prefix ex: <https://example.test/vocab/> .
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
 @prefix tree: <https://w3id.org/tree#> .
-<https://example.test/cache-stream> tree:member <https://example.test/member/mutable> .
-<https://example.test/member/mutable> ex:value "mutable" .
+<{{raw}}responses/root.ttl#cache-stream> tree:member <{{raw}}responses/root.ttl#member/mutable> .
+<{{raw}}responses/root.ttl#member/mutable> ex:value "mutable" .

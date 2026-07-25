@@ -1,0 +1,2 @@
+{"type":"context","shapes":["{{raw}}responses/root.ttl#vocab/ShapeA","{{raw}}responses/root.ttl#vocab/ShapeB","{{raw}}responses/root.ttl#vocab/ShapeC"]}
+{"type":"run-end","status":"completed"}

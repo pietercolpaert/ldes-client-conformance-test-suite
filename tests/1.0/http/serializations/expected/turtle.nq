@@ -1,1 +1,1 @@
-<https://example.test/member/turtle> <https://example.test/vocab/value> "turtle" .
+<{{raw}}responses/root.ttl#member/turtle> <{{raw}}responses/root.ttl#vocab/value> "turtle" .
