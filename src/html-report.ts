@@ -134,7 +134,7 @@ function renderIndex(summaries: SuiteSummary[]): string {
     </section>
     <aside class="method">
       <h2>How to read this report</h2>
-      <p><strong>Failed</strong> means the client’s observable output did not match the normative test oracle. <strong>Could not determine</strong> means the adapter or required runtime could not complete the observation, so it is not a client failure and provides no evidence of conformance. <strong>Inapplicable</strong> is also not a pass. This report does not award a single “fully conformant” badge; group claims and advisory failures must be read together. EARL and JSON evidence are retained for independent processing.</p>
+      <p><strong>Failed</strong> means the client’s observable output did not match a required normative test oracle. <strong>Advisory failed</strong> means a SHOULD-level expectation was not met; it is reported as evidence but does not fail the main compliance group. <strong>Could not determine</strong> means the adapter or required runtime could not complete the observation, so it is not a client failure and provides no evidence of conformance. <strong>Inapplicable</strong> is also not a pass. This report does not award a single “fully conformant” badge; group claims and advisory failures must be read together. EARL and JSON evidence are retained for independent processing.</p>
     </aside>
   </main>
   <footer>
@@ -196,16 +196,24 @@ function renderClient(summary: SuiteSummary): string {
   const availability = probe.available
     ? '<span class="availability availability--ready">Adapter available</span>'
     : `<span class="availability availability--missing">Adapter unavailable: ${escapeHtml(probe.reason ?? "unknown reason")}</span>`;
-  const determined = (summary.counts.passed ?? 0) + (summary.counts.failed ?? 0);
-  const score = determined
-    ? `<strong>${summary.counts.passed ?? 0}</strong><span>/ ${determined} determined tests passed</span>`
+  const mandatory = summary.tests.filter((test) => test.requirementLevel === "Must");
+  const mandatoryPassed = mandatory.filter((test) => test.outcome === "passed").length;
+  const mandatoryDetermined = mandatory.filter((test) =>
+    test.outcome === "passed" || test.outcome === "failed"
+  ).length;
+  const advisoryFailed = summary.tests.filter((test) =>
+    test.requirementLevel === "Should" && test.outcome === "failed"
+  ).length;
+  const requiredFailed = mandatory.filter((test) => test.outcome === "failed").length;
+  const score = mandatoryDetermined
+    ? `<strong>${mandatoryPassed}</strong><span>/ ${mandatoryDetermined} required determined tests passed</span>`
     : '<strong class="score__unknown">Not run</strong><span>no conformance determination</span>';
   const tests = summary.tests
     .map(
       (test) => {
         const iri = testIri(test);
         return `<tr>
-        <td><span class="outcome outcome--${test.outcome}">${label(test.outcome)}</span></td>
+        <td><span class="outcome outcome--${outcomeClass(test)}">${testLabel(test)}</span></td>
         <td><strong><a href="#${escapeHtml(fragmentId(iri))}">${escapeHtml(test.title)}</a></strong><span class="test-id">${escapeHtml(test.id)}</span></td>
         <td>${escapeHtml(humanize(test.group) ?? "—")}</td>
         <td>${escapeHtml(test.requirements?.join(", ") || test.requirement || "—")} ${test.requirementLevel ? `<span class="level">${escapeHtml(test.requirementLevel.toUpperCase())}</span>` : ""}</td>
@@ -223,7 +231,7 @@ function renderClient(summary: SuiteSummary): string {
         <h2><a href="${escapeHtml(adapter.client.homepage)}">${escapeHtml(adapter.client.name)}</a></h2>
         <p class="revision">revision <code>${escapeHtml(probe.clientRevision ?? adapter.client.revision)}</code>${probe.clientVersion ? ` · version ${escapeHtml(probe.clientVersion)}` : ""}</p>
       </div>
-      <div class="score" aria-label="${determined ? `${summary.counts.passed ?? 0} of ${determined} determined tests passed` : "No conformance determination"}">
+      <div class="score" aria-label="${mandatoryDetermined ? `${mandatoryPassed} of ${mandatoryDetermined} required determined tests passed` : "No conformance determination"}">
         ${score}
       </div>
     </div>
@@ -231,7 +239,8 @@ function renderClient(summary: SuiteSummary): string {
     ${renderGroupClaims(summary)}
     <div class="counts">
       ${badge("passed", String(summary.counts.passed ?? 0))}
-      ${badge("failed", String(summary.counts.failed ?? 0))}
+      ${badge("failed", `${requiredFailed} required failed`)}
+      ${advisoryFailed ? badge("advisory", `${advisoryFailed} advisory failed`) : ""}
       ${badge("cantTell", String(summary.counts.cantTell ?? 0))}
       <a class="machine-link" href="${resultBase}/earl.ttl">EARL Turtle</a>
       <a class="machine-link" href="${resultBase}/summary.json">Summary JSON</a>
@@ -244,6 +253,18 @@ function renderClient(summary: SuiteSummary): string {
       </table>
     </div>
   </article>`;
+}
+
+function outcomeClass(test: SuiteSummary["tests"][number]): string {
+  return test.outcome === "failed" && test.requirementLevel === "Should"
+    ? "advisory"
+    : test.outcome;
+}
+
+function testLabel(test: SuiteSummary["tests"][number]): string {
+  return test.outcome === "failed" && test.requirementLevel === "Should"
+    ? "Advisory failed"
+    : label(test.outcome);
 }
 
 function fragmentId(iri: string): string {
@@ -344,6 +365,7 @@ main { padding-block: 2rem 4rem; }
 .dot { width: .62rem; height: .62rem; border-radius: 50%; background: var(--quiet); }
 .badge--passed .dot { background: var(--pass); }
 .badge--failed .dot { background: var(--fail); }
+.badge--advisory .dot { background: var(--sec); }
 .badge--cantTell .dot { background: var(--unknown); }
 .section-heading { margin: 0 0 1rem; }
 .section-heading h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.3rem); }
@@ -384,6 +406,7 @@ th { color: var(--muted); background: #f6f5ff; font-size: .69rem; letter-spacing
 .outcome { display: inline-block; min-width: 5.5rem; padding: .24rem .4rem; border-radius: .3rem; color: white; text-align: center; font-size: .67rem; font-weight: 800; }
 .outcome--passed { background: var(--pass); }
 .outcome--failed { background: var(--fail); }
+.outcome--advisory { background: var(--sec); }
 .outcome--cantTell { background: var(--unknown); }
 .outcome--inapplicable, .outcome--untested { background: var(--quiet); }
 .test-id { display: block; margin-top: .22rem; color: var(--muted); font-family: ui-monospace, monospace; font-size: .7rem; }

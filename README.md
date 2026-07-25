@@ -48,10 +48,12 @@ unordered traversal group and the ordered-specific tests. A client that only
 declares unordered traversal is not penalized for ordered-specific tests; those
 assertions are `earl:inapplicable`.
 
-`MUST` failures affect the relevant group. `SHOULD` failures are reported as
-advisory assertions. Optional capabilities, such as specialized TREE profile
-processing or deeper retention-policy interpretation, produce named subclaims
-instead of silently changing the baseline score.
+`MUST` failures affect the relevant group and CI exit status. `SHOULD`
+failures are reported as advisory assertions; they remain visible in EARL,
+JSON, and HTML evidence but do not make the main compliance group fail.
+Optional capabilities, such as specialized TREE profile processing or deeper
+retention-policy interpretation, produce named subclaims instead of silently
+changing the baseline score.
 
 An unsupported mode is `earl:inapplicable`, an unimplemented test is
 `earl:untested`, and an inconclusive execution is `earl:cantTell`. None of
@@ -159,11 +161,11 @@ The Java host build entry points are
 The report is the source of truth; the following checkpoint records why no
 production client is described as fully conformant:
 
-| Client | Passed | Failed | Inapplicable | Group result |
-| --- | ---: | ---: | ---: | --- |
-| rdf-connect | 6 | 12 | 0 | All four groups failed |
-| OpenLDES LDI | 4 | 9 | 5 | Unordered and extraction failed; ordered and context inapplicable |
-| Europeana | 4 | 12 | 2 | Unordered, extraction, and ordered failed; context inapplicable |
+| Client | Passed | Required failed | Advisory failed | Inapplicable | Group result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| rdf-connect | 8 | 8 | 2 | 0 | All four groups failed on required tests |
+| OpenLDES LDI | 5 | 6 | 2 | 5 | Unordered and extraction failed on required tests; ordered and context inapplicable |
+| Europeana | 4 | 10 | 2 | 2 | Unordered, extraction, and ordered failed on required tests; context inapplicable |
 
 In particular, rdf-connect fails the RDF-only `ldes:immutable` test by
 refetching the node, does not communicate `ldes:pollingInterval`, and rejects

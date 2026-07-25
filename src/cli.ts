@@ -38,7 +38,12 @@ async function main(): Promise<void> {
           console.log(`  ${diagnostic}`);
         }
       }
-      hasNonPass ||= results.some((result) => result.outcome !== "passed");
+      hasNonPass ||= results.some(
+        (result) =>
+          result.test.requirementLevel === "Must" &&
+          result.outcome !== "passed" &&
+          result.outcome !== "inapplicable",
+      );
     }
     if (hasNonPass && !args.includes("--no-fail")) {
       process.exitCode = 1;

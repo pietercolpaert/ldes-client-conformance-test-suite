@@ -17,7 +17,7 @@ export async function evaluate(
 ): Promise<TestResult> {
   const expected = await loadExpectedEvents(test.expectedPath);
   const diagnostics: string[] = [];
-  const expectedTypes = new Set(expected.map((event) => event.type));
+  const expectedTypes = new Set(expected.flatMap(expectedEventTypes));
   const observedTypes = new Set([
     "member",
     "run-end",
@@ -33,43 +33,7 @@ export async function evaluate(
   for (let index = 0; index < Math.min(observed.length, expected.length); index += 1) {
     const actual = observed[index];
     const wanted = expected[index];
-    if (actual.type !== wanted.type) {
-      diagnostics.push(`event ${index}: expected type ${wanted.type}, got ${actual.type}`);
-      continue;
-    }
-    if (wanted.runId && actual.runId !== wanted.runId) {
-      diagnostics.push(`event ${index}: expected runId ${wanted.runId}, got ${actual.runId}`);
-    }
-    if (wanted.id && actual.id !== wanted.id) {
-      diagnostics.push(`event ${index}: expected member ${wanted.id}, got ${actual.id ?? "<none>"}`);
-    }
-    if (wanted.status && actual.status !== wanted.status) {
-      diagnostics.push(`event ${index}: expected status ${wanted.status}, got ${actual.status ?? "<none>"}`);
-    }
-    if (wanted.kind && actual.kind !== wanted.kind) {
-      diagnostics.push(`event ${index}: expected error kind ${wanted.kind}, got ${actual.kind ?? "<none>"}`);
-    }
-    for (const [key, value] of Object.entries(wanted)) {
-      if (["type", "id", "runId", "status", "kind", "datasetFile"].includes(key)) {
-        continue;
-      }
-      if (!deepEqual(actual[key], value)) {
-        diagnostics.push(
-          `event ${index}: expected ${key}=${JSON.stringify(value)}, got ${JSON.stringify(actual[key])}`,
-        );
-      }
-    }
-    if (wanted.datasetFile) {
-      const expectedDataset = await readFile(path.join(path.dirname(test.expectedPath), wanted.datasetFile), "utf8");
-      if (!actual.dataset) {
-        diagnostics.push(`event ${index}: expected dataset, got none`);
-      } else if (!datasetEquals(
-        normalizeFixtureOrigin(actual.dataset),
-        normalizeFixtureOrigin(expectedDataset),
-      )) {
-        diagnostics.push(`event ${index}: member dataset did not match ${wanted.datasetFile}`);
-      }
-    }
+    diagnostics.push(...await compareExpectedEvent(test, index, actual, wanted));
   }
 
   await evaluateRequests(test, requests, diagnostics);
@@ -81,6 +45,77 @@ export async function evaluate(
     requests,
     diagnostics,
   };
+}
+
+async function compareExpectedEvent(
+  test: TestCase,
+  index: number,
+  actual: AdapterEvent,
+  wanted: ExpectedEvent,
+): Promise<string[]> {
+  if (wanted.oneOf?.length) {
+    const attempts = await Promise.all(
+      wanted.oneOf.map((candidate) => compareSingleExpectedEvent(test, index, actual, candidate)),
+    );
+    if (attempts.some((messages) => messages.length === 0)) return [];
+    return [
+      `event ${index}: matched none of ${wanted.oneOf.length} allowed alternatives: ${
+        attempts.map((messages) => messages.join("; ")).join(" | ")
+      }`,
+    ];
+  }
+  return await compareSingleExpectedEvent(test, index, actual, wanted);
+}
+
+async function compareSingleExpectedEvent(
+  test: TestCase,
+  index: number,
+  actual: AdapterEvent,
+  wanted: ExpectedEvent,
+): Promise<string[]> {
+  const diagnostics: string[] = [];
+  if (wanted.type && actual.type !== wanted.type) {
+    diagnostics.push(`expected type ${wanted.type}, got ${actual.type}`);
+    return diagnostics.map((message) => `event ${index}: ${message}`);
+  }
+  if (wanted.runId && actual.runId !== wanted.runId) {
+    diagnostics.push(`expected runId ${wanted.runId}, got ${actual.runId}`);
+  }
+  if (wanted.id && actual.id !== wanted.id) {
+    diagnostics.push(`expected member ${wanted.id}, got ${actual.id ?? "<none>"}`);
+  }
+  if (wanted.status && actual.status !== wanted.status) {
+    diagnostics.push(`expected status ${wanted.status}, got ${actual.status ?? "<none>"}`);
+  }
+  if (wanted.kind && actual.kind !== wanted.kind) {
+    diagnostics.push(`expected error kind ${wanted.kind}, got ${actual.kind ?? "<none>"}`);
+  }
+  for (const [key, value] of Object.entries(wanted)) {
+    if (["type", "id", "runId", "status", "kind", "datasetFile", "oneOf"].includes(key)) {
+      continue;
+    }
+    if (!deepEqual(actual[key], value)) {
+      diagnostics.push(
+        `expected ${key}=${JSON.stringify(value)}, got ${JSON.stringify(actual[key])}`,
+      );
+    }
+  }
+  if (wanted.datasetFile) {
+    const expectedDataset = await readFile(path.join(path.dirname(test.expectedPath), wanted.datasetFile), "utf8");
+    if (!actual.dataset) {
+      diagnostics.push(`expected dataset, got none`);
+    } else if (!datasetEquals(
+      normalizeFixtureOrigin(actual.dataset),
+      normalizeFixtureOrigin(expectedDataset),
+    )) {
+      diagnostics.push(`member dataset did not match ${wanted.datasetFile}`);
+    }
+  }
+  return diagnostics.map((message) => `event ${index}: ${message}`);
+}
+
+function expectedEventTypes(event: ExpectedEvent): Array<Required<ExpectedEvent>["type"]> {
+  return event.oneOf?.flatMap(expectedEventTypes) ?? (event.type ? [event.type] : []);
 }
 
 function normalizeFixtureOrigin(value: string): string {

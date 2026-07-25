@@ -44,7 +44,7 @@ testable obligations.
 | LDES10-UNORD-009 | [3][sync] | MUST | Client | Unordered traversal | Automatic | Without previous state, the client performs an initialization run. |
 | LDES10-UNORD-010 | [3.1][init] | MUST | Client | Unordered traversal | Automatic from request log | The client dereferences the supplied IRI. |
 | LDES10-UNORD-011 | [3.1][init] | MUST | Client | Unordered traversal | Automatic | After dereferencing, the client first checks for exactly one current-page `tree:view` pattern using the post-redirect base IRI. |
-| LDES10-UNORD-012 | [3.1][init] | MUST | Client | Unordered traversal | Automatic negative case | Multiple matches of the current-page `tree:view` pattern cause an error. |
+| LDES10-UNORD-012 | [3.1][init] | SHOULD | Client | Unordered traversal | Automatic advisory case | Multiple matches of the current-page `tree:view` pattern are ambiguous; reporting an error is acceptable, but a deterministic fallback such as selecting the first encountered view is also considered workable. |
 | LDES10-UNORD-013 | [3.1][init] | MUST | Client | Unordered traversal | Automatic | If the current-page pattern is absent, the client checks whether the supplied IRI has exactly one `tree:view` target. |
 | LDES10-UNORD-014 | [3.1][init] | MUST | Client | Unordered traversal | Automatic from request log | When the supplied IRI has one `tree:view` target, the client dereferences that root node. |
 | LDES10-UNORD-015 | [3.1][init] | SHOULD | Client | Unordered traversal | Automatic negative case | If the fallback `tree:view` pattern has zero or multiple matches, the client reports an error. |

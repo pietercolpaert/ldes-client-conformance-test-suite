@@ -76,12 +76,13 @@ export interface ParsedPage {
 }
 
 export interface ExpectedEvent {
-  type: "member" | "run-end" | "error" | "context" | "statistics";
+  type?: "member" | "run-end" | "error" | "context" | "statistics";
   id?: string;
   runId?: string;
   status?: string;
   kind?: string;
   datasetFile?: string;
+  oneOf?: ExpectedEvent[];
   [key: string]: unknown;
 }
 
