@@ -24,7 +24,7 @@ if (operation === "probe") {
       capabilities: {
         modes: ["unordered"],
         memberExtraction: true,
-        context: false,
+        context: true,
         persistentState: true,
       },
       reason: available

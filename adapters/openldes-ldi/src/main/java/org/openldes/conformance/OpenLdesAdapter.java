@@ -2,6 +2,9 @@ package org.openldes.conformance;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
+import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
+import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
@@ -73,6 +76,7 @@ public final class OpenLdesAdapter {
                             Thread.currentThread().interrupt();
                         }
                     });
+            emitContext(protocol, runId, input, requestExecutor);
             MemberSupplier supplier = new MemberSupplierImpl(processor, true);
             supplier.init();
             requestExecutor.beginTraversal();
@@ -82,7 +86,7 @@ public final class OpenLdesAdapter {
                     SuppliedMember member = supplier.get();
                     emitted++;
                     StringWriter dataset = new StringWriter();
-                    RDFDataMgr.write(dataset, member.getModel(), Lang.NTRIPLES);
+                    RDFDataMgr.write(dataset, member.getDataset(), Lang.NQUADS);
                     emit(protocol, event(runId, "member",
                             "id", member.getId(),
                             "dataset", dataset.toString(),
@@ -103,6 +107,37 @@ public final class OpenLdesAdapter {
             emit(protocol, event(runId, "error",
                     "kind", "client",
                     "message", describe(error)));
+        }
+    }
+
+    private static void emitContext(
+            PrintStream protocol,
+            String runId,
+            JsonNode input,
+            RequestExecutor requestExecutor) throws Exception {
+        EventStreamProperties properties = new EventStreamPropertiesFetcher(requestExecutor)
+                .fetchEventStreamProperties(new PropertiesRequest(input.path("entrypoint").asText(), Lang.TURTLE));
+        StringWriter dataset = new StringWriter();
+        RDFDataMgr.write(dataset, properties.getContextDataset(), Lang.NQUADS);
+        Map<String, Object> context = event(runId, "context",
+                "eventStream", properties.getUri(),
+                "rootNode", properties.getRootNode(),
+                "shapes", properties.getShaclShapeUris(),
+                "viewDescriptions", properties.getViewDescriptions(),
+                "retentionPolicies", properties.getRetentionPolicies(),
+                "dataset", dataset.toString(),
+                "mediaType", "application/n-quads");
+        putIfPresent(context, "timestampPath", properties.getTimestampPath());
+        putIfPresent(context, "versionOfPath", properties.getVersionOfPath());
+        putIfPresent(context, "versionTimestampPath", properties.getVersionTimestampPath());
+        putIfPresent(context, "versionSequencePath", properties.getVersionSequencePath());
+        putIfPresent(context, "pollingInterval", properties.getPollingInterval());
+        emit(protocol, context);
+    }
+
+    private static void putIfPresent(Map<String, Object> event, String key, Object value) {
+        if (value != null) {
+            event.put(key, value);
         }
     }
 

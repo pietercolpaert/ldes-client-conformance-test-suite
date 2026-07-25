@@ -17,6 +17,11 @@
       <version>3.1.1</version>
     </dependency>
     <dependency>
+      <groupId>org.openldes.client</groupId>
+      <artifactId>event-stream-properties-fetcher</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.18.3</version>
