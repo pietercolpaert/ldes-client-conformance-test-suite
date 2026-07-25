@@ -1,0 +1,4 @@
+<{{raw}}responses/root.ttl#member/open> <{{raw}}responses/root.ttl#vocab/sequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/open> <{{raw}}responses/root.ttl#vocab/transaction> "txn-1" .
+<{{raw}}responses/root.ttl#member/open> <{{raw}}responses/root.ttl#vocab/state> "open" .
+<{{raw}}responses/root.ttl#member/open> <{{raw}}responses/root.ttl#vocab/value> "open" .

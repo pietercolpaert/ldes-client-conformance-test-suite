@@ -1,0 +1,14 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-timestamp-only> a earl:TestCase;
+    dct:title "Ordered traversal supports ldes:timestampPath without ldes:sequencePath";
+    dct:description "Ordered mode is valid when only ldes:timestampPath is present; members must be emitted chronologically.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-001>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-003>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-004>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

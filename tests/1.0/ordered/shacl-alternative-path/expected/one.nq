@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#member/one> <{{raw}}responses/root.ttl#vocab/fallbackSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/one> <{{raw}}responses/root.ttl#vocab/value> "one" .

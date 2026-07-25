@@ -1,0 +1,15 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:sequencePath ex:sequence;
+    ldes:transactionPath ex:transaction;
+    ldes:transactionFinalizedPath ex:state;
+    ldes:transactionFinalizedObject "closed";
+    tree:member
+        <{{raw}}responses/root.ttl#member/final>,
+        <{{raw}}responses/root.ttl#member/open> .
+
+<{{raw}}responses/root.ttl#member/final> ex:sequence 1; ex:transaction "txn-1"; ex:state "closed"; ex:value "final" .
+<{{raw}}responses/root.ttl#member/open> ex:sequence 1; ex:transaction "txn-1"; ex:state "open"; ex:value "open" .

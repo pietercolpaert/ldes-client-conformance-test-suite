@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-transaction-finalized-object> a earl:TestCase;
+    dct:title "Ordered traversal honors ldes:transactionFinalizedObject";
+    dct:description "A finalizing member with a custom finalized object must be emitted last among equal-order transaction members.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-015>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-016>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

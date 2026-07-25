@@ -47,6 +47,10 @@
         <1.0#ordered-relation-less-than>
         <1.0#ordered-restart-bookmark>
         <1.0#ordered-shacl-path>
+        <1.0#ordered-shacl-alternative-path>
+        <1.0#ordered-timestamp-only>
+        <1.0#ordered-timestamp-sequence-tie-break>
+        <1.0#ordered-transaction-finalized-object>
         <1.0#ordered-unsupported-relation>
         <1.0#unordered-cache-state>
         <1.0#unordered-mutable-sync>
@@ -95,6 +99,10 @@
 <1.0#ordered-relation-less-than> a earl:TestCase .
 <1.0#ordered-restart-bookmark> a earl:TestCase .
 <1.0#ordered-shacl-path> a earl:TestCase .
+<1.0#ordered-shacl-alternative-path> a earl:TestCase .
+<1.0#ordered-timestamp-only> a earl:TestCase .
+<1.0#ordered-timestamp-sequence-tie-break> a earl:TestCase .
+<1.0#ordered-transaction-finalized-object> a earl:TestCase .
 <1.0#ordered-unsupported-relation> a earl:TestCase .
 <1.0#unordered-cache-state> a earl:TestCase .
 <1.0#unordered-mutable-sync> a earl:TestCase .

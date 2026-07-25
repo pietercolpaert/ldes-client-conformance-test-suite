@@ -1,0 +1,13 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:timestampPath ex:time;
+    tree:member
+        <{{raw}}responses/root.ttl#member/late>,
+        <{{raw}}responses/root.ttl#member/early> .
+
+<{{raw}}responses/root.ttl#member/late> ex:time "2026-01-01T00:00:02Z"^^xsd:dateTime; ex:value "late" .
+<{{raw}}responses/root.ttl#member/early> ex:time "2026-01-01T00:00:01Z"^^xsd:dateTime; ex:value "early" .
