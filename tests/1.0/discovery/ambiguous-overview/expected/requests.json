@@ -1,0 +1,5 @@
+[
+  { "path": "/overview", "status": 200, "count": 1 },
+  { "path": "/root-a", "count": 0 },
+  { "path": "/root-b", "count": 0 }
+]

@@ -56,6 +56,12 @@ function validateScenario(scenario: Scenario, filePath: string): void {
     ) {
       throw new Error(`${filePath}: run concurrency must be a positive integer`);
     }
+    if (
+      run.followForMs !== undefined &&
+      (!Number.isInteger(run.followForMs) || run.followForMs < 1)
+    ) {
+      throw new Error(`${filePath}: run followForMs must be a positive integer`);
+    }
   }
   for (const phase of getScenarioPhases(scenario)) {
     if (!phase.id) {

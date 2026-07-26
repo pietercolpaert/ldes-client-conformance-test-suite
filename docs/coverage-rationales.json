@@ -7,10 +7,6 @@
     "classification": "optional",
     "rationale": "Modes beyond unordered and ordered ascending are explicitly extension space."
   },
-  "LDES10-UNORD-005": {
-    "classification": "deferred",
-    "rationale": "The finite-run adapter contract can observe pollingInterval extraction but cannot yet observe autonomous scheduling; this needs the planned virtual-clock follow-mode extension."
-  },
   "LDES10-UNORD-016": {
     "classification": "optional",
     "rationale": "Source selection is an optional dereferencing extension outside the common adapter contract."

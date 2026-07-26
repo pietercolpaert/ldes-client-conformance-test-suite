@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#member/1> <{{raw}}responses/root.ttl#vocab/declared> "kept" .
+<{{raw}}responses/root.ttl#member/1> <{{raw}}responses/root.ttl#vocab/notDeclared> "also kept" .

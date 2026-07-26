@@ -49,6 +49,7 @@ export function referenceAdapter(
       context: true,
       persistentState: true,
       treeProfileExtraction: true,
+      polling: true,
     },
   };
   return {

@@ -1,0 +1,4 @@
+[
+  { "path": "/entry", "status": 302, "count": 1 },
+  { "path": "/root", "status": 200, "count": 1 }
+]

@@ -26,6 +26,7 @@ export interface ScenarioRun {
   phase: string;
   mode?: "unordered" | "ordered";
   concurrency?: number;
+  followForMs?: number;
 }
 
 export interface Scenario {
@@ -57,6 +58,7 @@ export interface AdapterInput {
   phase: string;
   deadline?: string;
   concurrency?: number;
+  followForMs?: number;
 }
 
 export interface AdapterEvent {
@@ -100,6 +102,12 @@ export interface ExpectedRequest {
   headers?: Record<string, string>;
   headerIncludes?: Record<string, string>;
   absentHeaders?: string[];
+}
+
+export interface ExpectedTiming {
+  phase?: string;
+  path: string;
+  minSpanMs: number;
 }
 
 export interface TestCase {
@@ -156,6 +164,7 @@ export interface AdapterDeclaration {
     persistentState: boolean;
     serviceRuntime?: boolean;
     treeProfileExtraction?: boolean;
+    polling?: boolean;
   };
   environment?: Record<string, string>;
 }

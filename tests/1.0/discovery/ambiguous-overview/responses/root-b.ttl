@@ -1,0 +1,2 @@
+@prefix tree: <https://w3id.org/tree#> .
+<{{origin}}/overview> tree:view <> .

@@ -5,7 +5,7 @@
 
 <#http-retryable-statuses> a earl:TestCase;
     dct:title "Every required transient HTTP status is retried";
-    dct:description "The server returns each retryable status once before a valid root representation.";
+    dct:description "The server returns each retryable status once before a valid root representation, and the request timeline verifies that retries are not immediate.";
     dct:isPartOf
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-038>,
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-039>,

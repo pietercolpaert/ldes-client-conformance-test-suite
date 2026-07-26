@@ -5,7 +5,7 @@
 
 <#unordered-immutable-root-restart> a earl:TestCase;
     dct:title "An immutable root is reused when resuming";
-    dct:description "After the initial run persists root context and state, a later synchronization run must continue without fetching the RDF-immutable root again.";
+    dct:description "After the initial run persists root context and state, a later synchronization run must communicate the same context and continue without fetching the RDF-immutable root again.";
     dct:isPartOf
         <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-001>,
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-018>,

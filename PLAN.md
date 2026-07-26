@@ -53,9 +53,9 @@ traversal passes.
 - [x] Implement and pin adapters for rdf-connect, OpenLDES LDI, and Europeana.
 - [x] Add a three-client GitHub Actions matrix and GitHub Pages publication.
 
-Current verified reference result: 44/44 scenarios pass. The coverage report
-maps 79/100 reviewed rows to executable tests and gives explicit rationales for
-the remaining 21, with zero unmapped applicable client `MUST`/`SHOULD` rows.
+Current verified reference result: 62/62 scenarios pass. The coverage report
+maps 81/100 reviewed rows to executable tests and gives explicit rationales for
+the remaining 19, with zero unmapped applicable client `MUST`/`SHOULD` rows.
 This figure is requirement traceability, not a claim that one bundled scenario
 proves every implementation technique mentioned by the specification.
 
@@ -82,10 +82,10 @@ Implemented tests:
 
 Remaining detailed tests:
 
-- [ ] `unordered/polling-interval-follow` (`SHOULD`): run a follow-mode adapter
-      operation with an injectable virtual clock; assert that the next poll is
-      scheduled no earlier than `ldes:pollingInterval`, and that a later update
-      is discovered without a manual second run.
+- [x] `unordered/polling-interval-scheduling` (`SHOULD`): run a bounded
+      follow-mode adapter operation and assert that the next poll is scheduled
+      according to `ldes:pollingInterval`, rather than an implementation
+      default.
 - [ ] `unordered/polling-interval-header-update` (`SHOULD`): expose the same
       fragment with a changed `Cache-Control` and changed `ldes:pollingInterval`
       across phases; assert the client updates its polling/caching behavior

@@ -1,3 +1,5 @@
+{"type":"context","runId":"initial","eventStream":"{{raw}}responses/root.ttl#stream","rootNode":"{{origin}}/root"}
 {"type":"member","runId":"initial","id":"{{raw}}responses/root.ttl#member/initial","datasetFile":"member.nq"}
 {"type":"run-end","runId":"initial","status":"completed"}
+{"type":"context","runId":"repeat","eventStream":"{{raw}}responses/root.ttl#stream","rootNode":"{{origin}}/root"}
 {"type":"run-end","runId":"repeat","status":"completed"}

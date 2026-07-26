@@ -1,0 +1,14 @@
+version: 0
+entrypoint: /entry
+routes:
+  - path: /entry
+    requests:
+      - response:
+          status: 302
+          headers: { location: /root }
+  - path: /root
+    requests:
+      - response:
+          status: 200
+          headers: { content-type: text/turtle }
+          body: responses/root.ttl

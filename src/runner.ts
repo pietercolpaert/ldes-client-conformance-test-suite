@@ -117,6 +117,7 @@ async function runTest(
         stateDirectory,
         phase: run.phase,
         concurrency: run.concurrency,
+        followForMs: run.followForMs,
         deadline: new Date(
           Date.now() + (options.adapter.declaration.timeoutMs ?? 30_000),
         ).toISOString(),
@@ -212,6 +213,12 @@ function inapplicableReason(
     !capabilities.treeProfileExtraction
   ) {
     return "adapter does not declare TREE Profile extraction";
+  }
+  if (
+    test.requiredCapabilities.includes("Polling") &&
+    !capabilities.polling
+  ) {
+    return "adapter does not declare autonomous polling";
   }
   if (group === "OrderedTraversal" && !capabilities.modes.includes("ordered")) {
     return "adapter does not declare ordered traversal";

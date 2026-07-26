@@ -1,0 +1,24 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:sequencePath ( [ sh:inversePath ex:member ] ex:rank );
+    tree:member
+        <{{raw}}responses/root.ttl#member/a-two>,
+        <{{raw}}responses/root.ttl#member/z-one> .
+
+<{{raw}}responses/root.ttl#member/a-two> ex:value "two" .
+<{{raw}}responses/root.ttl#member/z-one> ex:value "one" .
+
+<{{raw}}responses/root.ttl#member/a-two> {
+    <{{raw}}responses/root.ttl#container/two>
+        ex:member <{{raw}}responses/root.ttl#member/a-two>;
+        ex:rank 2 .
+}
+<{{raw}}responses/root.ttl#member/z-one> {
+    <{{raw}}responses/root.ttl#container/one>
+        ex:member <{{raw}}responses/root.ttl#member/z-one>;
+        ex:rank 1 .
+}

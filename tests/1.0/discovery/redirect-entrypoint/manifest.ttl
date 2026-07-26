@@ -1,0 +1,14 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#discovery-redirect-entrypoint> a earl:TestCase;
+    dct:title "Root discovery uses the post-redirect IRI";
+    dct:description "The supplied entry point redirects to a root whose current-page tree:view statement resolves against the final response IRI.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-008>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-011>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-036>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .

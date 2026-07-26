@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-shacl-zero-or-one-path> a earl:TestCase;
+    dct:title "Ordered traversal evaluates a zero-or-one SHACL path";
+    dct:description "One ordering value uses the zero-length branch and another uses the one-step branch.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-007>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

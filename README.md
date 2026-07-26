@@ -231,8 +231,8 @@ execution dates while continuing to test pinned, reproducible revisions.
 The runner, request/event/RDF-isomorphism oracles, EARL/JSON/HTML reports,
 deterministic phase server, coverage gate, four group claims, process contract,
 candidate declarations, and baseline scenario catalog are implemented.
-Remaining extensions are explicitly tracked in `PLAN.md`: autonomous polling
-with virtual time, external JSON-LD context caching, streaming immediacy,
+Remaining extensions are explicitly tracked in `PLAN.md`: external JSON-LD
+context caching, streaming immediacy,
 optional TREE-profile extraction, and deeper retention-aware consumer
 interpretation. The Java and container adapters still need their first hosted
 matrix execution after the repository is pushed and GitHub Pages is enabled.

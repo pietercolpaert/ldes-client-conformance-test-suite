@@ -4,6 +4,7 @@ import type {
   AdapterEvent,
   ExpectedEvent,
   ExpectedRequest,
+  ExpectedTiming,
   TestCase,
   TestResult,
   RequestLogEntry,
@@ -40,6 +41,7 @@ export async function evaluate(
   }
 
   await evaluateRequests(test, requests, diagnostics);
+  await evaluateTimings(test, requests, diagnostics);
   evaluateRequestBudget(scenario, requests, diagnostics);
 
   return {
@@ -49,6 +51,46 @@ export async function evaluate(
     requests,
     diagnostics,
   };
+}
+
+async function evaluateTimings(
+  test: TestCase,
+  requests: RequestLogEntry[],
+  diagnostics: string[],
+): Promise<void> {
+  const filePath = path.join(path.dirname(test.expectedPath), "timing.json");
+  let expected: ExpectedTiming[];
+  try {
+    expected = JSON.parse(await readFile(filePath, "utf8")) as ExpectedTiming[];
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+    throw error;
+  }
+
+  for (const wanted of expected) {
+    const matching = requests
+      .filter((request) =>
+        request.path === wanted.path &&
+        (!wanted.phase || request.phase === wanted.phase)
+      )
+      .sort((left, right) => left.sequence - right.sequence);
+    if (matching.length < 2) {
+      diagnostics.push(
+        `request timing ${wanted.phase ? `${wanted.phase}:` : ""}${wanted.path}: ` +
+        `expected at least 2 requests, got ${matching.length}`,
+      );
+      continue;
+    }
+    const first = Date.parse(matching[0].timestamp);
+    const last = Date.parse(matching.at(-1)!.timestamp);
+    const span = last - first;
+    if (!Number.isFinite(span) || span < wanted.minSpanMs) {
+      diagnostics.push(
+        `request timing ${wanted.phase ? `${wanted.phase}:` : ""}${wanted.path}: ` +
+        `expected a span of at least ${wanted.minSpanMs}ms, got ${span}ms`,
+      );
+    }
+  }
 }
 
 function evaluateRequestBudget(

@@ -1,0 +1,14 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:shape <{{raw}}responses/root.ttl#shape>;
+    tree:member <{{raw}}responses/root.ttl#member/1> .
+
+<{{raw}}responses/root.ttl#shape> a sh:NodeShape;
+    sh:property [ sh:path ex:declared ] .
+
+<{{raw}}responses/root.ttl#member/1>
+    ex:declared "kept";
+    ex:notDeclared "also kept" .

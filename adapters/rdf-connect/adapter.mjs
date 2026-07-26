@@ -28,6 +28,7 @@ if (operation === "probe") {
         memberExtraction: true,
         context: true,
         persistentState: true,
+        polling: true,
       },
       reason: available
         ? undefined
@@ -48,7 +49,7 @@ if (operation === "probe") {
         statePath: input.stateDirectory,
         noShape: true,
         onlyDefaultGraph: false,
-        polling: false,
+        polling: Boolean(input.followForMs),
         concurrentFetches: input.concurrency ?? 1,
       }),
       input.mode === "ordered" ? "ascending" : "none",
@@ -75,8 +76,17 @@ if (operation === "probe") {
     });
     const reader = client.stream({ highWaterMark: 10 }).getReader();
     let emitted = 0;
+    const followDeadline = input.followForMs
+      ? new Promise((resolve) => setTimeout(() => resolve("follow-deadline"), input.followForMs))
+      : undefined;
     while (true) {
-      const item = await reader.read();
+      const item = followDeadline
+        ? await Promise.race([reader.read(), followDeadline])
+        : await reader.read();
+      if (item === "follow-deadline") {
+        await reader.cancel();
+        break;
+      }
       if (item.done) break;
       emitted += 1;
       emit({

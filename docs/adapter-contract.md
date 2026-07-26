@@ -10,7 +10,8 @@ Every adapter must provide:
 
 - `probe`: report client identity, version, supported modes, and observable
   capabilities without starting a test;
-- `run`: perform one synchronization run against the supplied entry-point IRI;
+- `run`: perform one synchronization run against the supplied entry-point IRI,
+  or a bounded follow-mode window when requested;
 - `reset`: remove only the adapter-owned state for the current test.
 
 The runner invokes the declared command directly with an argument array and
@@ -31,6 +32,7 @@ to the adapter declaration.
   "stateDirectory": "/tmp/ldes-ct/case/state",
   "phase": "updated",
   "concurrency": 10,
+  "followForMs": 1500,
   "deadline": "2026-07-25T10:05:00Z"
 }
 ```
@@ -40,6 +42,10 @@ configure how a declared client feature is exposed; they are not additional
 inputs to the LDES algorithm. The optional `concurrency` field is a harness
 hint: adapters should apply it when the client exposes a fetch-concurrency
 setting, and may ignore it when the client is inherently sequential.
+The optional `followForMs` field asks an adapter that declares the `polling`
+capability to keep the client in autonomous follow mode for that bounded
+duration. The adapter must stop the client cleanly and still emit exactly one
+terminal event.
 
 ## Event output
 
@@ -109,6 +115,7 @@ An adapter declaration must pin:
 - operation commands;
 - supported modes;
 - observable context/statistics capabilities;
+- autonomous polling capability;
 - runtime requirements;
 - cleanup guarantees.
 

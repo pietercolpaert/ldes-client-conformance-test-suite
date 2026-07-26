@@ -65,6 +65,55 @@ interface PendingMember {
 }
 
 export async function runReferenceClient(input: AdapterInput): Promise<AdapterEvent[]> {
+  if (input.followForMs) {
+    return runReferencePolling(input);
+  }
+  return runReferenceOnce(input);
+}
+
+async function runReferencePolling(input: AdapterInput): Promise<AdapterEvent[]> {
+  const output: AdapterEvent[] = [];
+  const started = Date.now();
+  const followForMs = input.followForMs!;
+  let pollingIntervalMs: number | undefined;
+  let first = true;
+  do {
+    const round = await runReferenceOnce({ ...input, followForMs: undefined });
+    const context = round.find((event) => event.type === "context");
+    if (typeof context?.pollingInterval === "number") {
+      pollingIntervalMs = context.pollingInterval * 1000;
+    }
+    output.push(...round.filter((event) =>
+      event.type !== "run-end" &&
+      event.type !== "statistics" &&
+      (first || event.type !== "context")
+    ));
+    first = false;
+    if (
+      pollingIntervalMs === undefined ||
+      Date.now() + pollingIntervalMs > started + followForMs
+    ) {
+      break;
+    }
+    await new Promise((resolve) => setTimeout(resolve, pollingIntervalMs));
+  } while (true);
+
+  output.push({
+    protocolVersion: 0,
+    type: "statistics",
+    runId: input.runId,
+    membersEmitted: output.filter((event) => event.type === "member").length,
+  });
+  output.push({
+    protocolVersion: 0,
+    type: "run-end",
+    runId: input.runId,
+    status: "completed",
+  });
+  return output;
+}
+
+async function runReferenceOnce(input: AdapterInput): Promise<AdapterEvent[]> {
   const state = await loadState(input.stateDirectory);
   const emitted = new Set(state.emitted);
   const events: AdapterEvent[] = [];
@@ -359,8 +408,26 @@ function evaluatePath(quads: Quad[], focus: Term, pathTerm?: Term): Term[] {
   }
 
   const inverse = objects(quads, pathTerm, `${SH}inversePath`)[0];
-  if (inverse?.termType === "NamedNode") {
-    return subjects(quads, inverse.value, focus);
+  if (inverse) {
+    const candidates = uniqueTerms(quads.flatMap((quad) => [quad.subject, quad.object]));
+    return candidates.filter((candidate) =>
+      evaluatePath(quads, candidate, inverse).some((value) => value.equals(focus))
+    );
+  }
+
+  const zeroOrMore = objects(quads, pathTerm, `${SH}zeroOrMorePath`)[0];
+  if (zeroOrMore) {
+    return transitivePath(quads, focus, zeroOrMore, true);
+  }
+
+  const oneOrMore = objects(quads, pathTerm, `${SH}oneOrMorePath`)[0];
+  if (oneOrMore) {
+    return transitivePath(quads, focus, oneOrMore, false);
+  }
+
+  const zeroOrOne = objects(quads, pathTerm, `${SH}zeroOrOnePath`)[0];
+  if (zeroOrOne) {
+    return uniqueTerms([focus, ...evaluatePath(quads, focus, zeroOrOne)]);
   }
 
   const sequence = rdfList(quads, pathTerm);
@@ -370,6 +437,26 @@ function evaluatePath(quads: Quad[], focus: Term, pathTerm?: Term): Term[] {
     current = current.flatMap((term) => evaluatePath(quads, term, step));
   }
   return current;
+}
+
+function transitivePath(
+  quads: Quad[],
+  focus: Term,
+  pathTerm: Term,
+  includeFocus: boolean,
+): Term[] {
+  const result: Term[] = includeFocus ? [focus] : [];
+  const visited = new Set<string>(includeFocus ? [`${focus.termType}:${focus.value}`] : []);
+  const queue = [...evaluatePath(quads, focus, pathTerm)];
+  while (queue.length) {
+    const current = queue.shift()!;
+    const key = `${current.termType}:${current.value}`;
+    if (visited.has(key)) continue;
+    visited.add(key);
+    result.push(current);
+    queue.push(...evaluatePath(quads, current, pathTerm));
+  }
+  return result;
 }
 
 function rdfList(quads: Quad[], head: Term): Term[] {

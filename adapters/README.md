@@ -14,7 +14,8 @@ adapters/
 ```
 
 Each directory contains a machine-readable declaration and executable process
-adapter. The rdf-connect adapter loads the pinned library build directly.
+adapter. The rdf-connect adapter loads the pinned library build directly and
+maps bounded `followForMs` input to its native polling stream.
 OpenLDES and Europeana include shaded Java host projects and build scripts.
 
 Build the pinned clients and adapters with Node.js, Maven, and JDK 21:

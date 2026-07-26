@@ -22,6 +22,7 @@
     ],
     "memberExtraction": true,
     "context": true,
-    "persistentState": true
+    "persistentState": true,
+    "polling": true
   }
 }
