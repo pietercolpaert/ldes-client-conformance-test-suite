@@ -30,13 +30,16 @@ to the adapter declaration.
   "mode": "unordered",
   "stateDirectory": "/tmp/ldes-ct/case/state",
   "phase": "updated",
+  "concurrency": 10,
   "deadline": "2026-07-25T10:05:00Z"
 }
 ```
 
 The entry point is the only required client argument. Mode and state options
 configure how a declared client feature is exposed; they are not additional
-inputs to the LDES algorithm.
+inputs to the LDES algorithm. The optional `concurrency` field is a harness
+hint: adapters should apply it when the client exposes a fetch-concurrency
+setting, and may ignore it when the client is inherently sequential.
 
 ## Event output
 

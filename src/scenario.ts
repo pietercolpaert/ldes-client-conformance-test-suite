@@ -49,6 +49,14 @@ function validateScenario(scenario: Scenario, filePath: string): void {
   ) {
     throw new Error(`${filePath}: requestBudget must be a positive integer`);
   }
+  for (const run of getScenarioRuns(scenario)) {
+    if (
+      run.concurrency !== undefined &&
+      (!Number.isInteger(run.concurrency) || run.concurrency < 1)
+    ) {
+      throw new Error(`${filePath}: run concurrency must be a positive integer`);
+    }
+  }
   for (const phase of getScenarioPhases(scenario)) {
     if (!phase.id) {
       throw new Error(`${filePath}: every phase needs an id`);
@@ -64,6 +72,13 @@ function validateScenario(scenario: Scenario, filePath: string): void {
         const status = request.response?.status;
         if (!Number.isInteger(status) || status < 100 || status > 599) {
           throw new Error(`${filePath}: invalid HTTP status for ${route.path}`);
+        }
+        const delayMs = request.response.delayMs;
+        if (
+          delayMs !== undefined &&
+          (!Number.isInteger(delayMs) || delayMs < 0)
+        ) {
+          throw new Error(`${filePath}: response delayMs must be a non-negative integer`);
         }
       }
     }

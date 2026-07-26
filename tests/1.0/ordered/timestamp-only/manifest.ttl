@@ -8,7 +8,7 @@
     dct:description "Ordered mode is valid when only ldes:timestampPath is present; members must be emitted chronologically.";
     dct:isPartOf
         <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-001>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-003>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-004>;
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-010>;
     ct:requirementLevel ct:Must;
     ct:group ct:OrderedTraversal .

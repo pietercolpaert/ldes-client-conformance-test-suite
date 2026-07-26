@@ -7,7 +7,7 @@
     dct:title "Ordered traversal evaluates sh:alternativePath";
     dct:description "The LDES ordering path may be a SHACL alternative path rather than a direct predicate or sequence path.";
     dct:isPartOf
-        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-003>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-004>;
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-007>;
     ct:requirementLevel ct:Must;
     ct:group ct:OrderedTraversal .

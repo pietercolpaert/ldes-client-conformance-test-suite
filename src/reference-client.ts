@@ -6,6 +6,7 @@ import type { AdapterEvent, AdapterInput, ParsedPage } from "./types.js";
 import {
   extractMemberDataset,
   objects,
+  parseNQuads,
   parseRdf,
   RDF,
   serializeNQuads,
@@ -16,8 +17,27 @@ import {
 const { namedNode } = DataFactory;
 const LDES = "https://w3id.org/ldes#";
 const SH = "http://www.w3.org/ns/shacl#";
+const XSD = "http://www.w3.org/2001/XMLSchema#";
 const XSD_BOOLEAN = "http://www.w3.org/2001/XMLSchema#boolean";
 const RETRYABLE = new Set([408, 425, 429, 500, 502, 503, 504]);
+const NUMERIC_DATATYPES = new Set([
+  `${XSD}decimal`,
+  `${XSD}double`,
+  `${XSD}float`,
+  `${XSD}integer`,
+  `${XSD}long`,
+  `${XSD}int`,
+  `${XSD}short`,
+  `${XSD}byte`,
+  `${XSD}nonNegativeInteger`,
+  `${XSD}positiveInteger`,
+  `${XSD}unsignedLong`,
+  `${XSD}unsignedInt`,
+  `${XSD}unsignedShort`,
+  `${XSD}unsignedByte`,
+  `${XSD}nonPositiveInteger`,
+  `${XSD}negativeInteger`,
+]);
 
 interface NodeState {
   etag?: string;
@@ -28,6 +48,12 @@ interface NodeState {
 interface ReferenceState {
   emitted: string[];
   nodes: Record<string, NodeState>;
+  root?: {
+    entrypoint: string;
+    eventStream: string;
+    rootNode: string;
+    dataset: string;
+  };
 }
 
 interface PendingMember {
@@ -46,20 +72,46 @@ export async function runReferenceClient(input: AdapterInput): Promise<AdapterEv
   const pending: PendingMember[] = [];
 
   try {
-    const initial = await fetchPage(input.entrypoint, state.nodes[input.entrypoint]?.etag);
-    if (initial.status === 304) {
-      throw new Error("The entry point returned 304 before root discovery could be refreshed");
-    }
-    const discovery = discoverRoot(initial, input.entrypoint);
-    const rootPage =
-      discovery.rootNode === initial.url
-        ? initial
-        : await fetchPage(discovery.rootNode, state.nodes[discovery.rootNode]?.etag);
-    if (rootPage.status === 304) {
-      throw new Error("The root node returned 304 without a reusable root context");
+    let initial: ParsedPage;
+    let discovery: { eventStream: string; rootNode: string };
+    let rootPage: ParsedPage;
+    const savedRoot = state.root;
+    const canReuseRoot = savedRoot?.entrypoint === input.entrypoint &&
+      state.nodes[savedRoot.rootNode]?.immutable === true;
+    if (savedRoot && canReuseRoot) {
+      rootPage = {
+        url: savedRoot.rootNode,
+        quads: parseNQuads(savedRoot.dataset),
+        status: 200,
+        headers: new Headers(),
+      };
+      initial = rootPage;
+      discovery = {
+        eventStream: savedRoot.eventStream,
+        rootNode: savedRoot.rootNode,
+      };
+    } else {
+      initial = await fetchPage(input.entrypoint, state.nodes[input.entrypoint]?.etag);
+      if (initial.status === 304) {
+        throw new Error("The entry point returned 304 before root discovery could be refreshed");
+      }
+      discovery = discoverRoot(initial, input.entrypoint);
+      rootPage =
+        discovery.rootNode === initial.url
+          ? initial
+          : await fetchPage(discovery.rootNode, state.nodes[discovery.rootNode]?.etag);
+      if (rootPage.status === 304) {
+        throw new Error("The root node returned 304 without a reusable root context");
+      }
     }
     const context = extractContext(rootPage.quads, discovery.eventStream, discovery.rootNode);
     const contextDataset = await serializeNQuads(rootPage.quads);
+    state.root = {
+      entrypoint: input.entrypoint,
+      eventStream: discovery.eventStream,
+      rootNode: discovery.rootNode,
+      dataset: contextDataset,
+    };
     events.push({
       protocolVersion: 0,
       type: "context",
@@ -179,6 +231,7 @@ export async function runReferenceClient(input: AdapterInput): Promise<AdapterEv
     await saveState(input.stateDirectory, {
       emitted: [...emitted].sort(),
       nodes: state.nodes,
+      root: state.root,
     });
     events.push({
       protocolVersion: 0,
@@ -299,6 +352,12 @@ function evaluatePath(quads: Quad[], focus: Term, pathTerm?: Term): Term[] {
   }
   if (pathTerm.termType !== "BlankNode") return [];
 
+  const alternative = objects(quads, pathTerm, `${SH}alternativePath`)[0];
+  if (alternative) {
+    return rdfList(quads, alternative)
+      .flatMap((candidate) => evaluatePath(quads, focus, candidate));
+  }
+
   const inverse = objects(quads, pathTerm, `${SH}inversePath`)[0];
   if (inverse?.termType === "NamedNode") {
     return subjects(quads, inverse.value, focus);
@@ -345,7 +404,11 @@ function compareMembers(left: PendingMember, right: PendingMember): number {
     const b = right.order[index] ?? "";
     const comparison = typeof a === "number" && typeof b === "number"
       ? a - b
-      : String(a).localeCompare(String(b));
+      : String(a) < String(b)
+      ? -1
+      : String(a) > String(b)
+      ? 1
+      : 0;
     if (comparison) return comparison;
   }
   if (left.finalizesTransaction !== right.finalizesTransaction) {
@@ -356,8 +419,14 @@ function compareMembers(left: PendingMember, right: PendingMember): number {
 
 function comparable(term: Term): string | number {
   if (term.termType === "Literal") {
-    const number = Number(term.value);
-    if (Number.isFinite(number) && term.value.trim() !== "") return number;
+    if (NUMERIC_DATATYPES.has(term.datatype.value)) {
+      const number = Number(term.value);
+      if (Number.isFinite(number) && term.value.trim() !== "") return number;
+    }
+    if (term.datatype.value === `${XSD}dateTime`) {
+      const timestamp = Date.parse(term.value);
+      if (Number.isFinite(timestamp)) return timestamp;
+    }
   }
   return term.value;
 }
@@ -378,7 +447,7 @@ async function loadState(stateDirectory: string): Promise<ReferenceState> {
   try {
     const source = await readFile(path.join(stateDirectory, "reference-state.json"), "utf8");
     const parsed = JSON.parse(source) as Partial<ReferenceState>;
-    return { emitted: parsed.emitted ?? [], nodes: parsed.nodes ?? {} };
+    return { emitted: parsed.emitted ?? [], nodes: parsed.nodes ?? {}, root: parsed.root };
   } catch {
     return { emitted: [], nodes: {} };
   }

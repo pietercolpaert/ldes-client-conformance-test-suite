@@ -1,4 +1,4 @@
-{"type":"member","id":"{{raw}}responses/root.ttl#member/early-one","datasetFile":"early-one.nq"}
-{"type":"member","id":"{{raw}}responses/root.ttl#member/early-two","datasetFile":"early-two.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/z-early-one","datasetFile":"early-one.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/a-early-two","datasetFile":"early-two.nq"}
 {"type":"member","id":"{{raw}}responses/root.ttl#member/later-zero","datasetFile":"later-zero.nq"}
 {"type":"run-end","status":"completed"}

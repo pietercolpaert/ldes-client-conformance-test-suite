@@ -32,6 +32,7 @@
         <1.0#extraction-tree-profile-basic>
         <1.0#extraction-tree-profile-mixed-page>
         <1.0#extraction-tree-profile-shape-targets>
+        <1.0#extraction-unrelated-named-graph>
         <1.0#http-gone-node>
         <1.0#http-retryable-statuses>
         <1.0#http-serializations>
@@ -50,9 +51,13 @@
         <1.0#ordered-shacl-alternative-path>
         <1.0#ordered-timestamp-only>
         <1.0#ordered-timestamp-sequence-tie-break>
+        <1.0#ordered-timestamp-shacl-sequence-path>
         <1.0#ordered-transaction-finalized-object>
         <1.0#ordered-unsupported-relation>
+        <1.0#ordered-xpath-string-order>
         <1.0#unordered-cache-state>
+        <1.0#unordered-duplicate-member-pages>
+        <1.0#unordered-immutable-root-restart>
         <1.0#unordered-mutable-sync>
         <1.0#unordered-rdf-immutable>
         <1.0#unordered-rebalancing>
@@ -84,6 +89,7 @@
 <1.0#extraction-tree-profile-basic> a earl:TestCase .
 <1.0#extraction-tree-profile-mixed-page> a earl:TestCase .
 <1.0#extraction-tree-profile-shape-targets> a earl:TestCase .
+<1.0#extraction-unrelated-named-graph> a earl:TestCase .
 <1.0#http-gone-node> a earl:TestCase .
 <1.0#http-retryable-statuses> a earl:TestCase .
 <1.0#http-serializations> a earl:TestCase .
@@ -102,9 +108,13 @@
 <1.0#ordered-shacl-alternative-path> a earl:TestCase .
 <1.0#ordered-timestamp-only> a earl:TestCase .
 <1.0#ordered-timestamp-sequence-tie-break> a earl:TestCase .
+<1.0#ordered-timestamp-shacl-sequence-path> a earl:TestCase .
 <1.0#ordered-transaction-finalized-object> a earl:TestCase .
 <1.0#ordered-unsupported-relation> a earl:TestCase .
+<1.0#ordered-xpath-string-order> a earl:TestCase .
 <1.0#unordered-cache-state> a earl:TestCase .
+<1.0#unordered-duplicate-member-pages> a earl:TestCase .
+<1.0#unordered-immutable-root-restart> a earl:TestCase .
 <1.0#unordered-mutable-sync> a earl:TestCase .
 <1.0#unordered-rdf-immutable> a earl:TestCase .
 <1.0#unordered-rebalancing> a earl:TestCase .

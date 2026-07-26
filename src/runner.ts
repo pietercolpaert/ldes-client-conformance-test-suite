@@ -116,6 +116,7 @@ async function runTest(
         mode: run.mode ?? "unordered",
         stateDirectory,
         phase: run.phase,
+        concurrency: run.concurrency,
         deadline: new Date(
           Date.now() + (options.adapter.declaration.timeoutMs ?? 30_000),
         ).toISOString(),

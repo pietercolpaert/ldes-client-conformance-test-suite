@@ -4,6 +4,7 @@ export interface ScenarioResponse {
   status: number;
   headers?: Record<string, string>;
   body?: string;
+  delayMs?: number;
 }
 
 export interface ScenarioRequest {
@@ -24,6 +25,7 @@ export interface ScenarioRun {
   id: string;
   phase: string;
   mode?: "unordered" | "ordered";
+  concurrency?: number;
 }
 
 export interface Scenario {
@@ -54,6 +56,7 @@ export interface AdapterInput {
   stateDirectory: string;
   phase: string;
   deadline?: string;
+  concurrency?: number;
 }
 
 export interface AdapterEvent {

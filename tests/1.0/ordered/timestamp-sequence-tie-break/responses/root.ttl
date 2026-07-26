@@ -8,9 +8,9 @@
     ldes:sequencePath ex:sequence;
     tree:member
         <{{raw}}responses/root.ttl#member/later-zero>,
-        <{{raw}}responses/root.ttl#member/early-two>,
-        <{{raw}}responses/root.ttl#member/early-one> .
+        <{{raw}}responses/root.ttl#member/a-early-two>,
+        <{{raw}}responses/root.ttl#member/z-early-one> .
 
 <{{raw}}responses/root.ttl#member/later-zero> ex:time "2026-01-01T00:00:02Z"^^xsd:dateTime; ex:sequence 0; ex:value "later zero" .
-<{{raw}}responses/root.ttl#member/early-two> ex:time "2026-01-01T00:00:01Z"^^xsd:dateTime; ex:sequence 2; ex:value "early two" .
-<{{raw}}responses/root.ttl#member/early-one> ex:time "2026-01-01T00:00:01Z"^^xsd:dateTime; ex:sequence 1; ex:value "early one" .
+<{{raw}}responses/root.ttl#member/a-early-two> ex:time "2026-01-01T00:00:01Z"^^xsd:dateTime; ex:sequence 2; ex:value "early two" .
+<{{raw}}responses/root.ttl#member/z-early-one> ex:time "2026-01-01T00:00:01Z"^^xsd:dateTime; ex:sequence 1; ex:value "early one" .

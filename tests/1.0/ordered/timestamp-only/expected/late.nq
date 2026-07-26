@@ -1,2 +1,2 @@
-<{{raw}}responses/root.ttl#member/late> <{{raw}}responses/root.ttl#vocab/time> "2026-01-01T00:00:02Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<{{raw}}responses/root.ttl#member/late> <{{raw}}responses/root.ttl#vocab/value> "late" .
+<{{raw}}responses/root.ttl#member/a-late> <{{raw}}responses/root.ttl#vocab/time> "2026-01-01T00:00:02Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<{{raw}}responses/root.ttl#member/a-late> <{{raw}}responses/root.ttl#vocab/value> "late" .

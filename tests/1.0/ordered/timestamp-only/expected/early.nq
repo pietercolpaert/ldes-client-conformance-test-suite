@@ -1,2 +1,2 @@
-<{{raw}}responses/root.ttl#member/early> <{{raw}}responses/root.ttl#vocab/time> "2026-01-01T00:00:01Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<{{raw}}responses/root.ttl#member/early> <{{raw}}responses/root.ttl#vocab/value> "early" .
+<{{raw}}responses/root.ttl#member/z-early> <{{raw}}responses/root.ttl#vocab/time> "2026-01-01T00:00:01Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<{{raw}}responses/root.ttl#member/z-early> <{{raw}}responses/root.ttl#vocab/value> "early" .

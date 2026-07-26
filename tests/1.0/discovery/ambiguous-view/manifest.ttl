@@ -4,8 +4,8 @@
 @base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
 
 <#discovery-ambiguous-view> a earl:TestCase;
-    dct:title "Multiple current-page tree:view matches are handled without an invalid traversal";
-    dct:description "The entry representation contains more than one current-page tree:view match. A client may report the ambiguity or apply a deterministic fallback such as selecting the first encountered view, but it must not hang or produce malformed protocol output.";
+    dct:title "Multiple current-page tree:view matches are rejected";
+    dct:description "The entry representation contains more than one current-page tree:view match, which the initialization algorithm requires the client to report as an error.";
     dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-012>;
-    ct:requirementLevel ct:Should;
+    ct:requirementLevel ct:Must;
     ct:group ct:UnorderedTraversal .

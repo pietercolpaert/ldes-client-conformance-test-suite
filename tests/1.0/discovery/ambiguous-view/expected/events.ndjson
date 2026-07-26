@@ -1,1 +1,1 @@
-{"oneOf":[{"type":"error","kind":"client"},{"type":"run-end","status":"completed"}]}
+{"type":"error","kind":"client"}

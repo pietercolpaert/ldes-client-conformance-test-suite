@@ -99,6 +99,9 @@ export class FixtureServer {
       body = await readFile(resolveBodyPath(this.scenarioPath, selected.body), "utf8");
       body = expandFixturePlaceholders(body, this.scenarioPath, this.origin);
     }
+    if (selected.delayMs) {
+      await new Promise((resolve) => setTimeout(resolve, selected.delayMs));
+    }
     response.writeHead(selected.status, headers);
     response.end(body);
   }

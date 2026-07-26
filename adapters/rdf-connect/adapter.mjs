@@ -49,7 +49,7 @@ if (operation === "probe") {
         noShape: true,
         onlyDefaultGraph: false,
         polling: false,
-        concurrentFetches: 1,
+        concurrentFetches: input.concurrency ?? 1,
       }),
       input.mode === "ordered" ? "ascending" : "none",
     );

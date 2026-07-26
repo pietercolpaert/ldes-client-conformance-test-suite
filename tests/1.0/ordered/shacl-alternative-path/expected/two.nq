@@ -1,2 +1,2 @@
-<{{raw}}responses/root.ttl#member/two> <{{raw}}responses/root.ttl#vocab/primarySequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<{{raw}}responses/root.ttl#member/two> <{{raw}}responses/root.ttl#vocab/value> "two" .
+<{{raw}}responses/root.ttl#member/a-two> <{{raw}}responses/root.ttl#vocab/primarySequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/a-two> <{{raw}}responses/root.ttl#vocab/value> "two" .
