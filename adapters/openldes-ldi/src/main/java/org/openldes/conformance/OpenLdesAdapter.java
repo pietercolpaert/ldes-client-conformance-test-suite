@@ -12,7 +12,7 @@ import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
-import ldes.client.treenodesupplier.membersuppliers.OrderedMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.StreamingOrderedMemberSupplier;
 import org.openldes.ldi.HibernateUtil;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -91,8 +91,12 @@ public final class OpenLdesAdapter {
             EventStreamProperties properties = emitContext(protocol, runId, input, requestExecutor);
             MemberSupplier supplier = new MemberSupplierImpl(processor, true);
             if ("ordered".equals(input.path("mode").asText())) {
-                supplier = new OrderedMemberSupplier(
-                        supplier,
+                supplier = new StreamingOrderedMemberSupplier(
+                        metadata,
+                        requestExecutor,
+                        repositories.memberIdRepository(),
+                        true,
+                        properties.getRootNode(),
                         path(properties, LDES_TIMESTAMP_PATH),
                         path(properties, LDES_SEQUENCE_PATH),
                         path(properties, LDES_TRANSACTION_PATH),
