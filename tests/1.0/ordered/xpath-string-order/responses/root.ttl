@@ -1,0 +1,13 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:sequencePath ex:sequence;
+    tree:member
+        <{{raw}}responses/root.ttl#member/a-two>,
+        <{{raw}}responses/root.ttl#member/z-ten> .
+
+<{{raw}}responses/root.ttl#member/a-two> ex:sequence "2"^^xsd:string; ex:value "two" .
+<{{raw}}responses/root.ttl#member/z-ten> ex:sequence "10"^^xsd:string; ex:value "ten" .

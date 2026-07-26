@@ -1,0 +1,4 @@
+[
+  { "phase": "initial", "path": "/root", "status": 200, "count": 1 },
+  { "phase": "repeat", "path": "/root", "count": 0 }
+]

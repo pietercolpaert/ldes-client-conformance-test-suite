@@ -1,0 +1,19 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: initial, phase: initial }
+  - { id: repeat, phase: repeat }
+phases:
+  - id: initial
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/root.ttl
+  - id: repeat
+    routes:
+      - path: /root
+        requests:
+          - response: { status: 500 }

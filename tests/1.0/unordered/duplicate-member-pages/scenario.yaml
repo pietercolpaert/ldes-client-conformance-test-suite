@@ -1,0 +1,25 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: concurrent, phase: default, concurrency: 10 }
+routes:
+  - path: /root
+    requests:
+      - response:
+          status: 200
+          headers: { content-type: text/turtle }
+          body: responses/root.ttl
+  - path: /page-a
+    requests:
+      - response:
+          status: 200
+          delayMs: 25
+          headers: { content-type: text/turtle }
+          body: responses/page.ttl
+  - path: /page-b
+    requests:
+      - response:
+          status: 200
+          delayMs: 25
+          headers: { content-type: text/turtle }
+          body: responses/page.ttl

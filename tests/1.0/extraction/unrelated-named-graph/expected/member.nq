@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#member/isolated> <{{raw}}responses/root.ttl#vocab/value> "default graph" .
+<{{raw}}responses/root.ttl#payload> <{{raw}}responses/root.ttl#vocab/value> "member graph" <{{raw}}responses/root.ttl#member/isolated> .

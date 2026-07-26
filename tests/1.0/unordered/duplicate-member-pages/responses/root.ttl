@@ -1,0 +1,6 @@
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <> .
+<> tree:relation
+    [ tree:node <page-a> ],
+    [ tree:node <page-b> ] .

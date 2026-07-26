@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-xpath-string-order> a earl:TestCase;
+    dct:title "Sequence literals use XPath comparison semantics";
+    dct:description "The xsd:string values '10' and '2' must be compared as strings, not coerced to numbers; member IRIs are adversarial to the required order.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-010>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

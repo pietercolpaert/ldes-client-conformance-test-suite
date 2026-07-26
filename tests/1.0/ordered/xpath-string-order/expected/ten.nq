@@ -1,0 +1,2 @@
+<{{raw}}responses/root.ttl#member/z-ten> <{{raw}}responses/root.ttl#vocab/sequence> "10"^^<http://www.w3.org/2001/XMLSchema#string> .
+<{{raw}}responses/root.ttl#member/z-ten> <{{raw}}responses/root.ttl#vocab/value> "ten" .

@@ -1,0 +1,15 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#unordered-immutable-root-restart> a earl:TestCase;
+    dct:title "An immutable root is reused when resuming";
+    dct:description "After the initial run persists root context and state, a later synchronization run must continue without fetching the RDF-immutable root again.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-001>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-018>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-023>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-024>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:UnorderedTraversal .

@@ -1,0 +1,14 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#extraction-unrelated-named-graph> a earl:TestCase;
+    dct:title "Generic extraction excludes unrelated named graphs";
+    dct:description "A foreign named graph contains a triple whose subject is the member IRI; only the default-graph subject star and the member-named graph belong to the member dataset.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-002>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-005>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-006>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:MemberExtraction .

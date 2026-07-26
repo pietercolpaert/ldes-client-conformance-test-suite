@@ -1,0 +1,3 @@
+{"type":"member","runId":"initial","id":"{{raw}}responses/root.ttl#member/initial","datasetFile":"member.nq"}
+{"type":"run-end","runId":"initial","status":"completed"}
+{"type":"run-end","runId":"repeat","status":"completed"}

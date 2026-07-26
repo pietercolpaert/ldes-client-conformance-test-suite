@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#unordered-duplicate-member-pages> a earl:TestCase;
+    dct:title "A member discovered concurrently on multiple pages is emitted once";
+    dct:description "Two delayed sibling nodes contain the same member IRI and dataset and are fetched concurrently when the adapter supports it; the client must emit exactly one member event for that IRI.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-019>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .
