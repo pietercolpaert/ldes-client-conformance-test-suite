@@ -44,6 +44,27 @@ The built-in `rdf-connect` adapter expects the client checkout through
 `LDES_CT_RDF_CONNECT_ROOT`. The reusable workflow sets that to the checked-out
 client path automatically.
 
+For OpenLDES Linked Data Interactions, the suite-provided adapter host is a
+Maven project. Build it from the suite checkout and point it at the checked-out
+client repository through the environment prepared by the reusable workflow:
+
+```yaml
+jobs:
+  ldes-conformance:
+    uses: pietercolpaert/ldes-client-conformance-test-suite/.github/workflows/reusable-client-conformance.yml@main
+    with:
+      adapter: openldes-ldi
+      suite-repository: pietercolpaert/ldes-client-conformance-test-suite
+      suite-ref: main
+      java-version: "21"
+      client-build-command: mvn -B -ntp -DskipTests install
+      adapter-build-command: adapters/openldes-ldi/build.sh
+      fail-on-non-pass: false
+```
+
+    The OpenLDES adapter requires Maven and JDK 21, so the reusable workflow must be
+    called with `java-version: "21"`.
+
 ## Custom Adapters
 
 A client can keep its own adapter outside this suite. Create an adapter root in

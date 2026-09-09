@@ -32,6 +32,11 @@ on:
         required: false
         type: string
         default: "22"
+      java-version:
+        description: Optional Java version used for Java clients and adapter hosts.
+        required: false
+        type: string
+        default: ""
       client-build-command:
         description: Shell commands that install and build the client under test.
         required: false
@@ -88,6 +93,14 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
+      - name: Set up Java
+        if: inputs.java-version != ''
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java-version }}
+          cache: maven
+
       - name: Build client
         working-directory: ${{ inputs.client-path }}
         run: ${{ inputs.client-build-command }}
@@ -102,6 +115,10 @@ jobs:
       - name: Build adapter host
         if: inputs.adapter-build-command != ''
         working-directory: ${{ inputs.suite-path }}
+        env:
+          LDES_CT_RDF_CONNECT_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
+          LDES_CT_OPENLDES_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
+          LDES_CT_EUROPEANA_ROOT: ${{ github.workspace }}/${{ inputs.client-path }}
         run: ${{ inputs.adapter-build-command }}
 
       - name: Run LDES conformance tests
