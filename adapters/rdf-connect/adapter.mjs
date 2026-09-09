@@ -64,6 +64,7 @@ if (operation === "probe") {
         shapes: description.shapes?.map((shape) => shape.value),
         viewDescriptions: description.viewDescriptions?.map((viewDescription) => viewDescription.value),
         retentionPolicies: description.retentionPolicies?.map((retentionPolicy) => retentionPolicy.value),
+        emptyRetentionPolicies: description.emptyRetentionPolicies?.map((retentionPolicy) => retentionPolicy.value),
         timestampPath: description.timestampPath?.value,
         sequencePath: description.sequencePath?.value,
         versionOfPath: description.versionOfPath?.value,
@@ -104,6 +105,7 @@ if (operation === "probe") {
       runId: input.runId,
       membersEmitted: emitted,
       fragmentsFetched: client.fragmentCount,
+      lastRun: new Date().toISOString(),
     });
     emit({
       protocolVersion: 0,
