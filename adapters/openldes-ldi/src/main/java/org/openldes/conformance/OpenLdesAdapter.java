@@ -2,9 +2,6 @@ package org.openldes.conformance;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
-import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
-import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
@@ -12,12 +9,7 @@ import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
-import ldes.client.treenodesupplier.membersuppliers.StreamingOrderedMemberSupplier;
 import org.openldes.ldi.HibernateUtil;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.openldes.ldi.requestexecutor.services.RequestExecutorFactory;
@@ -36,16 +28,9 @@ import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public final class OpenLdesAdapter {
     private static final ObjectMapper JSON = new ObjectMapper();
-    private static final String LDES = "https://w3id.org/ldes#";
-    private static final Property LDES_TIMESTAMP_PATH = ResourceFactory.createProperty(LDES, "timestampPath");
-    private static final Property LDES_SEQUENCE_PATH = ResourceFactory.createProperty(LDES, "sequencePath");
-    private static final Property LDES_TRANSACTION_PATH = ResourceFactory.createProperty(LDES, "transactionPath");
-    private static final Property LDES_TRANSACTION_FINALIZED_PATH = ResourceFactory.createProperty(LDES, "transactionFinalizedPath");
-    private static final Property LDES_TRANSACTION_FINALIZED_OBJECT = ResourceFactory.createProperty(LDES, "transactionFinalizedObject");
 
     private OpenLdesAdapter() {}
 
@@ -88,21 +73,7 @@ public final class OpenLdesAdapter {
                             Thread.currentThread().interrupt();
                         }
                     });
-            EventStreamProperties properties = emitContext(protocol, runId, input, requestExecutor);
             MemberSupplier supplier = new MemberSupplierImpl(processor, true);
-            if ("ordered".equals(input.path("mode").asText())) {
-                supplier = new StreamingOrderedMemberSupplier(
-                        metadata,
-                        requestExecutor,
-                        repositories.memberIdRepository(),
-                        true,
-                        properties.getRootNode(),
-                        path(properties, LDES_TIMESTAMP_PATH),
-                        path(properties, LDES_SEQUENCE_PATH),
-                        path(properties, LDES_TRANSACTION_PATH),
-                        path(properties, LDES_TRANSACTION_FINALIZED_PATH),
-                        path(properties, LDES_TRANSACTION_FINALIZED_OBJECT));
-            }
             supplier.init();
             requestExecutor.beginTraversal();
             int emitted = 0;
@@ -111,7 +82,7 @@ public final class OpenLdesAdapter {
                     SuppliedMember member = supplier.get();
                     emitted++;
                     StringWriter dataset = new StringWriter();
-                    RDFDataMgr.write(dataset, member.getDataset(), Lang.NQUADS);
+                    RDFDataMgr.write(dataset, member.getModel(), Lang.NQUADS);
                     emit(protocol, event(runId, "member",
                             "id", member.getId(),
                             "dataset", dataset.toString(),
@@ -133,48 +104,6 @@ public final class OpenLdesAdapter {
                     "kind", "client",
                     "message", describe(error)));
         }
-    }
-
-    private static EventStreamProperties emitContext(
-            PrintStream protocol,
-            String runId,
-            JsonNode input,
-            RequestExecutor requestExecutor) throws Exception {
-        EventStreamProperties properties = new EventStreamPropertiesFetcher(requestExecutor)
-                .fetchEventStreamProperties(new PropertiesRequest(input.path("entrypoint").asText(), Lang.TURTLE));
-        StringWriter dataset = new StringWriter();
-        RDFDataMgr.write(dataset, properties.getContextDataset(), Lang.NQUADS);
-        Map<String, Object> context = event(runId, "context",
-                "eventStream", properties.getUri(),
-                "rootNode", properties.getRootNode(),
-                "shapes", properties.getShaclShapeUris(),
-                "viewDescriptions", properties.getViewDescriptions(),
-                "retentionPolicies", properties.getRetentionPolicies(),
-                "dataset", dataset.toString(),
-                "mediaType", "application/n-quads");
-        putIfPresent(context, "timestampPath", properties.getTimestampPath());
-        putIfPresent(context, "versionOfPath", properties.getVersionOfPath());
-        if (!properties.getSequencePath().isEmpty()) {
-            context.put("sequencePath", properties.getSequencePath());
-        }
-        putIfPresent(context, "transactionFinalizedPath", properties.getTransactionFinalizedPath());
-        putIfPresent(context, "versionTimestampPath", properties.getVersionTimestampPath());
-        putIfPresent(context, "versionSequencePath", properties.getVersionSequencePath());
-        putIfPresent(context, "pollingInterval", properties.getPollingInterval());
-        emit(protocol, context);
-        return properties;
-    }
-
-    private static void putIfPresent(Map<String, Object> event, String key, Object value) {
-        if (value != null) {
-            event.put(key, value);
-        }
-    }
-
-    private static Optional<RDFNode> path(EventStreamProperties properties, Property property) {
-        final Model model = properties.getContextDataset().getDefaultModel();
-        return Optional.ofNullable(model.createResource(properties.getUri()).getProperty(property))
-                .map(statement -> statement.getObject());
     }
 
     private static Map<String, Object> event(

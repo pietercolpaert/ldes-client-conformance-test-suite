@@ -22,9 +22,9 @@ if (operation === "probe") {
       clientVersion: "3.1.1",
       clientRevision: "52b1feb8ac8f0da77e9e353d4b1dac664857d612",
       capabilities: {
-        modes: ["unordered", "ordered"],
+        modes: ["unordered"],
         memberExtraction: true,
-        context: true,
+        context: false,
         persistentState: true,
       },
       reason: available
