@@ -1,0 +1,4 @@
+[
+  { "phase": "fast", "path": "/root", "minGapMs": 800 },
+  { "phase": "slow", "path": "/root", "minGapMs": 1700 }
+]

@@ -1,0 +1,13 @@
+version: 0
+entrypoint: /root
+routes:
+  - path: /root
+    requests:
+      - response:
+          status: 200
+          headers: { content-type: text/turtle }
+          body: responses/root.ttl
+runs:
+  - id: run-1
+    phase: default
+    mode: ordered

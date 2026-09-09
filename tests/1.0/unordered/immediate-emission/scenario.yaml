@@ -1,0 +1,35 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "routes": [
+    {
+      "path": "/root",
+      "requests": [
+        {
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/trig"
+            },
+            "body": "responses/root.trig"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/slow",
+      "requests": [
+        {
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "text/turtle"
+            },
+            "body": "responses/slow.ttl",
+            "delayMs": 300
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+[
+  { "path": "/entry", "minCount": 1 },
+  { "path": "/root", "minCount": 1 },
+  { "path": "/child", "minCount": 1 },
+  { "path": "/decoy", "count": 0 }
+]

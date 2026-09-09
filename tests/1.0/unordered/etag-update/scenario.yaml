@@ -1,0 +1,213 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "runs": [
+    {
+      "id": "first",
+      "phase": "first"
+    },
+    {
+      "id": "second",
+      "phase": "second"
+    },
+    {
+      "id": "third",
+      "phase": "third"
+    }
+  ],
+  "phases": [
+    {
+      "id": "first",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"v1\""
+                },
+                "body": "responses/root.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/mid",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"m1\""
+                },
+                "body": "responses/mid.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/leaf",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle"
+                },
+                "body": "responses/leaf-1.ttl"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "whenHeaders": {
+                "if-none-match": "\"v1\""
+              },
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"v2\""
+                },
+                "body": "responses/root.ttl"
+              }
+            },
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"v2\""
+                },
+                "body": "responses/root.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/mid",
+          "requests": [
+            {
+              "whenHeaders": {
+                "if-none-match": "\"m1\""
+              },
+              "response": {
+                "status": 304,
+                "headers": {
+                  "etag": "\"m1\""
+                }
+              }
+            },
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"m1\""
+                },
+                "body": "responses/mid.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/leaf",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle"
+                },
+                "body": "responses/leaf-2.ttl"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "third",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "whenHeaders": {
+                "if-none-match": "\"v2\""
+              },
+              "response": {
+                "status": 304,
+                "headers": {
+                  "etag": "\"v2\""
+                }
+              }
+            },
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"v2\""
+                },
+                "body": "responses/root.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/mid",
+          "requests": [
+            {
+              "whenHeaders": {
+                "if-none-match": "\"m1\""
+              },
+              "response": {
+                "status": 304,
+                "headers": {
+                  "etag": "\"m1\""
+                }
+              }
+            },
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle",
+                  "etag": "\"m1\""
+                },
+                "body": "responses/mid.ttl"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/leaf",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "text/turtle"
+                },
+                "body": "responses/leaf-2.ttl"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

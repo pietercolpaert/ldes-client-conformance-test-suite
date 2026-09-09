@@ -1,0 +1,16 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-common-serializations> a earl:TestCase;
+    dct:title "The five required RDF response media types are parsed";
+    dct:description "The same logical root page is served as Turtle, N-Triples, N-Quads, TriG, and JSON-LD across runs; the client must parse each required media type and emit the corresponding member.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-028>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-029>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-030>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-031>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-032>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

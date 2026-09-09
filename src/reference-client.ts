@@ -60,7 +60,7 @@ interface PendingMember {
   id: string;
   dataset: string;
   quads: Quad[];
-  order: Array<string | number>;
+  order: Array<string | number | { coefficient: bigint; scale: number }>;
   finalizesTransaction: boolean;
 }
 
@@ -142,7 +142,8 @@ async function runReferenceOnce(input: AdapterInput): Promise<AdapterEvent[]> {
     } else {
       initial = await fetchPage(input.entrypoint, state.nodes[input.entrypoint]?.etag);
       if (initial.status === 304) {
-        throw new Error("The entry point returned 304 before root discovery could be refreshed");
+        if (!savedRoot) throw new Error("304 without saved root context");
+        initial = { ...initial, quads: parseNQuads(savedRoot.dataset), url: savedRoot.rootNode };
       }
       discovery = discoverRoot(initial, input.entrypoint);
       rootPage =
@@ -150,7 +151,8 @@ async function runReferenceOnce(input: AdapterInput): Promise<AdapterEvent[]> {
           ? initial
           : await fetchPage(discovery.rootNode, state.nodes[discovery.rootNode]?.etag);
       if (rootPage.status === 304) {
-        throw new Error("The root node returned 304 without a reusable root context");
+        if (!savedRoot || savedRoot.rootNode !== discovery.rootNode) throw new Error("304 without saved root context");
+        rootPage = { ...rootPage, quads: parseNQuads(savedRoot.dataset) };
       }
     }
     const context = extractContext(rootPage.quads, discovery.eventStream, discovery.rootNode);
@@ -286,6 +288,7 @@ async function runReferenceOnce(input: AdapterInput): Promise<AdapterEvent[]> {
       protocolVersion: 0,
       type: "statistics",
       runId: input.runId,
+      lastRun: new Date().toISOString(),
       membersEmitted: events.filter(
         (event) => event.type === "member" && event.runId === input.runId,
       ).length,
@@ -321,7 +324,7 @@ async function fetchPage(url: string, etag?: string): Promise<ParsedPage> {
     });
     if (RETRYABLE.has(response.status) && attempt < 7) {
       await response.body?.cancel();
-      await new Promise((resolve) => setTimeout(resolve, Math.min(5 * 2 ** attempt, 50)));
+      await new Promise((resolve) => setTimeout(resolve, Math.min(25 * 2 ** attempt, 200)));
       continue;
     }
     if (response.status === 304 || response.status === 410) {
@@ -363,21 +366,28 @@ function extractContext(
   eventStream: string,
   rootNode: string,
 ): Record<string, unknown> {
-  const values = (predicate: string): string[] =>
-    uniqueTerms(objects(quads, namedNode(eventStream), predicate)).map((term) => term.value).sort();
-  const rootValues = (predicate: string): string[] =>
-    uniqueTerms(objects(quads, namedNode(rootNode), predicate)).map((term) => term.value).sort();
-  const scalar = (predicate: string): string | undefined => values(predicate)[0];
+  // Metadata nodes may be blank nodes, so keep RDF terms while walking and only
+  // project to strings at the end. Rebuilding a subject as namedNode(term.value)
+  // silently loses every blank-node-described shape, view or policy.
+  const terms = (subject: Term, predicate: string): Term[] =>
+    uniqueTerms(objects(quads, subject, predicate));
+  const streamTerm = namedNode(eventStream);
+  const rootTerm = namedNode(rootNode);
+  const project = (list: Term[]): string[] => list.map((term) => term.value).sort();
+  const scalar = (predicate: string): string | undefined => project(terms(streamTerm, predicate))[0];
   const polling = scalar(`${LDES}pollingInterval`);
+  const viewDescriptionTerms = terms(rootTerm, `${TREE}viewDescription`);
+  const retentionTerms = uniqueTerms([
+    ...terms(rootTerm, `${LDES}retentionPolicy`),
+    ...viewDescriptionTerms.flatMap((view) => terms(view, `${LDES}retentionPolicy`)),
+  ]);
   return {
-    shapes: values(`${TREE}shape`),
-    viewDescriptions: rootValues(`${TREE}viewDescription`),
-    retentionPolicies: [
-      ...rootValues(`${LDES}retentionPolicy`),
-      ...rootValues(`${TREE}viewDescription`).flatMap((view) =>
-        objects(quads, namedNode(view), `${LDES}retentionPolicy`).map((term) => term.value)
-      ),
-    ].filter((value, index, all) => all.indexOf(value) === index).sort(),
+    shapes: project(terms(streamTerm, `${TREE}shape`)),
+    viewDescriptions: project(viewDescriptionTerms),
+    emptyRetentionPolicies: project(
+      retentionTerms.filter((term) => !quads.some((quad) => quad.subject.equals(term))),
+    ),
+    retentionPolicies: project(retentionTerms),
     ...(scalar(`${LDES}timestampPath`) ? { timestampPath: scalar(`${LDES}timestampPath`) } : {}),
     ...(scalar(`${LDES}sequencePath`) ? { sequencePath: scalar(`${LDES}sequencePath`) } : {}),
     ...(scalar(`${LDES}versionTimestampPath`)
@@ -477,6 +487,7 @@ function memberEvent(runId: string, member: PendingMember): AdapterEvent {
   return {
     protocolVersion: 0,
     type: "member",
+    receivedAt: new Date().toISOString(),
     runId,
     id: member.id,
     dataset: member.dataset,
@@ -487,15 +498,7 @@ function memberEvent(runId: string, member: PendingMember): AdapterEvent {
 function compareMembers(left: PendingMember, right: PendingMember): number {
   const length = Math.max(left.order.length, right.order.length);
   for (let index = 0; index < length; index += 1) {
-    const a = left.order[index] ?? "";
-    const b = right.order[index] ?? "";
-    const comparison = typeof a === "number" && typeof b === "number"
-      ? a - b
-      : String(a) < String(b)
-      ? -1
-      : String(a) > String(b)
-      ? 1
-      : 0;
+    const comparison = compareOrderValues(left.order[index] ?? "", right.order[index] ?? "");
     if (comparison) return comparison;
   }
   if (left.finalizesTransaction !== right.finalizesTransaction) {
@@ -504,9 +507,42 @@ function compareMembers(left: PendingMember, right: PendingMember): number {
   return left.id.localeCompare(right.id);
 }
 
-function comparable(term: Term): string | number {
+type OrderValue = PendingMember["order"][number];
+
+// A single ordering path can mix datatypes across members. Numerics are always
+// compared exactly, and values of different kinds get a stable kind order
+// rather than an accidental string comparison of their representations.
+function compareOrderValues(a: OrderValue, b: OrderValue): number {
+  const left = typeof a === "number" ? exactNumber(a) : a;
+  const right = typeof b === "number" ? exactNumber(b) : b;
+  if (typeof left === "object" && typeof right === "object") {
+    const scaled = left.coefficient * 10n ** BigInt(right.scale);
+    const other = right.coefficient * 10n ** BigInt(left.scale);
+    return scaled < other ? -1 : scaled > other ? 1 : 0;
+  }
+  if (typeof left === "string" && typeof right === "string") {
+    return left < right ? -1 : left > right ? 1 : 0;
+  }
+  return typeof left === "object" ? -1 : 1;
+}
+
+function exactNumber(value: number): OrderValue {
+  if (!Number.isFinite(value)) return String(value);
+  const [mantissa, exponent = "0"] = value.toString().split("e");
+  const [whole, fraction = ""] = mantissa.split(".");
+  const scale = fraction.length - Number(exponent);
+  return scale < 0
+    ? { coefficient: BigInt(whole + fraction) * 10n ** BigInt(-scale), scale: 0 }
+    : { coefficient: BigInt(whole + fraction), scale };
+}
+
+function comparable(term: Term): PendingMember["order"][number] {
   if (term.termType === "Literal") {
     if (NUMERIC_DATATYPES.has(term.datatype.value)) {
+      if (![`${XSD}float`, `${XSD}double`].includes(term.datatype.value) && /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/u.test(term.value)) {
+        const [whole, fraction = ""] = term.value.split(".");
+        return { coefficient: BigInt(whole + fraction), scale: fraction.length };
+      }
       const number = Number(term.value);
       if (Number.isFinite(number) && term.value.trim() !== "") return number;
     }

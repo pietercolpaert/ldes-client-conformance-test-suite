@@ -6,6 +6,7 @@
 <#ordered-unsupported-relation> a earl:TestCase;
     dct:title "Unknown TREE relation types are handled conservatively";
     dct:description "An unknown relation type must not cause silent member loss.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-010>;
-    ct:requirementLevel ct:Should;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-051>;
+    ct:requirementLevel ct:Must;
     ct:group ct:OrderedTraversal .

@@ -1,0 +1,92 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "runs": [
+    {
+      "id": "first",
+      "phase": "first"
+    },
+    {
+      "id": "second",
+      "phase": "second"
+    }
+  ],
+  "phases": [
+    {
+      "id": "first",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig",
+                  "etag": "\"root\""
+                },
+                "body": "responses/root.trig"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/child",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig"
+                },
+                "body": "responses/first.trig"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "response": {
+                "status": 304
+              },
+              "whenHeaders": {
+                "if-none-match": "\"root\""
+              }
+            },
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig",
+                  "etag": "\"root\""
+                },
+                "body": "responses/root.trig"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/child",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig"
+                },
+                "body": "responses/second.trig"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

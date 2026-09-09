@@ -1,0 +1,13 @@
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/tree#view> <{{origin}}/root> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/tree#shape> <{{raw}}responses/root.ttl#vocab/ShapeA> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/tree#shape> <{{raw}}responses/root.ttl#vocab/ShapeB> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/ldes#timestampPath> <{{raw}}responses/root.ttl#vocab/created> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/ldes#versionTimestampPath> <{{raw}}responses/root.ttl#vocab/modified> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/ldes#versionSequencePath> <{{raw}}responses/root.ttl#vocab/version> .
+<{{raw}}responses/root.ttl#context-stream> <https://w3id.org/ldes#pollingInterval> "30"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{origin}}/root> <https://w3id.org/tree#viewDescription> <{{raw}}responses/root.ttl#vocab/service> .
+<{{origin}}/root> <https://w3id.org/ldes#retentionPolicy> <{{raw}}responses/root.ttl#vocab/direct-policy> .
+<{{raw}}responses/root.ttl#vocab/service> <https://w3id.org/ldes#retentionPolicy> <{{raw}}responses/root.ttl#vocab/service-policy> .
+<{{raw}}responses/root.ttl#vocab/service> <{{raw}}responses/root.ttl#vocab/implementation> "fixture publishing service" .
+<{{raw}}responses/root.ttl#vocab/direct-policy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{{raw}}responses/root.ttl#vocab/RetentionPolicy> .
+<{{raw}}responses/root.ttl#vocab/service-policy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{{raw}}responses/root.ttl#vocab/RetentionPolicy> .

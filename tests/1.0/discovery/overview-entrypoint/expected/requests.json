@@ -1,17 +1,23 @@
 [
   {
     "path": "/overview",
-    "count": 1,
-    "headerIncludes": {
-      "accept": "application/n-quads"
-    }
-  },
-  {
-    "path": "/root",
+    "presentHeaders": [
+      "accept"
+    ],
     "minCount": 1
   },
   {
+    "path": "/root",
+    "minCount": 1,
+    "presentHeaders": [
+      "accept"
+    ]
+  },
+  {
     "path": "/child",
-    "count": 1
+    "presentHeaders": [
+      "accept"
+    ],
+    "minCount": 1
   }
 ]

@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/root",
+    "phase": "second",
+    "count": 0
+  },
+  {
+    "path": "/child",
+    "phase": "second",
+    "minCount": 1
+  }
+]

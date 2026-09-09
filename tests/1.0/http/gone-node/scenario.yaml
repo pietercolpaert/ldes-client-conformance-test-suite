@@ -11,3 +11,9 @@ routes:
   - path: /retired
     requests:
       - response: { status: 410 }
+  - path: /survivor
+    requests:
+      - response:
+          status: 200
+          headers: { content-type: text/turtle }
+          body: responses/survivor.ttl

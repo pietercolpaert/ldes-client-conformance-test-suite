@@ -18,8 +18,41 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The suite itself must be green before any production-client result is
+  # published: typecheck, harness regression tests, fixture validation
+  # (including datasets nested in oneOf alternatives), and the reference run,
+  # which also enforces the requirement-coverage gate.
+  suite:
+    name: Suite regression tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the conformance suite
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck, harness tests, fixture validation, reference run
+        run: npm test
+
+      - name: Upload reference report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-reference
+          path: reports/reference
+          if-no-files-found: error
+
   conformance:
     name: Test ${{ matrix.adapter }}
+    needs: suite
     runs-on: ubuntu-latest
     timeout-minutes: 35
     strategy:

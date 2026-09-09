@@ -74,19 +74,29 @@ export class FixtureServer {
 
   private async handle(request: IncomingMessage, response: ServerResponse): Promise<void> {
     const url = new URL(request.url ?? "/", this.origin);
-    const route = this.phases.get(this.currentPhase)?.get(url.pathname);
+    const route = this.phases.get(this.currentPhase)?.get(url.pathname + url.search);
     if (!route) {
-      this.writeLog(request, url.pathname, 404);
+      this.writeLog(request, url.pathname + url.search, 404);
       response.writeHead(404, { "content-type": "text/plain" });
       response.end("No fixture route matched\n");
       return;
     }
 
-    const key = `${this.currentPhase}:${url.pathname}`;
+    const variants = route.requests.filter((variant) => Object.entries(variant.whenHeaders ?? {})
+      .every(([name, value]) => request.headers[name.toLowerCase()] === value));
+    const candidates = variants.some((variant) => variant.whenHeaders)
+      ? variants.filter((variant) => variant.whenHeaders) : variants;
+    if (!candidates.length) {
+      this.writeLog(request, url.pathname + url.search, 400);
+      response.writeHead(400);
+      response.end("No matching request headers");
+      return;
+    }
+    const key = `${this.currentPhase}:${url.pathname}${url.search}:${JSON.stringify(candidates.map((v) => v.whenHeaders))}`;
     const count = this.requestCounts.get(key) ?? 0;
     this.requestCounts.set(key, count + 1);
-    const selected = route.requests[Math.min(count, route.requests.length - 1)].response;
-    this.writeLog(request, url.pathname, selected.status);
+    const selected = candidates[Math.min(count, candidates.length - 1)].response;
+    const log = this.writeLog(request, url.pathname + url.search, selected.status);
 
     const headers = { ...(selected.headers ?? {}) };
     const location = headers.location ?? headers.Location;
@@ -103,11 +113,18 @@ export class FixtureServer {
       await new Promise((resolve) => setTimeout(resolve, selected.delayMs));
     }
     response.writeHead(selected.status, headers);
-    response.end(body);
+    response.write(body);
+    for (const chunk of selected.chunks ?? []) {
+      if (chunk.delayMs) await new Promise((resolve) => setTimeout(resolve, chunk.delayMs));
+      const source = await readFile(resolveBodyPath(this.scenarioPath, chunk.body), "utf8");
+      response.write(expandFixturePlaceholders(source, this.scenarioPath, this.origin));
+    }
+    log.completedAt = new Date().toISOString();
+    response.end();
   }
 
-  private writeLog(request: IncomingMessage, path: string, status: number): void {
-    this.requests.push({
+  private writeLog(request: IncomingMessage, path: string, status: number): RequestLogEntry {
+    const entry: RequestLogEntry = {
       sequence: ++this.sequence,
       method: request.method ?? "GET",
       path,
@@ -115,6 +132,8 @@ export class FixtureServer {
       phase: this.currentPhase,
       status,
       timestamp: new Date().toISOString(),
-    });
+    };
+    this.requests.push(entry);
+    return entry;
   }
 }

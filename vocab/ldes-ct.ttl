@@ -43,9 +43,11 @@ ct:TreeProfileExtraction a ct:AdapterCapability;
 ct:UnorderedTraversal a ct:ComplianceGroup;
     rdfs:label "Unordered traversal" .
 
+# LDES 1.0 s3 permits a client that implements ordered mode only, so the ordered
+# claim must not be gated on the unordered claim. Obligations shared by both
+# modes are exercised by a fixture in each supported mode.
 ct:OrderedTraversal a ct:ComplianceGroup;
-    rdfs:label "Ordered traversal";
-    ct:dependsOn ct:UnorderedTraversal .
+    rdfs:label "Ordered traversal" .
 
 ct:MemberExtraction a ct:ComplianceGroup;
     rdfs:label "Member extraction" .

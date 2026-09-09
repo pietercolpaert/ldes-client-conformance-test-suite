@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#unordered-etag-update> a earl:TestCase;
+    dct:title "A changed ETag replaces the stored validator, and a 304 preserves the node frontier";
+    dct:description "The root node's ETag changes from \"v1\" to \"v2\" on a revalidated response. A later run receives 304 only when it presents the updated validator, so a client that replays the stale ETag is observable in the request log. In the same run an intermediate node answers 304, and the client must still follow that node's saved outgoing relation to reach a member added on its child rather than discarding the frontier with the unchanged node.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-027>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-037>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:UnorderedTraversal .

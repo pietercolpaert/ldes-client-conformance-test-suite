@@ -1,0 +1,7 @@
+{"type": "member", "id": "https://example.test/yDecimalLow"}
+{"type": "member", "id": "https://example.test/cDecimalHigh"}
+{"type": "member", "id": "https://example.test/xTwo"}
+{"type": "member", "id": "https://example.test/bTen"}
+{"type": "member", "id": "https://example.test/zLow"}
+{"type": "member", "id": "https://example.test/aHigh"}
+{"type":"run-end","status":"completed"}

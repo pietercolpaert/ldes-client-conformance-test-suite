@@ -1,0 +1,8 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+<https://www.pieter.pm/ldes-client-conformance-test-suite/1.0#ordered-common-relation-targets-and-scope> a earl:TestCase;
+    dct:title "relation targets and scope";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-049>, <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-050>, <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-051>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

@@ -136,12 +136,35 @@ testable obligations.
 
 The following rows are deliberately not baseline traversal requirements until
 the project decides how far a conformance claim for "LDES client" extends into
-the broader consumer pipeline:
+the broader consumer pipeline. The list is restricted to rows whose **Subject**
+column in the table above is a consumer or processor rather than a client:
 
 - `LDES10-PIPE-001`: downstream commit behavior.
-- `LDES10-CTX-010` through `LDES10-CTX-015`: chronological interpretation,
-  SHACL validation, version selection, and update/delete payload recovery.
-- `LDES10-RET-001` through `LDES10-RET-008`: retention interpretation.
+- `LDES10-CTX-011` through `LDES10-CTX-015`: SHACL validation, version
+  selection, and update/delete payload recovery.
+- `LDES10-RET-001`, `LDES10-RET-002`, and `LDES10-RET-006` through
+  `LDES10-RET-008`: retention calculation, clock-skew buffering, version
+  duration evaluation, and historical policy support.
+
+Rows that the table classifies as **client** obligations are *not* boundary
+items and are exercised by the suite, even though they sit in specification
+sections that are otherwise consumer-oriented:
+
+- `LDES10-RET-003` and `LDES10-RET-004`: the client discovers a retention policy
+  on the root node and through `tree:viewDescription`.
+- `LDES10-RET-005`: with a retention-policy IRI that has no statements in the
+  current page, the client assumes the view retains no members. The
+  `context/empty-retention` fixture observes this through a dedicated
+  `emptyRetentionPolicies` context signal, so a client that merely echoes the
+  policy IRI without interpreting it does not pass.
+- `LDES10-CTX-010`: chronological order derived from `ldes:timestampPath` and/or
+  `ldes:sequencePath`. This is a client obligation whenever the client offers
+  ordered mode, and the ordered fixtures already exercise it.
+
+Keyword scanning alone does not find every obligation here: retention in
+particular states semantic defaults and interactions without uppercase keywords.
+Re-read those sections when defining a retention-aware consumer profile rather
+than relying on a keyword catalog.
 
 ## Derived Test Scenarios Outside The Main-Spec Count
 

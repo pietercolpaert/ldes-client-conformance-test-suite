@@ -1,0 +1,3 @@
+{"type":"member","id":"https://example.test/ordinary"}
+{"type":"member","id":"https://example.test/final"}
+{"type":"run-end","status":"completed"}

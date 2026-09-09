@@ -1,6 +1,6 @@
 import { Readable } from "node:stream";
 import { DataFactory, Parser, quadToString } from "rdf-parser-ts";
-import { rdfParser } from "rdf-parse";
+import { JsonLdParser } from "jsonld-streaming-parser";
 import type { Quad, Term } from "@rdfjs/types";
 
 const { namedNode, defaultGraph } = DataFactory;
@@ -8,15 +8,12 @@ const { namedNode, defaultGraph } = DataFactory;
 export const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 export const TREE = "https://w3id.org/tree#";
 
-export async function parseRdf(source: string, contentType: string, baseIRI: string): Promise<Quad[]> {
+export async function parseRdf(source: string, contentType: string, baseIRI: string, documentLoader = cachedContextLoader): Promise<Quad[]> {
   const normalized = contentType.split(";")[0].trim().toLowerCase();
   if (normalized !== "application/ld+json") {
     return parseWithRdfParserTs(source, normalized || "text/turtle", baseIRI);
   }
-  const quadStream = rdfParser.parse(Readable.from([source]), {
-    contentType: normalized || "text/turtle",
-    baseIRI,
-  });
+  const quadStream = Readable.from([source]).pipe(new JsonLdParser({ baseIRI, documentLoader }));
   const quads: Quad[] = [];
   return await new Promise((resolve, reject) => {
     quadStream.on("data", (quad: Quad) => quads.push(quad));
@@ -58,7 +55,7 @@ export function extractMemberDataset(quads: Quad[], member: Term): Quad[] {
 
     const matching = quads.filter((quad) => {
       const defaultSubjectStar = quad.graph.equals(defaultGraph()) && quad.subject.equals(focus);
-      const namedGraphPayload = focus.termType === "NamedNode" && quad.graph.equals(focus);
+      const namedGraphPayload = quad.graph.equals(focus);
       return defaultSubjectStar || namedGraphPayload;
     });
 
@@ -81,8 +78,8 @@ export function canonicalizeNQuads(source: string): string[] {
 }
 
 export function datasetEquals(left: string, right: string): boolean {
-  const leftQuads = parseNQuads(left);
-  const rightQuads = parseNQuads(right);
+  const leftQuads = uniqueQuads(parseNQuads(left));
+  const rightQuads = uniqueQuads(parseNQuads(right));
   if (leftQuads.length !== rightQuads.length) return false;
   const leftBlankNodes = blankNodeIds(leftQuads);
   const rightBlankNodes = blankNodeIds(rightQuads);
@@ -91,15 +88,29 @@ export function datasetEquals(left: string, right: string): boolean {
     return JSON.stringify(leftQuads.map(quadKey).sort()) ===
       JSON.stringify(rightQuads.map(quadKey).sort());
   }
-  if (leftBlankNodes.length > 8) {
-    throw new Error("dataset isomorphism oracle supports at most eight blank nodes");
+  const rightKeys = new Set(rightQuads.map(quadKey));
+  const mapping = new Map<string, string>();
+  const used = new Set<string>();
+  // Backtrack lazily and reject partial assignments as soon as a fully mapped
+  // quad cannot occur in the other dataset. No factorial permutation array.
+  function search(index: number): boolean {
+    if (index === leftBlankNodes.length) return leftQuads.every((quad) => rightKeys.has(mappedQuadKey(quad, mapping)));
+    for (const candidate of rightBlankNodes) {
+      if (used.has(candidate)) continue;
+      mapping.set(leftBlankNodes[index], candidate);
+      used.add(candidate);
+      const compatible = leftQuads.every((quad) => {
+        const terms = [quad.subject, quad.object, quad.graph];
+        return terms.some((term) => term.termType === "BlankNode" && !mapping.has(term.value))
+          || rightKeys.has(mappedQuadKey(quad, mapping));
+      });
+      if (compatible && search(index + 1)) return true;
+      mapping.delete(leftBlankNodes[index]);
+      used.delete(candidate);
+    }
+    return false;
   }
-  const wanted = JSON.stringify(rightQuads.map(quadKey).sort());
-  return permutations(rightBlankNodes).some((candidate) => {
-    const mapping = new Map(leftBlankNodes.map((id, index) => [id, candidate[index]]));
-    const mapped = leftQuads.map((quad) => mappedQuadKey(quad, mapping)).sort();
-    return JSON.stringify(mapped) === wanted;
-  });
+  return search(0);
 }
 
 export function quadKey(quad: Quad): string {
@@ -150,10 +161,43 @@ function mappedQuadKey(quad: Quad, mapping: Map<string, string>): string {
   ].join(" ");
 }
 
-function permutations<T>(values: T[]): T[][] {
-  if (values.length < 2) return [values];
-  return values.flatMap((value, index) =>
-    permutations([...values.slice(0, index), ...values.slice(index + 1)])
-      .map((tail) => [value, ...tail])
-  );
+function uniqueQuads(quads: Quad[]): Quad[] {
+  return [...new Map(quads.map((quad) => [quadKey(quad), quad])).values()];
 }
+
+const contexts = new Map<string, { body: any; expires: number; etag?: string }>();
+
+// Each scenario must start with a cold cache, otherwise a reused ephemeral port
+// lets one run answer another run's context request and the request-count
+// oracle silently observes zero fetches.
+export function resetContextCache(): void {
+  contexts.clear();
+}
+
+const cachedContextLoader = {
+  async load(url: string): Promise<any> {
+    // The suite is deterministic and offline: a fixture that needs an external
+    // context must serve it from the fixture server.
+    const origin = new URL(url).hostname;
+    if (!["127.0.0.1", "::1", "localhost"].includes(origin)) {
+      throw new Error(`refusing to load a non-loopback JSON-LD context: ${url}`);
+    }
+    const saved = contexts.get(url);
+    if (saved && saved.expires > Date.now()) return saved.body;
+    const response = await fetch(url, { headers: {
+      accept: "application/ld+json, application/json",
+      ...(saved?.etag ? { "if-none-match": saved.etag } : {}),
+    } });
+    if (!response.ok && response.status !== 304) throw new Error(`JSON-LD context HTTP ${response.status}`);
+    if (response.status === 304 && !saved) throw new Error("JSON-LD context 304 without cached representation");
+    const body = response.status === 304 ? saved!.body : await response.json();
+    const control = response.headers.get("cache-control") ?? "";
+    const age = Number(/(?:^|,)\s*max-age=(\d+)/iu.exec(control)?.[1] ?? 0);
+    if (!/no-store/iu.test(control)) {
+      if (contexts.size >= 128 && !contexts.has(url)) contexts.delete(contexts.keys().next().value!);
+      contexts.set(url, { body, expires: /no-cache/iu.test(control) ? 0 : Date.now() + age * 1000,
+        etag: response.headers.get("etag") ?? saved?.etag });
+    } else contexts.delete(url);
+    return body;
+  },
+};

@@ -1,0 +1,5 @@
+<{{raw}}responses/root.ttl#serialization-stream> <https://w3id.org/tree#view> <{{origin}}/root> .
+<{{raw}}responses/root.ttl#serialization-stream> <https://w3id.org/tree#member> <{{raw}}responses/root.ttl#member/nt> .
+<{{raw}}responses/root.ttl#member/nt> <{{raw}}responses/root.ttl#vocab/value> "n-triples" .
+
+<{{raw}}responses/root.ttl#serialization-stream> <https://w3id.org/ldes#sequencePath> <{{raw}}responses/root.ttl#vocab/value> .

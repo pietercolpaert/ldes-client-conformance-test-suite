@@ -29,20 +29,18 @@ async function walk(directory: string, tests: TestCase[]): Promise<void> {
   const expectedPath = path.join(directory, "expected", "events.ndjson");
   try {
     await stat(scenarioPath);
-    await stat(manifestPath);
-    await stat(expectedPath);
-    const metadata = await readManifest(manifestPath);
-    tests.push({
-      id: path.relative(process.cwd(), directory).replaceAll(path.sep, "/"),
-      directory,
-      manifestPath,
-      scenarioPath,
-      expectedPath,
-      ...metadata,
-    });
-  } catch {
-    // Not an executable atomic test directory.
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+    throw error;
   }
+  // Once a scenario exists, missing or malformed artifacts are authoring errors.
+  await stat(manifestPath);
+  await stat(expectedPath);
+  const metadata = await readManifest(manifestPath);
+  tests.push({
+    id: path.relative(process.cwd(), directory).replaceAll(path.sep, "/"),
+    directory, manifestPath, scenarioPath, expectedPath, ...metadata,
+  });
 }
 
 async function readManifest(manifestPath: string): Promise<Pick<

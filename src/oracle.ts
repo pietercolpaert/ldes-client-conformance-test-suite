@@ -34,14 +34,39 @@ export async function evaluate(
     diagnostics.push(`expected ${expected.length} observable events, got ${observed.length}`);
   }
 
+  // Permute only contiguous member blocks within one run. Terminal and context
+  // boundaries remain observable; ordered ties must be explicitly declared.
   for (let index = 0; index < Math.min(observed.length, expected.length); index += 1) {
-    const actual = observed[index];
     const wanted = expected[index];
-    diagnostics.push(...await compareExpectedEvent(test, index, actual, wanted));
+    const ordered = scenario?.runs?.find((run) => run.id === observed[index].runId)?.mode === "ordered"
+      || test.group === "OrderedTraversal";
+    if (wanted.type === "member" && (!ordered || wanted.tieGroup)) {
+      let end = index + 1;
+      while (end < expected.length && expected[end].type === "member" &&
+        expected[end].runId === wanted.runId &&
+        (!ordered || expected[end].tieGroup === wanted.tieGroup)) end += 1;
+      const remaining = observed.slice(index, end);
+      for (let cursor = index; cursor < end; cursor += 1) {
+        let match = -1;
+        for (let candidate = 0; candidate < remaining.length; candidate += 1) {
+          if (remaining[candidate].runId === observed[index].runId &&
+            !(await compareExpectedEvent(test, cursor, remaining[candidate], expected[cursor])).length) {
+            match = candidate;
+            break;
+          }
+        }
+        if (match < 0) diagnostics.push(`event ${cursor}: missing matching member in permitted member block`);
+        else remaining.splice(match, 1);
+      }
+      index = end - 1;
+    } else {
+      diagnostics.push(...await compareExpectedEvent(test, index, observed[index], wanted));
+    }
   }
 
   await evaluateRequests(test, requests, diagnostics);
   await evaluateTimings(test, requests, diagnostics);
+  await evaluateEventTimings(test, events, requests, diagnostics);
   evaluateRequestBudget(scenario, requests, diagnostics);
 
   return {
@@ -81,14 +106,26 @@ async function evaluateTimings(
       );
       continue;
     }
+    const label = `request timing ${wanted.phase ? `${wanted.phase}:` : ""}${wanted.path}`;
     const first = Date.parse(matching[0].timestamp);
     const last = Date.parse(matching.at(-1)!.timestamp);
     const span = last - first;
-    if (!Number.isFinite(span) || span < wanted.minSpanMs) {
+    if (wanted.minSpanMs !== undefined && (!Number.isFinite(span) || span < wanted.minSpanMs)) {
       diagnostics.push(
-        `request timing ${wanted.phase ? `${wanted.phase}:` : ""}${wanted.path}: ` +
-        `expected a span of at least ${wanted.minSpanMs}ms, got ${span}ms`,
+        `${label}: expected a span of at least ${wanted.minSpanMs}ms, got ${span}ms`,
       );
+    }
+    if (wanted.minGapMs !== undefined) {
+      for (let index = 1; index < matching.length; index += 1) {
+        const gap = Date.parse(matching[index].timestamp) -
+          Date.parse(matching[index - 1].timestamp);
+        if (!Number.isFinite(gap) || gap < wanted.minGapMs) {
+          diagnostics.push(
+            `${label}: request ${index + 1} followed request ${index} after ${gap}ms, ` +
+            `expected at least ${wanted.minGapMs}ms between consecutive requests`,
+          );
+        }
+      }
     }
   }
 }
@@ -150,16 +187,21 @@ async function compareSingleExpectedEvent(
     diagnostics.push(`expected error kind ${wanted.kind}, got ${actual.kind ?? "<none>"}`);
   }
   for (const [key, value] of Object.entries(wanted)) {
-    if (["type", "id", "runId", "status", "kind", "datasetFile", "oneOf"].includes(key)) {
+    if (["type", "id", "runId", "status", "kind", "datasetFile", "oneOf", "tieGroup", "dateTime"].includes(key)) {
       continue;
     }
     if (!deepEqual(
-      normalizeExpectedValue(actual[key], test),
-      normalizeExpectedValue(value, test),
+      normalizeExpectedValue(setValue(key, actual[key]), test),
+      normalizeExpectedValue(setValue(key, value), test),
     )) {
       diagnostics.push(
         `expected ${key}=${JSON.stringify(value)}, got ${JSON.stringify(actual[key])}`,
       );
+    }
+  }
+  for (const key of wanted.dateTime ?? []) {
+    if (typeof actual[key] !== "string" || !Number.isFinite(Date.parse(actual[key] as string))) {
+      diagnostics.push(`expected ${key} to be a date-time`);
     }
   }
   if (wanted.datasetFile) {
@@ -216,6 +258,9 @@ async function evaluateRequests(
     }
     for (const request of matching) {
       const headers = lowerCaseHeaders(request.headers);
+      for (const name of wanted.presentHeaders ?? []) {
+        if (!headers[name.toLowerCase()]?.trim()) diagnostics.push(`request ${request.path}: missing ${name}`);
+      }
       for (const [name, value] of Object.entries(wanted.headers ?? {})) {
         if (headers[name.toLowerCase()] !== value) {
           diagnostics.push(
@@ -279,4 +324,28 @@ function range(minimum: number, maximum: number): string {
   if (minimum === maximum) return String(minimum);
   if (!Number.isFinite(maximum)) return `at least ${minimum}`;
   return `${minimum}..${maximum}`;
+}
+
+function setValue(key: string, value: unknown): unknown {
+  // These context fields are sets: neither their order nor a repeated entry
+  // carries meaning, so compare them normalized.
+  return ["shapes", "viewDescriptions", "retentionPolicies", "emptyRetentionPolicies"]
+      .includes(key) && Array.isArray(value)
+    ? [...new Set(value)].sort() : value;
+}
+
+async function evaluateEventTimings(test: TestCase, events: AdapterEvent[], requests: RequestLogEntry[], diagnostics: string[]): Promise<void> {
+  let expected: Array<{ member: string; path: string; relation: "before-completion" | "after-completion" }>;
+  try { expected = JSON.parse(await readFile(path.join(path.dirname(test.expectedPath), "event-timing.json"), "utf8")); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return; throw error; }
+  for (const wanted of expected) {
+    const member = events.find((event) => event.type === "member" && event.id === wanted.member);
+    const request = requests.find((entry) => entry.path === wanted.path);
+    const emitted = Date.parse(String(member?.receivedAt));
+    const completed = Date.parse(String(request?.completedAt));
+    if (!Number.isFinite(emitted) || !Number.isFinite(completed) ||
+      (wanted.relation === "before-completion" ? emitted >= completed : emitted < completed)) {
+      diagnostics.push(`member ${wanted.member}: expected ${wanted.relation} of ${wanted.path}`);
+    }
+  }
 }

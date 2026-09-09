@@ -1,0 +1,3 @@
+{"type":"member","id":"{{raw}}responses/root.ttl#member/real"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/child"}
+{"type":"run-end","status":"completed"}

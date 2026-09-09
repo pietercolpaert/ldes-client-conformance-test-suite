@@ -6,6 +6,7 @@
 <#extraction-blank-node-cycle> a earl:TestCase;
     dct:title "Blank-node extraction terminates on cycles";
     dct:description "The member payload contains a cyclic blank-node structure and must still produce finite output.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-006>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-007>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-008>;
     ct:requirementLevel ct:Must;
     ct:group ct:MemberExtraction .

@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "tree": "https://w3id.org/tree#",
+    "ex": "{{raw}}responses/root.ttl#vocab/"
+  },
+  "@id": "{{raw}}responses/root.ttl#serialization-stream",
+  "tree:view": {
+    "@id": "{{origin}}/root"
+  },
+  "tree:member": {
+    "@id": "{{raw}}responses/root.ttl#member/jsonld",
+    "ex:value": "json-ld"
+  },
+  "https://w3id.org/ldes#sequencePath": {
+    "@id": "{{raw}}responses/root.ttl#vocab/value"
+  }
+}

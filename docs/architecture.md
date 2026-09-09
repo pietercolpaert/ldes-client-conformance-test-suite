@@ -89,8 +89,11 @@ human summary is derived from the same results.
 - A `SHOULD` failure is visible but is not a `MUST` failure.
 - Capability discovery selects applicable groups and subclaims; it does not
   award a pass.
-- Ordered traversal is a superset claim. It cannot pass unless unordered
-  traversal also passes.
+- Ordered and unordered traversal are independent mode claims. LDES 1.0 permits
+  a client that implements ordered mode only, so neither claim is gated on the
+  other. Obligations shared by both modes are exercised by a fixture in each
+  mode, and applicability is decided by the modes a scenario's runs declare
+  rather than by its compliance group.
 - Member extraction is kept separate from traversal so clients can expose
   parser/extractor defects distinctly from queue or HTTP defects.
 - Retention-policy interpretation is kept separate from context extraction

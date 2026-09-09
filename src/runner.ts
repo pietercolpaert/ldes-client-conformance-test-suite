@@ -14,7 +14,7 @@ import { evaluate } from "./oracle.js";
 import { getScenarioPhases, getScenarioRuns, loadScenario, resolveBodyPath } from "./scenario.js";
 import { FixtureServer } from "./server.js";
 import { writeCoverageReport } from "./coverage.js";
-import { parseNQuads, parseRdf } from "./rdf.js";
+import { parseNQuads, parseRdf, resetContextCache } from "./rdf.js";
 import type { ExpectedEvent } from "./types.js";
 import { expandFixturePlaceholders } from "./fixture-iri.js";
 
@@ -65,7 +65,7 @@ export async function runSuite(options: RunOptions): Promise<TestResult[]> {
     }
   } else {
     for (const test of tests) {
-      const reason = inapplicableReason(
+      const reason = await inapplicableReason(
         test,
         probe.capabilities ?? options.adapter.declaration.capabilities,
       );
@@ -78,6 +78,7 @@ export async function runSuite(options: RunOptions): Promise<TestResult[]> {
     tests,
     options.outDir,
     path.resolve(options.testsRoot) === path.resolve("tests"),
+    results,
   );
   const summary = summarize(results, metadata, coverage.totals);
   await writeFile(
@@ -97,6 +98,7 @@ async function runTest(
 ): Promise<TestResult> {
   const scenario = await loadScenario(test.scenarioPath);
   const server = new FixtureServer(scenario, test.scenarioPath);
+  const events: import("./types.js").AdapterEvent[] = [];
   const stateDirectory = path.resolve(
     options.outDir,
     "state",
@@ -104,9 +106,9 @@ async function runTest(
   );
   try {
     await mkdir(stateDirectory, { recursive: true });
+    resetContextCache();
     await options.adapter.reset(stateDirectory);
     await server.start();
-    const events = [];
     for (const run of getScenarioRuns(scenario)) {
       server.setPhase(run.phase);
       const input: AdapterInput = {
@@ -129,7 +131,7 @@ async function runTest(
     return {
       test,
       outcome: "cantTell",
-      events: [],
+      events: [...events, ...((error as { events?: import("./types.js").AdapterEvent[] }).events ?? [])],
       requests: server.requests,
       diagnostics: [diagnostic(error)],
     };
@@ -153,7 +155,9 @@ function summarize(
   metadata: ReportMetadata,
   coverage: {
     requirements: number;
+    verified: number;
     withTests: number;
+    advisoryEvidenceOnly: number;
     withRationales: number;
     blockingGaps: number;
   },
@@ -181,7 +185,9 @@ function summarize(
     groupClaims: summarizeGroups(results),
     coverage: {
       totalRequirements: coverage.requirements,
+      requirementsVerified: coverage.verified,
       requirementsWithTests: coverage.withTests,
+      requirementsAdvisoryEvidenceOnly: coverage.advisoryEvidenceOnly,
       requirementsWithRationales: coverage.withRationales,
       blockingGaps: coverage.blockingGaps,
       artifact: "coverage.json",
@@ -203,11 +209,24 @@ function summarize(
   };
 }
 
-function inapplicableReason(
+// Applicability follows the modes a scenario's runs actually declare, not the
+// compliance group it reports into. LDES 1.0 permits an ordered-only client, so
+// a shared obligation exercised in ordered mode must stay applicable while
+// still reporting against the group of the requirement it observes.
+async function inapplicableReason(
   test: Awaited<ReturnType<typeof discoverTests>>[number],
   capabilities: Adapter["declaration"]["capabilities"],
-): string | undefined {
+): Promise<string | undefined> {
   const group = test.group;
+  const scenario = await loadScenario(test.scenarioPath);
+  const unsupported = [
+    ...new Set(getScenarioRuns(scenario).map((run) => run.mode ?? "unordered")),
+  ].filter((mode) => !capabilities.modes.includes(mode));
+  if (unsupported.length) {
+    return `scenario runs require ${unsupported.join(" and ")} mode; adapter declares ${
+      capabilities.modes.join(", ") || "no modes"
+    }`;
+  }
   if (
     test.requiredCapabilities.includes("TreeProfileExtraction") &&
     !capabilities.treeProfileExtraction
@@ -219,9 +238,6 @@ function inapplicableReason(
     !capabilities.polling
   ) {
     return "adapter does not declare autonomous polling";
-  }
-  if (group === "OrderedTraversal" && !capabilities.modes.includes("ordered")) {
-    return "adapter does not declare ordered traversal";
   }
   if (group === "MemberExtraction" && !capabilities.memberExtraction) {
     return "adapter does not declare generic member extraction";
@@ -256,34 +272,39 @@ function summarizeGroups(results: TestResult[]): SuiteSummary["groupClaims"] {
     const mandatory = results.filter(
       (result) => result.test.group === group && result.test.requirementLevel === "Must",
     );
+    // An inapplicable test is not a penalty and not evidence: it is excluded
+    // from the claim rather than counted as a missing pass. Without this, a
+    // client that declares one mode only would report "untested" for a group
+    // whose applicable mandatory tests all passed.
+    const applicable = mandatory.filter((result) => result.outcome !== "inapplicable");
+    const skipped = mandatory.length - applicable.length;
     const diagnostics: string[] = [];
     let outcome: EarlOutcome;
-    if (!mandatory.length || mandatory.every((result) => result.outcome === "inapplicable")) {
+    if (!applicable.length) {
       outcome = "inapplicable";
-    } else if (mandatory.some((result) => result.outcome === "failed")) {
+    } else if (applicable.some((result) => result.outcome === "failed")) {
       outcome = "failed";
-    } else if (mandatory.some((result) => result.outcome === "cantTell")) {
+    } else if (applicable.some((result) => result.outcome === "cantTell")) {
       outcome = "cantTell";
-    } else if (mandatory.every((result) => result.outcome === "passed")) {
+    } else if (applicable.every((result) => result.outcome === "passed")) {
       outcome = "passed";
     } else {
       outcome = "untested";
+    }
+    if (skipped) {
+      diagnostics.push(
+        `${skipped} of ${mandatory.length} mandatory tests were inapplicable to this client and are excluded from the claim`,
+      );
     }
     return {
       group,
       outcome,
       mandatoryTests: mandatory.length,
-      passedMandatoryTests: mandatory.filter((result) => result.outcome === "passed").length,
-      ...(group === "OrderedTraversal" ? { dependsOn: "UnorderedTraversal" } : {}),
+      applicableMandatoryTests: applicable.length,
+      passedMandatoryTests: applicable.filter((result) => result.outcome === "passed").length,
       diagnostics,
     };
   });
-  const unordered = claims.find((claim) => claim.group === "UnorderedTraversal")!;
-  const ordered = claims.find((claim) => claim.group === "OrderedTraversal")!;
-  if (ordered.outcome === "passed" && unordered.outcome !== "passed") {
-    ordered.outcome = unordered.outcome;
-    ordered.diagnostics.push("ordered traversal is a superset claim and requires unordered traversal");
-  }
   return claims;
 }
 
@@ -300,16 +321,23 @@ export async function validateFixtures(testsRoot: string): Promise<string[]> {
       for (const route of phase.routes) {
         for (const request of route.requests) {
           const response = request.response;
-          if (!response.body || response.status < 200 || response.status >= 300) continue;
+          if ((!response.body && !response.chunks?.length) || response.status < 200 || response.status >= 300) continue;
           const contentType = response.headers?.["content-type"] ??
             response.headers?.["Content-Type"];
           if (!contentType || !isRdfMediaType(contentType)) continue;
-          const body = (await readFile(resolveBodyPath(test.scenarioPath, response.body), "utf8"))
+          const body = (await Promise.all([...(response.body ? [response.body] : []), ...(response.chunks ?? []).map((chunk) => chunk.body)].map((body) => readFile(resolveBodyPath(test.scenarioPath, body), "utf8")))).join("")
             .replaceAll("{{origin}}", "http://127.0.0.1:49152");
           await parseRdf(
             expandFixturePlaceholders(body, test.scenarioPath, "http://127.0.0.1:49152"),
             contentType,
             `http://127.0.0.1:49152${route.path}`,
+            { async load(url: string) {
+              const location = new URL(url);
+              if (location.origin !== "http://127.0.0.1:49152") throw new Error(`fixture context must be local: ${url}`);
+              const context = phase.routes.find((candidate) => candidate.path === location.pathname + location.search)?.requests[0].response;
+              if (!context?.body) throw new Error(`missing fixture context ${url}`);
+              return JSON.parse(expandFixturePlaceholders(await readFile(resolveBodyPath(test.scenarioPath, context.body), "utf8"), test.scenarioPath, location.origin));
+            } },
           );
         }
       }
@@ -318,7 +346,7 @@ export async function validateFixtures(testsRoot: string): Promise<string[]> {
       .split(/\r?\n/u)
       .filter(Boolean)
       .map((line) => JSON.parse(line) as ExpectedEvent);
-    for (const event of events) {
+    for (const event of events.flatMap(flattenExpected)) {
       if (!event.datasetFile) continue;
       const dataset = await readFile(
         path.join(path.dirname(test.expectedPath), event.datasetFile),
@@ -341,4 +369,8 @@ function isRdfMediaType(contentType: string): boolean {
     "text/turtle",
     "application/ld+json",
   ].includes(contentType.split(";")[0].trim().toLowerCase());
+}
+
+function flattenExpected(event: ExpectedEvent): ExpectedEvent[] {
+  return [event, ...(event.oneOf?.flatMap(flattenExpected) ?? [])];
 }

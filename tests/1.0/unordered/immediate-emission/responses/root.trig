@@ -1,0 +1,2 @@
+@prefix ex: <https://example.test/> . @prefix tree: <https://w3id.org/tree#> . ex:stream tree:view <>; tree:member ex:m . ex:m ex:first "first" .
+ex:m ex:last "last" . <> tree:relation [tree:node <slow>] .

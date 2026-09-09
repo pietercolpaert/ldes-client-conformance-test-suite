@@ -6,6 +6,6 @@
 <#extraction-named-graph-only> a earl:TestCase;
     dct:title "Member-named graph extraction without default graph data";
     dct:description "The member payload exists only in the graph named by the member IRI.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-004>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-006>;
     ct:requirementLevel ct:Must;
     ct:group ct:MemberExtraction .

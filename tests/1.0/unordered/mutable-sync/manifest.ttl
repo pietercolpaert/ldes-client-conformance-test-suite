@@ -10,8 +10,7 @@
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-018>,
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-019>,
         <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-024>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-025>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-026>;
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-025>;
     ct:requirementLevel ct:Must;
     ct:group ct:UnorderedTraversal;
     ct:scenario <scenario.yaml>;

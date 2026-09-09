@@ -1,0 +1,8 @@
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/order> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/value> "default" .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/detail> _:first .
+_:first <{{raw}}responses/root.ttl#vocab/next> _:second .
+_:second <{{raw}}responses/root.ttl#vocab/next> _:first .
+_:second <{{raw}}responses/root.ttl#vocab/value> "nested" .
+<{{raw}}responses/root.ttl#member/complex> <{{raw}}responses/root.ttl#vocab/value> "named graph" <{{raw}}responses/root.ttl#member/complex> .
+<{{raw}}responses/root.ttl#payload-part> <{{raw}}responses/root.ttl#vocab/value> "all quads in the member graph" <{{raw}}responses/root.ttl#member/complex> .

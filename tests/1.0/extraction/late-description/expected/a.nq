@@ -1,0 +1,2 @@
+<https://example.test/a> <https://example.test/detail> _:d .
+_:d <https://example.test/value> "shared" .

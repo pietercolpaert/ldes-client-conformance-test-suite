@@ -6,6 +6,7 @@
 <#ordered-relation-greater-than-or-equal> a earl:TestCase;
     dct:title "Ordered traversal handles tree:GreaterThanOrEqualToRelation";
     dct:description "An inclusive lower-bound relation points to a fragment with an equal ordering value.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-011>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>;
     ct:requirementLevel ct:Must;
     ct:group ct:OrderedTraversal .

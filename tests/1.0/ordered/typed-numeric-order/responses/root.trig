@@ -1,0 +1,5 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix ldes: <https://w3id.org/ldes#> .
+ex:stream tree:view <>; ldes:sequencePath ex:rank; tree:member ex:aHigh, ex:zLow, ex:cDecimalHigh, ex:yDecimalLow, ex:bTen, ex:xTwo .
+ex:aHigh ex:rank 9007199254740993 . ex:zLow ex:rank 9007199254740992 . ex:cDecimalHigh ex:rank 1.000000000000000002 . ex:yDecimalLow ex:rank 1.000000000000000001 . ex:bTen ex:rank 10 . ex:xTwo ex:rank 2 .

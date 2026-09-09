@@ -11,17 +11,9 @@
     "classification": "optional",
     "rationale": "Source selection is an optional dereferencing extension outside the common adapter contract."
   },
-  "LDES10-UNORD-033": {
-    "classification": "deferred",
-    "rationale": "External JSON-LD context cache observation needs a controlled document-loader hook in addition to the existing origin request log."
-  },
   "LDES10-UNORD-045": {
     "classification": "optional",
     "rationale": "Authorization handling is optional and requires credential provisioning that is intentionally outside the public baseline suite."
-  },
-  "LDES10-UNORD-048": {
-    "classification": "deferred",
-    "rationale": "The current process protocol collects events after adapter completion and therefore cannot reliably measure immediate streaming latency."
   },
   "LDES10-ORD-002": {
     "classification": "optional",
@@ -86,5 +78,17 @@
   "LDES10-RET-008": {
     "classification": "boundary",
     "rationale": "Historical policy interpretation is a separate retention-aware consumer profile, not baseline traversal."
+  },
+  "LDES10-ORD-010": {
+    "classification": "manual",
+    "rationale": "Finite output-order scenarios do not prove priority-queue implementation or relation-bound interpretation. Requires separate advisory observations; conservative complete traversal is not rejected."
+  },
+  "LDES10-ORD-011": {
+    "classification": "manual",
+    "rationale": "Finite output-order scenarios do not prove priority-queue implementation or relation-bound interpretation. Requires separate advisory observations; conservative complete traversal is not rejected."
+  },
+  "LDES10-ORD-012": {
+    "classification": "manual",
+    "rationale": "Finite output-order scenarios do not prove priority-queue implementation or relation-bound interpretation. Requires separate advisory observations; conservative complete traversal is not rejected."
   }
 }

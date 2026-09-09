@@ -64,6 +64,22 @@ Context:
 {"protocolVersion":0,"type":"context","runId":"run-2","eventStream":"https://raw.githubusercontent.com/pietercolpaert/ldes-client-conformance-test-suite/main/tests/1.0/discovery/root-entrypoint/responses/root.ttl#stream","rootNode":"http://127.0.0.1:49152/root","dataset":"...","mediaType":"application/n-quads"}
 ```
 
+A context event may also carry the lists the client discovered while processing
+the root node: `shapes`, `viewDescriptions`, `retentionPolicies`,
+`timestampPath`, `versionTimestampPath`, `versionSequencePath` and
+`pollingInterval`. The list-valued fields are compared as sets, so their order
+carries no meaning.
+
+One retention field is a semantic signal rather than a copy of the document:
+
+- `emptyRetentionPolicies`: the subset of discovered retention-policy IRIs that
+  have **no statements** in the current page. LDES 1.0 s4.4 makes the client
+  assume such a view retains no members, so echoing the policy IRI in
+  `retentionPolicies` is not sufficient evidence for `LDES10-RET-005`; an
+  adapter must report which policies it resolved to empty. An adapter whose
+  client does not distinguish this case omits the field, and the fixture fails
+  rather than passing on an uninterpreted IRI.
+
 Statistics:
 
 ```json
@@ -84,8 +100,19 @@ Client error:
 
 The runner adds sequence numbers and receipt timestamps. Adapters must preserve
 native member emission order and emit exactly one terminal `run-end` or
-`error`. Unknown event fields are allowed for forward compatibility; unknown
-event types are a protocol error.
+`error`, and that terminal event must be the **last** event in the trace.
+Unknown event fields are allowed for forward compatibility; unknown event types
+are a protocol error.
+
+### Receipt timing
+
+Process adapters do not need to emit a timestamp for emission-timing fixtures.
+The runner reads adapter stdout line by line and stamps each event with
+`receivedAt` as it arrives, so an adapter must write each event as a complete
+NDJSON line and must not buffer its output until the run finishes. Fixtures that
+compare emission against response completion (`expected/event-timing.json`) rely
+on this, so a buffering adapter will look as though it emitted everything after
+the last response. An in-process adapter sets `receivedAt` itself.
 
 ## Failure attribution
 

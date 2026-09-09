@@ -1,0 +1,50 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "routes": [
+    {
+      "path": "/root",
+      "requests": [
+        {
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/ld+json"
+            },
+            "body": "responses/root.jsonld"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/child",
+      "requests": [
+        {
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/ld+json"
+            },
+            "body": "responses/child.jsonld"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/context",
+      "requests": [
+        {
+          "response": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/ld+json",
+              "cache-control": "max-age=3600",
+              "etag": "\"context\""
+            },
+            "body": "responses/context.json"
+          }
+        }
+      ]
+    }
+  ]
+}

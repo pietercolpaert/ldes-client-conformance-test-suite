@@ -1,0 +1,10 @@
+{"type":"member","runId":"n-quads","id":"{{raw}}responses/root.ttl#member/nq","datasetFile":"nq.nq"}
+{"type":"run-end","runId":"n-quads","status":"completed"}
+{"type":"member","runId":"n-triples","id":"{{raw}}responses/root.ttl#member/nt","datasetFile":"nt.nq"}
+{"type":"run-end","runId":"n-triples","status":"completed"}
+{"type":"member","runId":"trig","id":"{{raw}}responses/root.ttl#member/trig","datasetFile":"trig.nq"}
+{"type":"run-end","runId":"trig","status":"completed"}
+{"type":"member","runId":"turtle","id":"{{raw}}responses/root.ttl#member/turtle","datasetFile":"turtle.nq"}
+{"type":"run-end","runId":"turtle","status":"completed"}
+{"type":"member","runId":"json-ld","id":"{{raw}}responses/root.ttl#member/jsonld","datasetFile":"jsonld.nq"}
+{"type":"run-end","runId":"json-ld","status":"completed"}

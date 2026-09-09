@@ -1,0 +1,19 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#context-blank-node-metadata> a earl:TestCase;
+    dct:title "Blank-node shapes, view descriptions and retention policies are extracted and communicated structurally";
+    dct:description "The root node describes its shape, publishing service and two retention policies entirely with blank nodes carrying nested structure, so none of them can be addressed by IRI. The client must extract and communicate that context, including the policy reached through tree:viewDescription. The oracle compares the communicated context as an RDF dataset with blank-node isomorphism and deliberately does not assert the parser-local blank-node labels or the order of the context lists.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-002>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-005>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-007>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-009>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-RET-003>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-RET-004>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:ContextInformation .

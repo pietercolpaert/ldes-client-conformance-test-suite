@@ -1,0 +1,6 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+ex:stream tree:view <>; ldes:sequencePath ex:rank; tree:member ex:a . ex:a ex:rank 1 .

@@ -1,0 +1,11 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#http-retry-502> a earl:TestCase;
+    dct:title "502 Bad Gateway is retried with back-off in unordered mode";
+    dct:description "The root node returns 502 Bad Gateway twice before a valid representation. The client must retry rather than treat the status as terminal data loss, and every member must still be emitted. The request timeline asserts only that consecutive attempts are spaced, so any back-off strategy, retry count or jitter satisfies it.";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-042>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:UnorderedTraversal .

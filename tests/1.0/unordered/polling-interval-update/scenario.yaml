@@ -1,0 +1,22 @@
+version: 0
+entrypoint: /root
+runs:
+  - { id: fast, phase: fast, followForMs: 2500 }
+  - { id: slow, phase: slow, followForMs: 2500 }
+phases:
+  - id: fast
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/fast.ttl
+  - id: slow
+    routes:
+      - path: /root
+        requests:
+          - response:
+              status: 200
+              headers: { content-type: text/turtle }
+              body: responses/slow.ttl

@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-typed-mixed-datatypes> a earl:TestCase;
+    dct:title "Ordered traversal compares one ordering path across numeric datatypes";
+    dct:description "A single ldes:sequencePath carries xsd:integer, xsd:decimal, xsd:long and xsd:double values. Members are ordered by numeric value, not by the representation of the parsed value, and member IDs run opposite to the value order so an ID fallback cannot satisfy the oracle.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-010>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

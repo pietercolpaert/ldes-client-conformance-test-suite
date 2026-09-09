@@ -1,0 +1,81 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "runs": [
+    {
+      "id": "first",
+      "phase": "first",
+      "mode": "ordered"
+    },
+    {
+      "id": "second",
+      "phase": "second",
+      "mode": "ordered"
+    }
+  ],
+  "phases": [
+    {
+      "id": "first",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig",
+                  "etag": "\"root\""
+                },
+                "body": "responses/root.trig"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/child",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig"
+                },
+                "body": "responses/first.trig"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second",
+      "routes": [
+        {
+          "path": "/root",
+          "requests": [
+            {
+              "response": {
+                "status": 500
+              }
+            }
+          ]
+        },
+        {
+          "path": "/child",
+          "requests": [
+            {
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/trig"
+                },
+                "body": "responses/second.trig"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

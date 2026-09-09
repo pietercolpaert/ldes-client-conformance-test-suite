@@ -79,6 +79,11 @@ function validateScenario(scenario: Scenario, filePath: string): void {
         if (!Number.isInteger(status) || status < 100 || status > 599) {
           throw new Error(`${filePath}: invalid HTTP status for ${route.path}`);
         }
+        for (const chunk of request.response.chunks ?? []) {
+          if (typeof chunk.body !== "string" || (chunk.delayMs !== undefined && (!Number.isInteger(chunk.delayMs) || chunk.delayMs < 0))) {
+            throw new Error(`${filePath}: invalid response chunk`);
+          }
+        }
         const delayMs = request.response.delayMs;
         if (
           delayMs !== undefined &&

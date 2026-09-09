@@ -1,0 +1,13 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#ordered-typed-timestamp-timezones> a earl:TestCase;
+    dct:title "Ordered traversal compares xsd:dateTime values as instants";
+    dct:description "Timestamps written with different UTC offsets are compared as instants rather than as strings. Two members carrying the same instant in different offsets form a declared ordering tie whose internal order is unconstrained, while a member whose lexical form sorts early but whose instant is latest must be emitted last.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-006>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-CTX-010>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

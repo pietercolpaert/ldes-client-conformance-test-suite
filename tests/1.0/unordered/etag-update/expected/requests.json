@@ -1,0 +1,5 @@
+[
+  { "phase": "second", "path": "/mid", "status": 304, "minCount": 1 },
+  { "phase": "second", "path": "/leaf", "minCount": 1 },
+  { "phase": "third", "path": "/root", "status": 304, "minCount": 1 }
+]

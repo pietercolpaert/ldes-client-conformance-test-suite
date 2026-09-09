@@ -48,7 +48,7 @@ export function referenceAdapter(
       memberExtraction: true,
       context: true,
       persistentState: true,
-      treeProfileExtraction: true,
+      treeProfileExtraction: false,
       polling: true,
     },
   };
@@ -93,27 +93,28 @@ class ProcessAdapter implements Adapter {
   }
 
   async run(input: AdapterInput): Promise<AdapterEvent[]> {
-    const result = await this.invoke("run", input);
     const events: AdapterEvent[] = [];
-    for (const [index, line] of result.stdout.split(/\r?\n/u).entries()) {
-      if (!line.trim()) continue;
-      let event: AdapterEvent;
-      try {
-        event = JSON.parse(line) as AdapterEvent;
-      } catch {
-        throw new Error(
-          `adapter ${this.declaration.id} emitted invalid JSON on stdout line ${index + 1}: ${line}`,
-        );
-      }
-      validateEvent(event, input, index + 1);
-      events.push(event);
+    let lineNumber = 0;
+    let result: { stdout: string; stderr: string };
+    try {
+      result = await this.invoke("run", input, (line) => {
+        lineNumber += 1;
+        if (!line.trim()) return;
+        let event: AdapterEvent;
+        try { event = JSON.parse(line) as AdapterEvent; }
+        catch { throw new Error(`adapter ${this.declaration.id} emitted invalid JSON on stdout line ${lineNumber}`); }
+        validateEvent(event, input, lineNumber);
+        events.push({ ...event, receivedAt: new Date().toISOString() });
+      });
+    } catch (error) {
+      throw Object.assign(error instanceof Error ? error : new Error(String(error)), { events });
     }
     const terminals = events.filter(
       (event) => event.type === "run-end" || event.type === "error",
     );
-    if (terminals.length !== 1) {
+    if (terminals.length !== 1 || events.at(-1) !== terminals[0]) {
       throw new Error(
-        `adapter ${this.declaration.id} emitted ${terminals.length} terminal events; expected exactly one`,
+        `adapter ${this.declaration.id} emitted ${terminals.length} terminal events; expected exactly one terminal event, last in the trace`,
       );
     }
     if (result.stderr.trim()) {
@@ -125,6 +126,7 @@ class ProcessAdapter implements Adapter {
   private async invoke(
     operation: "probe" | "run" | "reset",
     input?: unknown,
+    onLine?: (line: string) => void,
   ): Promise<{ stdout: string; stderr: string }> {
     const [executable, ...configuredArguments] = this.declaration.command;
     if (!executable) {
@@ -141,13 +143,27 @@ class ProcessAdapter implements Adapter {
         stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
       });
       let stdout = "";
+      let pendingLine = "";
       let stderr = "";
+      let linesSeen = 0;
       let settled = false;
+      // A hung or crashing adapter is only diagnosable if its stderr and the
+      // partially written stdout line survive into the failure evidence.
+      const context = (): string => {
+        const trailing = stderr.trim()
+          ? `; stderr: ${stderr.trim().split(/\r?\n/u).slice(-20).join(" | ")}`
+          : "; stderr was empty";
+        const partial = pendingLine.trim()
+          ? `; last partial stdout line: ${pendingLine.trim()}`
+          : "";
+        return `${trailing}${partial}`;
+      };
       const timer = setTimeout(() => {
         child.kill("SIGTERM");
         rejectOnce(
           new Error(
-            `adapter ${this.declaration.id} ${operation} timed out after ${timeoutMs}ms`,
+            `adapter ${this.declaration.id} ${operation} timed out after ${timeoutMs}ms` +
+            ` after ${linesSeen} stdout line(s)${context()}`,
           ),
         );
       }, timeoutMs);
@@ -155,6 +171,23 @@ class ProcessAdapter implements Adapter {
       child.stderr!.setEncoding("utf8");
       child.stdout!.on("data", (chunk: string) => {
         stdout += chunk;
+        if (settled) return;
+        pendingLine += chunk;
+        let newline: number;
+        while ((newline = pendingLine.indexOf("\n")) >= 0) {
+          const line = pendingLine.slice(0, newline);
+          pendingLine = pendingLine.slice(newline + 1);
+          linesSeen += 1;
+          try { onLine?.(line); }
+          catch (error) {
+            // Stop consuming after a protocol error. Continuing would parse
+            // lines emitted after the failure into the evidence and run the
+            // terminal-event checks over a trace we already rejected.
+            child.kill("SIGTERM");
+            rejectOnce(new Error(`${(error as Error).message}${context()}`));
+            return;
+          }
+        }
       });
       child.stderr!.on("data", (chunk: string) => {
         stderr += chunk;
@@ -167,11 +200,14 @@ class ProcessAdapter implements Adapter {
         if (code !== 0) {
           reject(
             new Error(
-              `adapter ${this.declaration.id} ${operation} exited with ${code ?? signal}: ${stderr.trim()}`,
+              `adapter ${this.declaration.id} ${operation} exited with ${code ?? signal}` +
+              ` after ${linesSeen} stdout line(s)${context()}`,
             ),
           );
           return;
         }
+        try { if (pendingLine.trim()) onLine?.(pendingLine); }
+        catch (error) { reject(new Error(`${(error as Error).message}${context()}`)); return; }
         resolve({ stdout, stderr });
       });
       if (input !== undefined) {

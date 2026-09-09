@@ -1,0 +1,23 @@
+{
+  "version": 0,
+  "entrypoint": "/root",
+  "routes": [
+    {
+      "path": "/root",
+      "requests": [
+        {
+          "response": {
+            "status": 505
+          }
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "id": "run-1",
+      "phase": "default",
+      "mode": "ordered"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+# Current-page pattern: the view IS this page, named relatively so it only
+# resolves correctly against the post-redirect base IRI.
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/real> .
+
+# Distracting fallback metadata. A client that skips the current-page check and
+# falls back to "the supplied IRI has one tree:view target" would follow this.
+<{{origin}}/entry> tree:view <{{origin}}/decoy> .
+
+<{{raw}}responses/root.ttl#member/real> ex:value "real" .
+
+# Relative child IRI: must resolve against the post-redirect base, so /child,
+# not /decoy-child.
+<> tree:relation [
+    a tree:Relation;
+    tree:node <child>
+] .

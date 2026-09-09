@@ -1,0 +1,3 @@
+@prefix tree: <https://w3id.org/tree#> .
+<https://example.test/stream> tree:view <> .
+<> tree:relation [ a tree:Relation; tree:node <mid> ] .

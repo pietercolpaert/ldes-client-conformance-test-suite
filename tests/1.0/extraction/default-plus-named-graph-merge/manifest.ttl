@@ -6,8 +6,7 @@
 <#extraction-default-plus-named-graph-merge> a earl:TestCase;
     dct:title "Default and member-named graph payloads are merged";
     dct:description "The member dataset is split between the default graph and graph named by the member IRI.";
-    dct:isPartOf
-        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-003>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-004>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-005>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-006>;
     ct:requirementLevel ct:Must;
     ct:group ct:MemberExtraction .

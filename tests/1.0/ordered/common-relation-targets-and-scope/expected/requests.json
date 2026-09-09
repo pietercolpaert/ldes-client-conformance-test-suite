@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/sentinel",
+    "count": 0
+  },
+  {
+    "path": "/a",
+    "minCount": 1
+  },
+  {
+    "path": "/b",
+    "minCount": 1
+  }
+]

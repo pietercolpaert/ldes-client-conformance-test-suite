@@ -1,0 +1,3 @@
+@prefix tree: <https://w3id.org/tree#> .
+<{{raw}}responses/root.ttl#gone-stream> tree:member <https://example.test/survivor> .
+<https://example.test/survivor> <https://example.test/value> "alive" .

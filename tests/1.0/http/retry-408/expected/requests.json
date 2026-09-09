@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/root",
+    "status": 408,
+    "minCount": 2
+  },
+  {
+    "path": "/root",
+    "status": 200,
+    "minCount": 1
+  }
+]

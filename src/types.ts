@@ -5,9 +5,11 @@ export interface ScenarioResponse {
   headers?: Record<string, string>;
   body?: string;
   delayMs?: number;
+  chunks?: Array<{ body: string; delayMs?: number }>;
 }
 
 export interface ScenarioRequest {
+  whenHeaders?: Record<string, string>;
   response: ScenarioResponse;
 }
 
@@ -47,6 +49,7 @@ export interface RequestLogEntry {
   phase: string;
   status: number;
   timestamp: string;
+  completedAt?: string;
 }
 
 export interface AdapterInput {
@@ -89,6 +92,8 @@ export interface ExpectedEvent {
   kind?: string;
   datasetFile?: string;
   oneOf?: ExpectedEvent[];
+  tieGroup?: string;
+  dateTime?: string[];
   [key: string]: unknown;
 }
 
@@ -102,12 +107,21 @@ export interface ExpectedRequest {
   headers?: Record<string, string>;
   headerIncludes?: Record<string, string>;
   absentHeaders?: string[];
+  presentHeaders?: string[];
 }
 
 export interface ExpectedTiming {
   phase?: string;
   path: string;
-  minSpanMs: number;
+  minSpanMs?: number;
+  /**
+   * Minimum delay between each consecutive pair of requests to the path. This
+   * observes that retries are spaced rather than issued in a tight loop. It
+   * deliberately does not prescribe a retry count, a back-off curve, or the
+   * suite's own millisecond values: any strategy, including jitter, satisfies
+   * it as long as every interval clears the floor.
+   */
+  minGapMs?: number;
 }
 
 export interface TestCase {
@@ -194,13 +208,16 @@ export interface SuiteSummary {
     group: string;
     outcome: EarlOutcome;
     mandatoryTests: number;
+    applicableMandatoryTests: number;
     passedMandatoryTests: number;
     dependsOn?: string;
     diagnostics: string[];
   }>;
   coverage: {
     totalRequirements: number;
+    requirementsVerified: number;
     requirementsWithTests: number;
+    requirementsAdvisoryEvidenceOnly: number;
     requirementsWithRationales: number;
     blockingGaps: number;
     artifact: string;

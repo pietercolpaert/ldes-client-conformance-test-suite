@@ -1,2 +1,2 @@
-{"type":"context","retentionPolicies":["{{raw}}responses/root.ttl#vocab/empty-policy"]}
+{"type":"context","retentionPolicies":["{{raw}}responses/root.ttl#vocab/empty-policy"],"emptyRetentionPolicies":["{{raw}}responses/root.ttl#vocab/empty-policy"]}
 {"type":"run-end","status":"completed"}

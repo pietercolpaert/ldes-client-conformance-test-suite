@@ -1,0 +1,9 @@
+[
+  {
+    "path": "/root",
+    "presentHeaders": [
+      "accept"
+    ],
+    "minCount": 5
+  }
+]

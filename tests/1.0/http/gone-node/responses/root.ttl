@@ -1,3 +1,5 @@
 @prefix tree: <https://w3id.org/tree#> .
 <{{raw}}responses/root.ttl#gone-stream> tree:view <> .
 <> tree:relation [ tree:node <retired> ] .
+
+<> <https://w3id.org/tree#relation> [ <https://w3id.org/tree#node> <survivor> ] .

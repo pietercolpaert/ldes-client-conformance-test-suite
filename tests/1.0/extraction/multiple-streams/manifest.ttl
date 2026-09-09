@@ -6,8 +6,6 @@
 <#extraction-multiple-streams> a earl:TestCase;
     dct:title "Member extraction is scoped to the discovered event stream";
     dct:description "A page contains members for two streams; only the selected stream may be emitted.";
-    dct:isPartOf
-        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-002>,
-        <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-008>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-004>;
     ct:requirementLevel ct:Must;
     ct:group ct:MemberExtraction .

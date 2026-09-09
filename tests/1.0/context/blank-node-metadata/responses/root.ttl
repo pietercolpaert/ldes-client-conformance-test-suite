@@ -1,0 +1,29 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# The shape and the publishing-service view description are blank nodes with
+# nested structure, so neither can be addressed by IRI. The retention policies
+# they reach are IRIs, which makes the traversal *through* a blank-node view
+# description observable without depending on parser-local blank-node labels.
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:timestampPath ex:created;
+    tree:shape [
+        a sh:NodeShape;
+        sh:targetClass ex:Thing;
+        sh:property [ sh:path ex:created; sh:minCount 1; sh:maxCount 1 ]
+    ] .
+
+<> tree:viewDescription [
+        ex:implementation "blank-node publishing service";
+        ldes:retentionPolicy ex:service-policy
+    ];
+    ldes:retentionPolicy ex:direct-policy .
+
+ex:direct-policy a ldes:LatestVersionSubset; ldes:amount 2 .
+ex:service-policy a ldes:DurationAgoPolicy; tree:value "P1Y"^^xsd:duration .
+
+<{{raw}}responses/root.ttl#stream> tree:member <{{raw}}responses/root.ttl#member/1> .
+<{{raw}}responses/root.ttl#member/1> ex:created "2026-01-01T00:00:00Z"^^xsd:dateTime .

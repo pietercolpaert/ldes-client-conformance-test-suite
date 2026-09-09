@@ -1,0 +1,16 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:stream tree:view <>;
+    ldes:sequencePath ex:rank;
+    tree:member ex:aThree, ex:kSeven, ex:mTen, ex:zTwo .
+
+# One ordering path, four different numeric datatypes. Alphabetical member IDs
+# run opposite to the numeric order, so an implementation that falls back to ID
+# comparison cannot pass by accident.
+ex:zTwo   ex:rank "2"^^xsd:integer .
+ex:aThree ex:rank "3.5"^^xsd:decimal .
+ex:kSeven ex:rank "7"^^xsd:long .
+ex:mTen   ex:rank "10.0"^^xsd:double .

@@ -1,0 +1,5 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+ex:stream tree:member ex:a .
+ex:a ex:value "a" .
+<> tree:relation [ a tree:Relation; tree:node <leaf> ] .

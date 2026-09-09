@@ -1,0 +1,4 @@
+[
+  { "phase": "fast", "path": "/root", "status": 200, "minCount": 3 },
+  { "phase": "slow", "path": "/root", "status": 200, "count": 2 }
+]

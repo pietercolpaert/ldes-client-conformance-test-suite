@@ -1,0 +1,5 @@
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<https://example.test/stream> tree:view <>;
+    ldes:pollingInterval 2 .

@@ -1,0 +1,20 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<{{raw}}responses/root.ttl#stream> tree:view <>;
+    ldes:timestampPath ex:at;
+    tree:member
+        <{{raw}}responses/root.ttl#member/early>,
+        <{{raw}}responses/root.ttl#member/late>,
+        <{{raw}}responses/root.ttl#member/midA>,
+        <{{raw}}responses/root.ttl#member/midB> .
+
+# midA and midB are the same instant written in different offsets, so they form
+# an ordering tie. late is alphabetically second but chronologically last, so an
+# implementation that sorts lexically on the literal or on the member ID fails.
+<{{raw}}responses/root.ttl#member/early> ex:at "2026-03-01T10:00:00Z"^^xsd:dateTime .
+<{{raw}}responses/root.ttl#member/midA> ex:at "2026-03-01T12:00:00Z"^^xsd:dateTime .
+<{{raw}}responses/root.ttl#member/midB> ex:at "2026-03-01T13:00:00+01:00"^^xsd:dateTime .
+<{{raw}}responses/root.ttl#member/late> ex:at "2026-03-01T09:00:00-05:00"^^xsd:dateTime .

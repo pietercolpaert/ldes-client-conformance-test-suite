@@ -6,6 +6,7 @@
 <#ordered-restart-bookmark> a earl:TestCase;
     dct:title "Ordered traversal restart does not duplicate emitted members";
     dct:description "A second ordered run with persistent state emits only newly discovered members.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-003>;
-    ct:requirementLevel ct:Should;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-019>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-024>;
+    ct:requirementLevel ct:Must;
     ct:group ct:OrderedTraversal .

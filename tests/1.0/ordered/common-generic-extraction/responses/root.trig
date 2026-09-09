@@ -1,0 +1,31 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+# Ordering metadata is required for ordered mode; the extraction obligations
+# under test are identical to the unordered fixture.
+<{{raw}}responses/root.ttl#extraction-stream> tree:view <>;
+    ldes:sequencePath ex:order;
+    tree:member <{{raw}}responses/root.ttl#member/complex>,
+        <{{raw}}responses/root.ttl#member/second> .
+
+<{{raw}}responses/root.ttl#other-stream>
+    tree:member <{{raw}}responses/root.ttl#member/not-ours> .
+
+<{{raw}}responses/root.ttl#member/complex>
+    ex:order 1;
+    ex:value "default";
+    ex:detail _:a .
+
+# Alphabetically first, ordered second: an ID fallback cannot satisfy the oracle.
+<{{raw}}responses/root.ttl#member/second> ex:order 2; ex:value "second" .
+_:a ex:next _:b .
+_:b ex:next _:a; ex:value "nested" .
+
+<{{raw}}responses/root.ttl#unrelated> ex:value "must not be emitted" .
+<{{raw}}responses/root.ttl#member/not-ours> ex:value "wrong stream" .
+
+<{{raw}}responses/root.ttl#member/complex> {
+  <{{raw}}responses/root.ttl#member/complex> ex:value "named graph" .
+  <{{raw}}responses/root.ttl#payload-part> ex:value "all quads in the member graph" .
+}

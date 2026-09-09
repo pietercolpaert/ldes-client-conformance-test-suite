@@ -1,0 +1,9 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+ex:stream tree:view <>; tree:member ex:m .
+ex:m ex:signature _:sig .
+_:sig { ex:s ex:value "payload"; ex:next _:detail . }
+_:detail ex:value "detail"; ex:back _:sig .

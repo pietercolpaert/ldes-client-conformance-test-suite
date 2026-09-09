@@ -1,0 +1,1 @@
+{"@context": "{{origin}}/context", "@id": "https://example.test/stream", "member": {"@id": "https://example.test/b", "value": "b"}}

@@ -1,0 +1,5 @@
+<https://example.test/m> <https://example.test/signature> _:s .
+<https://example.test/s> <https://example.test/value> "payload" _:s .
+<https://example.test/s> <https://example.test/next> _:d _:s .
+_:d <https://example.test/value> "detail" .
+_:d <https://example.test/back> _:s .

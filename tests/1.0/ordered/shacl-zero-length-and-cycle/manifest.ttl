@@ -1,0 +1,8 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+<https://www.pieter.pm/ldes-client-conformance-test-suite/1.0#ordered-shacl-zero-length-and-cycle> a earl:TestCase;
+    dct:title "shacl zero length and cycle";
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-ORD-007>;
+    ct:requirementLevel ct:Must;
+    ct:group ct:OrderedTraversal .

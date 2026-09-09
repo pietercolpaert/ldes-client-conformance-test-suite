@@ -1,0 +1,15 @@
+[
+  {
+    "path": "/root",
+    "phase": "second",
+    "minCount": 1,
+    "headers": {
+      "if-none-match": "\"root\""
+    }
+  },
+  {
+    "path": "/child",
+    "phase": "second",
+    "minCount": 1
+  }
+]

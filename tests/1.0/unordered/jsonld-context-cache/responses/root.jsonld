@@ -1,0 +1,1 @@
+{"@context": "{{origin}}/context", "@id": "https://example.test/stream", "member": {"@id": "https://example.test/a", "value": "a"}, "view": {"@id": "{{origin}}/root"}, "@graph": [{"@id": "{{origin}}/root", "relation": {"node": {"@id": "{{origin}}/child"}}}]}

@@ -1,0 +1,3 @@
+{"type":"context","eventStream":"{{raw}}responses/root.ttl#stream","timestampPath":"{{raw}}responses/root.ttl#vocab/created","retentionPolicies":["{{raw}}responses/root.ttl#vocab/direct-policy","{{raw}}responses/root.ttl#vocab/service-policy"],"emptyRetentionPolicies":[],"datasetFile":"context.nq"}
+{"type":"member","id":"{{raw}}responses/root.ttl#member/1","datasetFile":"member.nq"}
+{"type":"run-end","status":"completed"}

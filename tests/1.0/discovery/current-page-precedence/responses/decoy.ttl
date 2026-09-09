@@ -1,0 +1,6 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<{{origin}}/decoy> tree:view <>;
+    tree:member <{{raw}}responses/root.ttl#member/sentinel> .
+<{{raw}}responses/root.ttl#member/sentinel> ex:value "sentinel" .

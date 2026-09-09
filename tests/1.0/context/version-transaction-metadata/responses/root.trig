@@ -1,0 +1,6 @@
+@prefix ex: <https://example.test/> .
+@prefix tree: <https://w3id.org/tree#> .
+@prefix ldes: <https://w3id.org/ldes#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+ex:stream tree:view <>; ldes:versionOfPath ex:entity; ldes:versionCreateObject ex:Create; ldes:versionUpdateObject ex:Update; ldes:versionDeleteObject ex:Delete; ldes:versionCreatePath ex:action; ldes:versionUpdatePath ex:action; ldes:versionDeletePath ex:action; ldes:transactionPath ex:tx; ldes:transactionFinalizedPath (ex:meta ex:done); ldes:transactionFinalizedObject "closed" .

@@ -11,6 +11,11 @@
     tree:value 2;
     tree:node <low>
 ], [
+    a tree:GreaterThanOrEqualToRelation;
+    tree:path ex:sequence;
+    tree:value 1;
+    tree:node <low>
+], [
     a tree:GreaterThanRelation;
     tree:path ex:sequence;
     tree:value 2;

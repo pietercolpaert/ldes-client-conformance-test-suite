@@ -1,0 +1,3 @@
+{"type":"member","id":"https://example.test/a"}
+{"type":"member","id":"https://example.test/b"}
+{"type":"run-end","status":"completed"}

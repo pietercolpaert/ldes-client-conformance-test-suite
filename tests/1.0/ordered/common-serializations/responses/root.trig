@@ -1,0 +1,7 @@
+@prefix ex: <{{raw}}responses/root.ttl#vocab/> .
+@prefix tree: <https://w3id.org/tree#> .
+<{{raw}}responses/root.ttl#serialization-stream> tree:view <{{origin}}/root>;
+    tree:member <{{raw}}responses/root.ttl#member/trig> .
+<{{raw}}responses/root.ttl#member/trig> ex:value "trig" .
+
+<{{raw}}responses/root.ttl#serialization-stream> <https://w3id.org/ldes#sequencePath> <{{raw}}responses/root.ttl#vocab/value> .

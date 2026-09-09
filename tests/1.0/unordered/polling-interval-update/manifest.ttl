@@ -1,0 +1,14 @@
+@prefix ct: <https://w3id.org/ldes/conformance/vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@base <https://www.pieter.pm/ldes-client-conformance-test-suite/1.0> .
+
+<#unordered-polling-interval-update> a earl:TestCase;
+    dct:title "The advertised ldes:pollingInterval drives the interval between runs, and a changed value is picked up";
+    dct:description "The same view is served over two equal-length follow windows advertising ldes:pollingInterval 1 and then 2. Both the request count and the gap between consecutive polls are checked per phase with tolerance, so a client that ignores the advertised value and polls on a hard-coded interval fails at least one phase whichever interval it hard-codes. The oracle constrains the gap from below and the count from above rather than pinning exact timestamps.";
+    dct:isPartOf
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-004>,
+        <https://w3id.org/ldes/conformance/requirements/LDES10-UNORD-005>;
+    ct:requirementLevel ct:Should;
+    ct:group ct:UnorderedTraversal;
+    ct:requiresCapability ct:Polling .

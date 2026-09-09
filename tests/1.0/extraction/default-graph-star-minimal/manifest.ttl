@@ -6,6 +6,6 @@
 <#extraction-default-graph-star-minimal> a earl:TestCase;
     dct:title "Default graph subject-star member extraction";
     dct:description "The member is described only by default-graph triples with the member IRI as subject.";
-    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-003>;
+    dct:isPartOf <https://w3id.org/ldes/conformance/requirements/LDES10-EXTRACT-005>;
     ct:requirementLevel ct:Must;
     ct:group ct:MemberExtraction .

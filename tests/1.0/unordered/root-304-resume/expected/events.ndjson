@@ -1,0 +1,4 @@
+{"type":"member","id":"https://example.test/a","runId":"first"}
+{"type":"run-end","status":"completed","runId":"first"}
+{"type":"member","id":"https://example.test/b","runId":"second"}
+{"type":"run-end","status":"completed","runId":"second"}
