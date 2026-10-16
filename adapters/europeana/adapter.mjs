@@ -26,9 +26,9 @@ if (operation === "probe") {
       clientVersion: "0.1-SNAPSHOT",
       clientRevision: gitRevision(clientRoot),
       capabilities: {
-        modes: ["ordered"],
+        modes: ["ordered", "unordered"],
         memberExtraction: true,
-        context: false,
+        context: true,
         persistentState: true,
       },
       reason: available

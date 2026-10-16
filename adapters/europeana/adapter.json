@@ -21,7 +21,7 @@
       "unordered"
     ],
     "memberExtraction": true,
-    "context": false,
+    "context": true,
     "persistentState": true
   }
 }
