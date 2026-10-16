@@ -2,6 +2,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   exists,
+  gitRevision,
   protocolWriter,
   quadsToNQuads,
   readInput,
@@ -22,7 +23,7 @@ if (operation === "probe") {
       available,
       adapterId: "rdf-connect",
       clientVersion: "0.3.3",
-      clientRevision: "00b062d3c4e4c31d99ff38ce985df44c389e2952",
+      clientRevision: gitRevision(root),
       capabilities: {
         modes: ["unordered", "ordered"],
         memberExtraction: true,

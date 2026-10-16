@@ -2,12 +2,16 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import {
   exists,
+  gitRevision,
   readInput,
   resetState,
   writeDocument,
 } from "../common.mjs";
 
 const operation = process.argv[2];
+const clientRoot = path.resolve(
+  process.env.LDES_CT_EUROPEANA_ROOT ?? ".clients/europeana",
+);
 const jar = path.resolve(
   process.env.LDES_CT_EUROPEANA_ADAPTER_JAR ??
     "adapters/europeana/target/europeana-adapter.jar",
@@ -20,7 +24,7 @@ if (operation === "probe") {
       available,
       adapterId: "europeana",
       clientVersion: "0.1-SNAPSHOT",
-      clientRevision: "878578e732f5c289facc74f90339ca09ad8f3f9e",
+      clientRevision: gitRevision(clientRoot),
       capabilities: {
         modes: ["ordered"],
         memberExtraction: true,

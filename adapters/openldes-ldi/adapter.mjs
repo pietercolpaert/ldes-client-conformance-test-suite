@@ -3,11 +3,15 @@ import { readFileSync, writeSync } from "node:fs";
 import path from "node:path";
 import {
   exists,
+  gitRevision,
   resetState,
   writeDocument,
 } from "../common.mjs";
 
 const operation = process.argv[2];
+const clientRoot = path.resolve(
+  process.env.LDES_CT_OPENLDES_ROOT ?? ".clients/openldes",
+);
 const jar = path.resolve(
   process.env.LDES_CT_OPENLDES_ADAPTER_JAR ??
     "adapters/openldes-ldi/target/openldes-ldi-adapter.jar",
@@ -20,7 +24,7 @@ if (operation === "probe") {
       available,
       adapterId: "openldes-ldi",
       clientVersion: "3.1.1",
-      clientRevision: "52b1feb8ac8f0da77e9e353d4b1dac664857d612",
+      clientRevision: gitRevision(clientRoot),
       capabilities: {
         modes: ["unordered"],
         memberExtraction: true,

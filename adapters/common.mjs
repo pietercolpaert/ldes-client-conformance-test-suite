@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { access, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
@@ -78,5 +79,18 @@ function termToNQuad(term) {
     }
     default:
       throw new Error(`cannot serialize RDF/JS term type ${term.termType}`);
+  }
+}
+
+// Revision of the checked-out client; clients are tracked at their default
+// branch head rather than pinned, so the revision is read from the checkout.
+export function gitRevision(root) {
+  try {
+    return execFileSync("git", ["-C", root, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return "unknown";
   }
 }

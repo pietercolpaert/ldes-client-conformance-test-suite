@@ -187,7 +187,7 @@ function renderIndex(summaries: SuiteSummary[]): string {
   </nav>
   <header class="site-header">
     <h1>LDES 1.0 client conformance</h1>
-    <p class="tagline">Independent, black-box results derived from deterministic HTTP and RDF scenarios. Group claims apply only to the named tests and the pinned client revision.</p>
+    <p class="tagline">Independent, black-box results derived from deterministic HTTP and RDF scenarios. Group claims apply only to the named tests and the recorded client revision.</p>
     <p class="timestamp">Report generated <time datetime="${escapeHtml(generatedAt)}">${escapeHtml(formatDate(generatedAt))}</time></p>
   </header>
   <main class="container">

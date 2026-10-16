@@ -6,7 +6,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "17 4 * * 1"
+    - cron: "17 4 * * *"
 
 permissions:
   contents: read
@@ -50,6 +50,10 @@ jobs:
           path: reports/reference
           if-no-files-found: error
 
+  # Each client is always tested at the head of its default branch. The
+  # report is cached under (adapter, client head, suite commit): the client is
+  # only built and tested again when its default branch moved or this suite
+  # changed. Otherwise the cached report is republished unchanged.
   conformance:
     name: Test ${{ matrix.adapter }}
     needs: suite
@@ -58,80 +62,87 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        adapter:
-          - rdf-connect
-          - openldes-ldi
-          - europeana
+        include:
+          - adapter: rdf-connect
+            repository: rdf-connect/ldes-client
+            path: rdf-connect
+          - adapter: openldes-ldi
+            repository: OpenLDES/Linked-Data-Interactions
+            path: openldes
+          - adapter: europeana
+            repository: europeana/rd-ldes-client
+            path: europeana
     steps:
       - name: Check out the conformance suite
         uses: actions/checkout@v4
 
+      - name: Resolve the latest client revision
+        id: client
+        run: |
+          sha="$(git ls-remote "https://github.com/${{ matrix.repository }}.git" HEAD | cut -f1)"
+          test -n "$sha"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "${{ matrix.repository }} default branch head: $sha"
+
+      - name: Restore the report for this client revision
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: reports/${{ matrix.adapter }}
+          key: conformance-${{ matrix.adapter }}-${{ steps.client.outputs.sha }}-${{ github.sha }}
+
       - name: Set up Node.js
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
       - name: Install and build the suite
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm ci
           npm run build
           node dist/cli.js validate --tests tests
 
-      - name: Check out rdf-connect/ldes-client
-        if: matrix.adapter == 'rdf-connect'
+      - name: Check out ${{ matrix.repository }}
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
-          repository: rdf-connect/ldes-client
-          ref: 00b062d3c4e4c31d99ff38ce985df44c389e2952
-          path: .clients/rdf-connect
+          repository: ${{ matrix.repository }}
+          ref: ${{ steps.client.outputs.sha }}
+          path: .clients/${{ matrix.path }}
 
       - name: Build rdf-connect/ldes-client
-        if: matrix.adapter == 'rdf-connect'
+        if: steps.cache.outputs.cache-hit != 'true' && matrix.adapter == 'rdf-connect'
         continue-on-error: true
         working-directory: .clients/rdf-connect
         run: |
-          # The pinned upstream revision currently has a package-lock mismatch.
-          # Keep the conformance job running so the adapter can report cantTell
-          # if the client cannot be built or loaded.
+          # Keep the conformance job running if upstream has a broken lockfile
+          # or build, so the adapter can report cantTell instead.
           npm install
           npm run build
 
       - name: Set up Java and Maven
-        if: matrix.adapter == 'openldes-ldi' || matrix.adapter == 'europeana'
+        if: steps.cache.outputs.cache-hit != 'true' && (matrix.adapter == 'openldes-ldi' || matrix.adapter == 'europeana')
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
           cache: maven
 
-      - name: Check out OpenLDES Linked Data Interactions
-        if: matrix.adapter == 'openldes-ldi'
-        uses: actions/checkout@v4
-        with:
-          repository: OpenLDES/Linked-Data-Interactions
-          ref: 52b1feb8ac8f0da77e9e353d4b1dac664857d612
-          path: .clients/openldes
-
       - name: Build the OpenLDES adapter host
-        if: matrix.adapter == 'openldes-ldi'
+        if: steps.cache.outputs.cache-hit != 'true' && matrix.adapter == 'openldes-ldi'
         continue-on-error: true
         run: adapters/openldes-ldi/build.sh
 
-      - name: Check out europeana/rd-ldes-client
-        if: matrix.adapter == 'europeana'
-        uses: actions/checkout@v4
-        with:
-          repository: europeana/rd-ldes-client
-          ref: 878578e732f5c289facc74f90339ca09ad8f3f9e
-          path: .clients/europeana
-
       - name: Build the Europeana adapter host
-        if: matrix.adapter == 'europeana'
+        if: steps.cache.outputs.cache-hit != 'true' && matrix.adapter == 'europeana'
         continue-on-error: true
         run: adapters/europeana/build.sh
 
       - name: Run conformance tests
+        if: steps.cache.outputs.cache-hit != 'true'
         env:
           LDES_CT_RDF_CONNECT_ROOT: ${{ github.workspace }}/.clients/rdf-connect
           LDES_CT_OPENLDES_ROOT: ${{ github.workspace }}/.clients/openldes
@@ -142,6 +153,13 @@ jobs:
           --tests tests
           --out "reports/${{ matrix.adapter }}"
           --no-fail
+
+      - name: Cache the report for this client revision
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: reports/${{ matrix.adapter }}
+          key: conformance-${{ matrix.adapter }}-${{ steps.client.outputs.sha }}-${{ github.sha }}
 
       - name: Upload machine-readable report
         if: always()

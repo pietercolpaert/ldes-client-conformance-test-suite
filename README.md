@@ -34,7 +34,7 @@ them by hand.
   and requirements that only apply to a supported mode.
 - Produce one EARL assertion per test case and test subject.
 - Make failures reproducible from fixtures, request logs, client events, and
-  pinned client versions.
+  client revisions.
 
 Non-goals for the first release are server conformance, performance
 benchmarking, and testing client extensions that are not needed by LDES 1.0.
@@ -143,7 +143,7 @@ npm run report
 
 Open `site/1.0/index.html` to inspect the LDES-styled report. The root
 `site/index.html` redirects to the latest 1.0 report. It links each assertion
-to its JSON evidence, EARL Turtle, pinned client revision, adapter
+to its JSON evidence, EARL Turtle, client revision, adapter
 availability, and dereferenceable test case IRI under
 `https://www.pieter.pm/ldes-client-conformance-test-suite/1.0#`.
 
@@ -165,11 +165,10 @@ Each adapter is an independent process implementing `probe`, `run`, and
 Adapters live outside the normative test definitions. A defect in an adapter
 must result in `earl:cantTell`, not `earl:failed`.
 
-For example, to run the pinned rdf-connect checkout:
+For example, to run the latest rdf-connect checkout:
 
 ```sh
 git clone https://github.com/rdf-connect/ldes-client .clients/rdf-connect
-git -C .clients/rdf-connect checkout 00b062d3c4e4c31d99ff38ce985df44c389e2952
 npm --prefix .clients/rdf-connect ci
 npm --prefix .clients/rdf-connect run build
 npm run build
@@ -191,7 +190,7 @@ The generated report under `reports/<adapter>/` is the source of truth.
 > scenarios, nor against the corrected oracles and requirement mappings. Its
 > per-client counts are therefore not comparable to the current suite and must
 > not be cited as a present-day result. Regenerate it with
-> `npm run conformance:all` after building the pinned client checkouts, and
+> `npm run conformance:all` after building the client checkouts, and
 > replace this table from the resulting `summary.json` artifacts.
 
 | Client | Passed | Required failed | Advisory failed | Inapplicable | Group result |
@@ -207,15 +206,17 @@ ordered traversal configured only with `ldes:sequencePath`.
 ## Continuous publication
 
 [The conformance workflow](.github/workflows/conformance-pages.yml) checks out
-the three pinned client revisions, builds the available native hosts, runs the
+the latest default-branch head of the three clients, builds the available native hosts, runs the
 same black-box suite in isolated matrix jobs, combines their EARL/JSON
 artifacts, and deploys the HTML report with GitHub Pages.
 
 The repository must have **Settings → Pages → Build and deployment → Source**
 set to **GitHub Actions**. Test failures are published as results and therefore
 do not fail the workflow; runner/build problems remain `cantTell` with a
-diagnostic. The workflow also runs weekly so the hosted report records fresh
-execution dates while continuing to test pinned, reproducible revisions.
+diagnostic. The workflow runs daily, but a client is only built and tested again when
+its default branch head or this suite changed; otherwise its cached report for
+that (client revision, suite commit) pair is republished. The EARL report and
+HTML page record the exact client revision that was tested.
 
 ## Repository layout
 

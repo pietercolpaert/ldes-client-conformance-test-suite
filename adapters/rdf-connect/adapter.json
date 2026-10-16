@@ -8,7 +8,7 @@
     "name": "rdf-connect/ldes-client",
     "homepage": "https://github.com/rdf-connect/ldes-client",
     "version": "0.3.3",
-    "revision": "00b062d3c4e4c31d99ff38ce985df44c389e2952"
+    "revision": "main"
   },
   "command": [
     "node",
